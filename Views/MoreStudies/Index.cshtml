@@ -1,0 +1,53 @@
+﻿@model IEnumerable<Learning_Space.Models.MoreStudy>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.MoreStudySubject)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Content)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MoreStudyUrl)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Course)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.MoreStudySubject)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Content)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MoreStudyUrl)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Course.CourseName)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.MoreId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.MoreId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.MoreId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -1,0 +1,65 @@
+﻿@model IEnumerable<Learning_Space.Models.Lesson>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.LessonSubject)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LessonDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StartTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EndTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LessonType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Course)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.LessonSubject)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LessonDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EndTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LessonType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Course.CourseName)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.LessonId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.LessonId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.LessonId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
