@@ -247,6 +247,9 @@ public partial class LearningSpaceContext : DbContext
             entity.Property(e => e.Phone)
                 .HasMaxLength(20)
                 .IsUnicode(false);
+            entity.Property(e => e.Password)
+                .HasMaxLength(25)
+                .IsUnicode(false);
         });
 
         modelBuilder.Entity<UserTask>(entity =>
