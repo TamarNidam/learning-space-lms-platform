@@ -7,28 +7,53 @@
     int? permission = Convert.ToInt32(Context.Request.Query["permission"]);
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <div>
-        <button>
-            <a asp-controller="Home" asp-action="SignUp" >LOG OUT</a>
-       </button>
-        <button>
-            <a asp-controller="Home" asp-action="SignUp" asp-route-user="@user" asp-route-permission="@permission">Chat</a>
-        </button>
-        <button>
-            <a asp-controller="Home" asp-action="SignUp">Message</a>
-        </button>
-        <button>
-            <a asp-controller="Home" asp-action="SignUp">LOG OUT</a>
-        </button>
-        <button>
-            <a asp-controller="Home" asp-action="SignUp">LOG OUT</a>
-        </button>
-        <button>
-            <a asp-controller="Home" asp-action="SignUp">LOG OUT</a>
-        </button>
 
-    </div>
-    
-    </div>
+        <div class="text-center">
+            <h1 class="display-4">Welcome</h1>
+            <div class="All_permission">
+                <button>
+                    <a asp-controller="Users" asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission">User settings</a>
+                </button>
+                <button>
+                    <a asp-controller="Home" asp-action="SignUp">LOG OUT</a>
+                </button>
+                <button>
+                    <a asp-controller="Alarms" asp-action="index" asp-route-user="@user" asp-route-permission="@permission">Alarams</a>
+                </button>
+                <button>
+                    <a asp-controller="Tasks" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission">Tasks</a>
+                </button>
+            </div>
+            @if (permission == 0)
+            {
+                <div class="Admin_permission" display="none">
+                    <button>
+                        <a asp-controller="Users" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission">User List</a>
+                    </button>
+                    <button>
+                        <a asp-controller="Classes" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission">Classes List</a>
+                    </button>
+
+                </div>
+            }
+            else if (permission == 1)
+            {
+                <div class="teacher_permission">
+                    <button>
+                        <a asp-controller="Classes" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission">Classes List</a>
+                    </button>
+                    <button>
+                        <a asp-controller="Courses" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission">Courses List</a>
+                    </button>
+
+                </div>
+            }
+            else
+            {
+                <div class="Student_pernission">
+                    <button>
+                        <a asp-controller="Courses" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission">Courses List</a>
+                    </button>
+                </div>
+            }
+        </div>
