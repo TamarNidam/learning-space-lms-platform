@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Learning_Space.Models;
+using Learning_Space.DTO;
+using System.Data;
 
 namespace Learning_Space.Controllers
 {
@@ -21,7 +23,29 @@ namespace Learning_Space.Controllers
         // GET: Users
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Users.ToListAsync());
+            try
+            {
+                var users = await _context.Users.ToListAsync();
+            var userDTOs = users
+                        .Select(u => new UserDTO
+                        {
+                            UserId = u.UserId,
+                            FirstName = u.FirstName,
+                            LastName = u.LastName,
+                            Email = u.Email,
+                            Phone = u.Phone,
+                            Password = u.Password,
+                            Role = u.UserId == 0 ? "Admin" :
+               _context.Teachers.Any(t => t.UserId == u.UserId) ? "Teacher" :
+               "Student"
+                        }).ToList();
+            return View(userDTOs);
+            }
+            catch(Exception ex)
+            {
+                return View(ex);
+            }
+            
         }
 
         // GET: Users/Details/5

@@ -32,6 +32,6 @@ app.MapControllerRoute(
 
 app.MapControllerRoute(
     name: "Home",
-    pattern: "{user}/{permission}/{controller=Users}/{action=Index}/{userid?}/{id?}");
+    pattern: "{user}/{permission}/{controller=Users}/{action=Index}/{userid?}/{id?}/{ts?}");
 
 app.Run();
