@@ -19,6 +19,7 @@ namespace Learning_Space.Controllers
 
         public IActionResult Index()
         {
+            ViewBag.ActivateLayout = "EmptyLayout";
             return View();
         }
 
@@ -30,6 +31,7 @@ namespace Learning_Space.Controllers
 
         public IActionResult SignUp()
         {
+            ViewBag.ActivateLayout="EmptyLayout";
             return View();
         }
 
@@ -46,22 +48,33 @@ namespace Learning_Space.Controllers
                 {
                     var sql = "SELECT UserId,FirstName,LastName,Email,Phone,Password FROM [Users] WHERE FirstName = {0} AND Password = {1}";
                     var user = await _context.Users.FromSqlRaw(sql, userDTO.FirstName, userDTO.Password)
-                        .FirstOrDefaultAsync();
+                                             .FirstOrDefaultAsync();
 
                     //var user = await _context.Users.FindAsync(id);
                     if (user == null)
                     {
                         ViewBag.ErrorMessage = "User does not exist";
+                        ViewBag.ActivateLayout = "EmptyLayout";
                         return View(userDTO);
                     }
-
-                    return Redirect($"/Home/Index");
+                    int permission ;
+                    if(user.UserId == 0) permission = 0;
+                    else
+                    {
+                        bool isTeacher = _context.Teachers.Any(t => t.UserId == user.UserId);
+                        if (isTeacher) permission = 1;
+                        else permission = 2;
+                    }
+                   
+                    return Redirect($"/Home/Index?user={user.UserId}&permission={permission}");
 
                 }
+                ViewBag.ActivateLayout = "EmptyLayout";
                 return View(userDTO);
             }
             catch(Exception ex) 
             {
+
                 return View("Error",ex);
             }
         }

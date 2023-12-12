@@ -1,8 +1,34 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
+@using Microsoft.AspNetCore.Http
+@{
+    int? user = Convert.ToInt32(Context.Request.Query["user"]);
+    int? permission = Convert.ToInt32(Context.Request.Query["permission"]);
+}
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+    <div>
+        <button>
+            <a asp-controller="Home" asp-action="SignUp" >LOG OUT</a>
+       </button>
+        <button>
+            <a asp-controller="Home" asp-action="SignUp" asp-route-user="@user" asp-route-permission="@permission">Chat</a>
+        </button>
+        <button>
+            <a asp-controller="Home" asp-action="SignUp">Message</a>
+        </button>
+        <button>
+            <a asp-controller="Home" asp-action="SignUp">LOG OUT</a>
+        </button>
+        <button>
+            <a asp-controller="Home" asp-action="SignUp">LOG OUT</a>
+        </button>
+        <button>
+            <a asp-controller="Home" asp-action="SignUp">LOG OUT</a>
+        </button>
+
+    </div>
+    
+    </div>
