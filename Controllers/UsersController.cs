@@ -105,31 +105,46 @@ namespace Learning_Space.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UserId,FirstName,LastName,Email,Phone,Password")] User user)
+        public async Task<IActionResult> Create([Bind("UserId,FirstName,LastName,Email,Phone,Password,Role")] UserDTO userDTO)
         {
-            try 
-            { 
-            if (ModelState.IsValid)
+            try
             {
-                _context.Add(user);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    var u = await _context.Users
+                  .FromSqlRaw("SELECT TOP 1 * FROM Users WHERE Email = {0}", userDTO.Email)
+                  .FirstOrDefaultAsync();
+                    if (u != null)
+                    {
+                        ViewBag.ErrorMessage = "User Email exist";
+                        return View(userDTO);
+                    }
+                    u = await _context.Users
+                  .FromSqlRaw("SELECT TOP 1 * FROM Users WHERE Password = {0} AND FirstName = {1}", userDTO.Password, userDTO.FirstName)
+                  .FirstOrDefaultAsync();
+                    if (u != null)
+                    {
+                        ViewBag.ErrorMessage = "You need to change the password";
+                        return View(userDTO);
+                    }
+
+                    var maxUserId = await _context.Users.MaxAsync(u => (int?)u.UserId) ?? 0;
+                    var newUserId = maxUserId + 1;
+                    var sql = $"INSERT INTO [Users] (UserId,FirstName,LastName,Email,Phone,Password) VALUES ({newUserId}, '{userDTO.FirstName}', '{userDTO.LastName}', '{userDTO.Email}', '{userDTO.Phone}','{userDTO.Password}')";
+                    await _context.Database.ExecuteSqlRawAsync(sql);
+
+                    if (userDTO.Role == "Teacher")
+                    {
+                        var maxTeacherId = await _context.Teachers.MaxAsync(u => (int?)u.TeacherId) ?? 0;
+                        var newTeacherId = maxTeacherId + 1;
+                        sql = $"INSERT INTO [Teachers] (TeacherId,UserId,CourseId) VALUES ({newTeacherId},{newUserId},{0})";
+                        await _context.Database.ExecuteSqlRawAsync(sql);
+                    }
+                    return Redirect($"/Users/Index?user=0&permission=0");
+                }
+                return View(userDTO);
             }
-            var userDTO = new UserDTO
-            {
-                UserId = user.UserId,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email,
-                Phone = user.Phone,
-                Password = user.Password,
-                Role = user.UserId == 0 ? "Admin" :
-                      _context.Teachers.Any(t => t.UserId == user.UserId) ? "Teacher" :
-                      "Student"
-            };
-            return View(userDTO);
-        }
-             catch (Exception ex)
+            catch (Exception ex)
             {
                 return View("Error", ex);
             }
@@ -204,16 +219,16 @@ namespace Learning_Space.Controllers
                             throw;
                         }
                     }
-                    if(courseid!=null)
+                    if (courseid != null)
                     {
                         return Redirect($"/Users/Details?user={userid}&permission={permission}&courseid={courseid}&userid={userid}");
 
                     }
                     else
                     {
-return Redirect($"/Users/Details?user={userid}&permission={permission}&userid={userid}");
+                        return Redirect($"/Users/Details?user={userid}&permission={permission}&userid={userid}");
                     }
-                    
+
                 }
                 return View(userDTO);
             }
