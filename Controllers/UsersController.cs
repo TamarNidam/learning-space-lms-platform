@@ -21,49 +21,77 @@ namespace Learning_Space.Controllers
         }
 
         // GET: Users
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int user, int permission, int? courseid)
         {
             try
             {
-                var users = await _context.Users.ToListAsync();
-            var userDTOs = users
-                        .Select(u => new UserDTO
-                        {
-                            UserId = u.UserId,
-                            FirstName = u.FirstName,
-                            LastName = u.LastName,
-                            Email = u.Email,
-                            Phone = u.Phone,
-                            Password = u.Password,
-                            Role = u.UserId == 0 ? "Admin" :
-               _context.Teachers.Any(t => t.UserId == u.UserId) ? "Teacher" :
-               "Student"
-                        }).ToList();
-            return View(userDTOs);
+                List<Models.User> users;
+
+                if (!courseid.HasValue)
+                {
+                    users = await _context.Users.ToListAsync();
+                }
+                else
+                {
+                    var sql = $"SELECT Users.* FROM Users JOIN StudentInClass ON Users.UserId = StudentInClass.UserId JOIN CourseInClass ON StudentInClass.ClassId = CourseInClass.ClassId WHERE CourseInClass.Courseid = {courseid}";
+                    users = await _context.Users.FromSqlRaw(sql).ToListAsync();
+                                       }
+                var userDTOs = users
+                            .Select(u => new UserDTO
+                            {
+                                UserId = u.UserId,
+                                FirstName = u.FirstName,
+                                LastName = u.LastName,
+                                Email = u.Email,
+                                Phone = u.Phone,
+                                Password = u.Password,
+                                Role = u.UserId == 0 ? "Admin" :
+                   _context.Teachers.Any(t => t.UserId == u.UserId) ? "Teacher" :
+                   "Student"
+                            }).ToList();
+                return View(userDTOs);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return View(ex);
             }
-            
+
         }
 
         // GET: Users/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? userid)
         {
-            if (id == null)
+            try
             {
-                return NotFound();
-            }
+                if (!userid.HasValue)
+                {
+                    return NotFound();
+                }
 
-            var user = await _context.Users
-                .FirstOrDefaultAsync(m => m.UserId == id);
-            if (user == null)
+                var user = await _context.Users
+                    .FirstOrDefaultAsync(m => m.UserId == userid);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                var userDTO = new UserDTO
+                {
+                    UserId = user.UserId,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email,
+                    Phone = user.Phone,
+                    Password = user.Password,
+                    Role = user.UserId == 0 ? "Admin" :
+                       _context.Teachers.Any(t => t.UserId == user.UserId) ? "Teacher" :
+                       "Student"
+                };
+                return View(userDTO);
+            }
+            catch (Exception ex)
             {
-                return NotFound();
+                return View("Error", ex);
             }
-
-            return View(user);
         }
 
         // GET: Users/Create
@@ -79,29 +107,69 @@ namespace Learning_Space.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("UserId,FirstName,LastName,Email,Phone,Password")] User user)
         {
+            try 
+            { 
             if (ModelState.IsValid)
             {
                 _context.Add(user);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(user);
+            var userDTO = new UserDTO
+            {
+                UserId = user.UserId,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                Phone = user.Phone,
+                Password = user.Password,
+                Role = user.UserId == 0 ? "Admin" :
+                      _context.Teachers.Any(t => t.UserId == user.UserId) ? "Teacher" :
+                      "Student"
+            };
+            return View(userDTO);
+        }
+             catch (Exception ex)
+            {
+                return View("Error", ex);
+            }
         }
 
         // GET: Users/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int userid)
         {
-            if (id == null)
+            try
             {
-                return NotFound();
+                if (!UserExists(userid))
+                {
+                    return NotFound();
+                }
+
+                var user = await _context.Users.FindAsync(userid);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                var userDTO = new UserDTO
+                {
+                    UserId = user.UserId,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email,
+                    Phone = user.Phone,
+                    Password = user.Password,
+                    Role = user.UserId == 0 ? "Admin" :
+                         _context.Teachers.Any(t => t.UserId == user.UserId) ? "Teacher" :
+                         "Student"
+                };
+                return View(userDTO);
+            }
+            catch (Exception ex)
+            {
+                return View("Error", ex);
             }
 
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            return View(user);
+
         }
 
         // POST: Users/Edit/5
@@ -109,34 +177,50 @@ namespace Learning_Space.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("UserId,FirstName,LastName,Email,Phone,Password")] User user)
+        public async Task<IActionResult> Edit(int user, int permission, int? courseid, int userid, [Bind("UserId,FirstName,LastName,Email,Phone,Password")] UserDTO userDTO)
         {
-            if (id != user.UserId)
+            try
             {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
+                if (userid != userDTO.UserId)
                 {
-                    _context.Update(user);
-                    await _context.SaveChangesAsync();
+                    return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
+
+                if (ModelState.IsValid)
                 {
-                    if (!UserExists(user.UserId))
+                    try
                     {
-                        return NotFound();
+                        var sql = $"UPDATE [Users] SET FirstName = '{userDTO.FirstName}',LastName = '{userDTO.LastName}',Email = '{userDTO.Email}',Phone = '{userDTO.Phone}', Password = '{userDTO.Password}' WHERE UserId = {userDTO.UserId}";
+                        await _context.Database.ExecuteSqlRawAsync(sql);
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!UserExists(userDTO.UserId))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                    if(courseid!=null)
+                    {
+                        return Redirect($"/Users/Details?user={userid}&permission={permission}&courseid={courseid}&userid={userid}");
+
                     }
                     else
                     {
-                        throw;
+return Redirect($"/Users/Details?user={userid}&permission={permission}&userid={userid}");
                     }
+                    
                 }
-                return RedirectToAction(nameof(Index));
+                return View(userDTO);
             }
-            return View(user);
+            catch (Exception ex)
+            {
+                return View("Error", ex);
+            }
         }
 
         // GET: Users/Delete/5

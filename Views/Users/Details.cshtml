@@ -1,13 +1,21 @@
-﻿@model Learning_Space.Models.User
+﻿@model Learning_Space.DTO.UserDTO
 
 @{
     ViewData["Title"] = "Details";
 }
+@using Microsoft.AspNetCore.Http
+@{
+    int user = Convert.ToInt32(Context.Request.Query["user"]);
+    int permission = Convert.ToInt32(Context.Request.Query["permission"]);
+    int? courseid = Convert.ToInt32(Context.Request.Query["courseid"]);
+    int userid = Convert.ToInt32(Context.Request.Query["userid"]);
+}
 
-<h1>Details</h1>
+<h4>@Html.DisplayNameFor(model => model.FirstName)</h4>
+<h3>Details</h3>
 
 <div>
-    <h4>User</h4>
+   
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -35,14 +43,38 @@
             @Html.DisplayFor(model => model.Phone)
         </dd>
         <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Role)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Role)
+        </dd>
+        @*  <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Password)
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Password)
-        </dd>
+        </dd> *@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.UserId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    @if(user == userid)
+    {
+        <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-userid="@Model?.UserId">Edit</a>
+    }
+    @if (courseid.HasValue && courseid.Value != 0)
+    {
+        <a asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid">Back to List</a>
+    }
+    else
+    {
+        if(user == 0)
+        {
+            <a asp-action="Index" asp-route-user="@user" asp-route-permission="@permission">Back to List</a>
+        }
+        else
+        {
+            <a asp-controller="Home" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission">Back to my user</a>
+        }
+
+    } 
 </div>
