@@ -224,36 +224,67 @@ return Redirect($"/Users/Details?user={userid}&permission={permission}&userid={u
         }
 
         // GET: Users/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int userid)
         {
-            if (id == null)
+            try
             {
-                return NotFound();
-            }
+                if (!UserExists(userid))
+                {
+                    return NotFound();
+                }
 
-            var user = await _context.Users
-                .FirstOrDefaultAsync(m => m.UserId == id);
-            if (user == null)
+                var user = await _context.Users.FindAsync(userid);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                var userDTO = new UserDTO
+                {
+                    UserId = user.UserId,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email,
+                    Phone = user.Phone,
+                    Password = user.Password,
+                    Role = user.UserId == 0 ? "Admin" :
+                         _context.Teachers.Any(t => t.UserId == user.UserId) ? "Teacher" :
+                         "Student"
+                };
+                return View(userDTO);
+            }
+            catch (Exception ex)
             {
-                return NotFound();
+                return View("Error", ex);
             }
-
-            return View(user);
         }
 
         // POST: Users/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int user, int permission, int? courseid, int userid)
         {
-            var user = await _context.Users.FindAsync(id);
-            if (user != null)
+            var t = await _context.Teachers.FindAsync(userid);
+            if (t != null)
             {
-                _context.Users.Remove(user);
+                _context.Teachers.Remove(t);
+            }
+
+            var u = await _context.Users.FindAsync(userid);
+            if (u != null)
+            {
+                _context.Users.Remove(u);
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            if (courseid != null)
+            {
+                return Redirect($"/Users/Index?user=0&permission={permission}&courseid={courseid}");
+
+            }
+            else
+            {
+                return Redirect($"/Users/Index?user=0&permission={permission}");
+            }
         }
 
         private bool UserExists(int id)

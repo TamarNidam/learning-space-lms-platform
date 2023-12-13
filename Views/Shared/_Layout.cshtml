@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+@{
+    int? user = Convert.ToInt32(Context.Request.Query["user"]);
+    int? permission = Convert.ToInt32(Context.Request.Query["permission"]);
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -20,17 +26,48 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Alarms" asp-action="Index">H</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Details" asp-route-user="@user" asp-route-permission="@permission" asp-route-userid="@user">User Settings</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">Y</a>
+                            <a class ="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="SignUp">Sign Up</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class ="nav-link text-dark" asp-area="" asp-controller="Alarms" asp-action="index" asp-route-user="@user" asp-route-permission="@permission">Alarams</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Alarms" asp-action="index" asp-route-user="@user" asp-route-permission="@permission">Alarams</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Calendar" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission">Calendea</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Courses" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission">Courses List</a>
+                        </li>
+                        @if (permission == 0)
+                        {
+
+                           <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Users" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission">Users List</a>
+                            </li>
+                           <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Classes" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission">Classes</a>
+                            </li>
+
+                        }
+                        @if (permission == 2)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Tasks" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission">Tasks</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Classes" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission">Classes</a>
+                            </li>
+
+                        }
+
                     </ul>
                 </div>
             </div>

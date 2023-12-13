@@ -57,8 +57,8 @@
                          <a asp-action="Details" asp-route-user="@user" asp-route-permission="@permission"  asp-route-userid="@item.UserId">Details</a>
                     }
 
-                   
-                    @if (permission == 0&& user!=0)
+
+                    @if (permission == 0 && item.UserId != 0)
                     {
                       <p>  </p>
 
