@@ -20,4 +20,10 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="TextFiles\Courses\2\MoreStudy\" />
+    <Folder Include="TextFiles\Courses\2\Tasks\1\Submissions\" />
+    <Folder Include="Views\media\" />
+  </ItemGroup>
+
 </Project>
