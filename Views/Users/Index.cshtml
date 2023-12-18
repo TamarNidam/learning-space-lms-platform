@@ -7,24 +7,19 @@
 @{
     int? user = Convert.ToInt32(Context.Request.Query["user"]);
     int? permission = Convert.ToInt32(Context.Request.Query["permission"]);
-    int? courseid = Convert.ToInt32(Context.Request.Query["courseid"]);
 }
  
 <h1>Index</h1>
-@if (permission == 0)
-{
-    <p>
-        <a asp-action="Create" asp-route-user="@user"  asp-route-ts="Student">Create New Student</a>
-        <a asp-action="Create" asp-route-user="@user"  asp-route-ts="Teacher">Create New Teacher</a>
-    </p>
-}
 
+<p>
+    <a asp-action="Create" asp-route-user="@user" asp-route-permission="@permission" asp-route-ts="s">Create New Student</a>
+    <a asp-action="Create" asp-route-user="@user" asp-route-permission="@permission" asp-route-ts="t">Create New Teacher</a>
+</p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @* @Html.DisplayNameFor(model => model.FirstName) *@
-                <p>Name</p>
+                @Html.DisplayNameFor(model => model.FirstName)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Role)
@@ -41,45 +36,14 @@
                 <p/>
                 @Html.DisplayFor(modelItem => item.LastName)
             </td>
-                
                         <td>
                 @Html.DisplayFor(modelItem => item.Role)
             </td>
-                
         
-                <td>
-                    @if (courseid.HasValue && courseid.Value != 0)
-                    {
-                        <a asp-action="Details" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-userid="@item.UserId">Details</a>
-                    }
-                    else
-                    {
-                         <a asp-action="Details" asp-route-user="@user" asp-route-permission="@permission"  asp-route-userid="@item.UserId">Details</a>
-                    }
-
-
-                    @if (permission == 0 && item.UserId != 0)
-                    {
-                      <p>  </p>
-
-                        <a asp-action="Delete" asp-route-user="0" asp-route-permission="@permission" asp-route-userid="@item.UserId">Delete</a>
-                    }
-                    @if (user == item.UserId)
-                    {
-                        <p></p>
-                        if (courseid.Value != 0)
-                        {
-                            <a asp-action="Edit" asp-route-user="0" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-userid="@item.UserId">Edit</a>
-                        }
-                        else
-                        {
-
-                            <a asp-action="Edit" asp-route-user="0" asp-route-permission="@permission" asp-route-userid="@item.UserId">Edit</a>
-
-                        }
-
-                    }
-
+            <td>
+                <a asp-action="Edit" asp-route-user="0" asp-route-id="@item.UserId">Edit</a> |
+                    <a asp-action="Details" asp-route-user="0" asp-route-id="@item.UserId">Details</a> |
+                    <a asp-action="Delete" asp-route-user="0" asp-route-id="@item.UserId">Delete</a>
             </td>
         </tr>
 }
