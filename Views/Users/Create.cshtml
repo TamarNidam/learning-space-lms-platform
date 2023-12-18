@@ -1,7 +1,15 @@
-﻿@model Learning_Space.Models.User
+﻿@model Learning_Space.DTO.UserDTO
 
 @{
     ViewData["Title"] = "Create";
+}
+@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+{
+    <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
+}
+@using Microsoft.AspNetCore.Http
+@{
+    string ts = Context.Request.Query["ts"];
 }
 
 <h1>Create</h1>
@@ -12,11 +20,7 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="UserId" class="control-label"></label>
-                <input asp-for="UserId" class="form-control" />
-                <span asp-validation-for="UserId" class="text-danger"></span>
-            </div>
+
             <div class="form-group">
                 <label asp-for="FirstName" class="control-label"></label>
                 <input asp-for="FirstName" class="form-control" />
@@ -43,6 +47,11 @@
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Role" class="control-label"></label>
+                <input asp-for="Role" type="text" class="form-control" disabled value='@ts' />
+                <span asp-validation-for="Role" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
@@ -50,9 +59,11 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" asp-route-user="0" asp-route-permission="0">Back to List</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
