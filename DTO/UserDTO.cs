@@ -25,7 +25,7 @@ namespace Learning_Space.DTO
 
         [RegularExpression(@"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$",
            ErrorMessage = "Invalid password. Password must be at least 8 characters long and contain at least one letter and one digit.")]
-                public string Password { get; set; }
+        public string Password { get; set; }
         public string? Role { get; set; }
 
         //public List<UserTaskDTO> UserTask { get; set; }
