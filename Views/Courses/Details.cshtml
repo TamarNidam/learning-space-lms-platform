@@ -1,7 +1,13 @@
-﻿@model Learning_Space.Models.Course
+﻿@model Learning_Space.DTO.CourseDTO
 
 @{
     ViewData["Title"] = "Details";
+}
+@using Microsoft.AspNetCore.Http
+@{
+    int? user = Convert.ToInt32(Context.Request.Query["user"]);
+    int? permission = Convert.ToInt32(Context.Request.Query["permission"]);
+    int? courseid = Convert.ToInt32(Context.Request.Query["courseid"]);
 }
 
 <h1>Details</h1>
@@ -22,9 +28,26 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.CourseDescription)
         </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TeacherName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TeacherName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ClassName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ClassName)
+        </dd>
+
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.CourseId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    @if(permission == 0 || permission == 1)
+    {
+        <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId">Edit</a>
+    }
+   
+    @* <a asp-action="Index">Back to List</a> *@
 </div>

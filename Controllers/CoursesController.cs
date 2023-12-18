@@ -24,25 +24,52 @@ namespace Learning_Space.Controllers
         // GET: Courses
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Courses.ToListAsync());
+            var courses = await _context.Courses.ToListAsync();
+            var courseDTOs = courses
+                           .Select(u => new CourseDTO
+                           {
+                               CourseId = u.CourseId,
+                               CourseName = u.CourseName,
+                               CourseDescription = u.CourseDescription
+                           }).ToList();
+            return View(courseDTOs);
         }
 
         // GET: Courses/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
+        public async Task<IActionResult> Details(int? courseid)
+        { 
+            try
             {
-                return NotFound();
-            }
-
+                if (!courseid.HasValue)
+                {
+                    return NotFound();
+                }
+          
             var course = await _context.Courses
-                .FirstOrDefaultAsync(m => m.CourseId == id);
+                .FirstOrDefaultAsync(m => m.CourseId == courseid);
             if (course == null)
             {
                 return NotFound();
             }
 
-            return View(course);
+                var courseDTO = new CourseDTO
+                {
+                    CourseId = course.CourseId,
+                    CourseName = course.CourseName,
+                    CourseDescription = course.CourseDescription,
+                    TeacherId = _context.Teachers.Any(t => t.CourseId == course.CourseId) ? t.TeacherId,
+                    TeacherName = _context.Users.Any(t => t.CourseId == course.CourseId) ? t.TeacherId
+                    ClassId = _context.CourseInClasses.FirstOrDefault(),
+                    ClassName = 
+                };
+                return View(courseDTO);
+            }
+            catch (Exception ex)
+            {
+                return View("Error", ex);
+            }
+
+          
         }
 
         // GET: Courses/Create
