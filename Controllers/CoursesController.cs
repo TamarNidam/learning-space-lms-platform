@@ -37,30 +37,35 @@ namespace Learning_Space.Controllers
 
         // GET: Courses/Details/5
         public async Task<IActionResult> Details(int? courseid)
-        { 
+        {
             try
             {
                 if (!courseid.HasValue)
                 {
                     return NotFound();
                 }
-          
-            var course = await _context.Courses
-                .FirstOrDefaultAsync(m => m.CourseId == courseid);
-            if (course == null)
-            {
-                return NotFound();
-            }
 
+                var course = await _context.Courses
+                    .FirstOrDefaultAsync(m => m.CourseId == courseid);
+                if (course == null)
+                {
+                    return NotFound();
+                }
+                var teacher = _context.Teachers.FirstOrDefault(t => t.CourseId == course.CourseId);
+                var classs = _context.CourseInClasses.FirstOrDefault(c => c.CourseId == course.CourseId);
+                if (teacher == null || classs == null)
+                {
+                    return NotFound();
+                }
                 var courseDTO = new CourseDTO
                 {
                     CourseId = course.CourseId,
                     CourseName = course.CourseName,
                     CourseDescription = course.CourseDescription,
-                    TeacherId = _context.Teachers.Any(t => t.CourseId == course.CourseId) ? t.TeacherId,
-                    TeacherName = _context.Users.Any(t => t.CourseId == course.CourseId) ? t.TeacherId
-                    ClassId = _context.CourseInClasses.FirstOrDefault(),
-                    ClassName = 
+                    TeacherId = teacher?.TeacherId,
+                    TeacherName = _context.Users.FirstOrDefault(u => u.UserId == teacher.UserId)?.FirstName,
+                    ClassId = classs?.ClassId,
+                    ClassName = _context.Classes.FirstOrDefault(c => c.ClassId == classs.ClassId)?.ClassName
                 };
                 return View(courseDTO);
             }
@@ -75,6 +80,27 @@ namespace Learning_Space.Controllers
         // GET: Courses/Create
         public IActionResult Create()
         {
+            //var teachers = _context.Teachers.ToList();
+            //var users = _context.Users
+            //    .Join(teachers, u => u.UserId, t => t.UserId, (u, t) => new
+            //    {
+            //        TeacherId = t.TeacherId,
+            //        FirstName = u.FirstName
+            //    })
+            //    .ToList();
+            var teacherUserIds = _context.Teachers.Select(t => t.UserId).ToList();
+            var users = _context.Users
+                .Where(u => teacherUserIds.Contains(u.UserId))
+                .Select(u => new
+                {
+                    TeacherId = _context.Teachers.FirstOrDefault(t => t.UserId == u.UserId).TeacherId,
+                    FirstName = u.FirstName
+                })
+                .ToList();
+            var selectList = new SelectList(users, "TeacherId", "FirstName");
+            ViewData["TeacherId"] = selectList;
+            ViewData["TeacherId"] = new SelectList(users, "TeacherId", "FirstName");
+            ViewData["ClassId"] = new SelectList(_context.Classes, "ClassId", "ClassName");
             return View();
         }
 
