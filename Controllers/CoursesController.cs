@@ -9,6 +9,12 @@ using Learning_Space.Models;
 using Newtonsoft.Json.Linq;
 using Learning_Space.DTO;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.IO;
+using System.Text;
+using MyFile = System.IO.File;
+using DDirectory = System.IO.Directory;
+using System.Security.AccessControl;
+
 
 namespace Learning_Space.Controllers
 {
@@ -34,6 +40,7 @@ namespace Learning_Space.Controllers
                            }).ToList();
             return View(courseDTOs);
         }
+
 
         // GET: Courses/Details/5
         public async Task<IActionResult> Details(int? courseid)
@@ -77,6 +84,7 @@ namespace Learning_Space.Controllers
           
         }
 
+
         // GET: Courses/Create
         public IActionResult Create()
         {
@@ -88,21 +96,23 @@ namespace Learning_Space.Controllers
             //        FirstName = u.FirstName
             //    })
             //    .ToList();
-            var teacherUserIds = _context.Teachers.Select(t => t.UserId).ToList();
+            var teacherUserIds = _context.Teachers.Select(t => t.UserId).Distinct().ToList();
             var users = _context.Users
                 .Where(u => teacherUserIds.Contains(u.UserId))
                 .Select(u => new
                 {
-                    TeacherId = _context.Teachers.FirstOrDefault(t => t.UserId == u.UserId).TeacherId,
+                    TeacherId = _context.Teachers.FirstOrDefault(t => t.UserId == u.UserId).UserId,
                     FirstName = u.FirstName
                 })
+                .Distinct() // Optional: Remove duplicates if any
                 .ToList();
-            var selectList = new SelectList(users, "TeacherId", "FirstName");
-            ViewData["TeacherId"] = selectList;
+
+
             ViewData["TeacherId"] = new SelectList(users, "TeacherId", "FirstName");
             ViewData["ClassId"] = new SelectList(_context.Classes, "ClassId", "ClassName");
             return View();
         }
+
 
         // POST: Courses/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -115,6 +125,16 @@ namespace Learning_Space.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    var name = await _context.Courses
+                  .FromSqlRaw("SELECT TOP 1 * FROM Courses WHERE CourseName = {0}", courseDTO.CourseName)
+                  .FirstOrDefaultAsync();
+                    if (name != null)
+                    {
+                        ViewBag.ErrorMessage = "Course name exist";
+                        return View(courseDTO);
+                    }
+                    Console.WriteLine($"TeacherId: {courseDTO.TeacherId}");
+
                     //Create course
                     var maxCourseId = await _context.Courses.MaxAsync(u => (int?)u.CourseId) ?? 0;
                     var newCourseId = maxCourseId + 1;
@@ -129,21 +149,18 @@ namespace Learning_Space.Controllers
                         $"VALUES ({newTeacherId},{courseDTO.TeacherId},{newCourseId})";
                     await _context.Database.ExecuteSqlRawAsync(sql);
 
-                    //Create folder for course
-                    CreateFolder("course", newCourseId);
-                    CreateFolder(newCourseId, "Tasks");
-                    CreateFolder(newCourseId, "MoreStudies");
-                    CreateFolder(newCourseId, "Notebooks");
+                    //Create folders for course
+                    CreateFolder(newCourseId);
 
-                    // Create notebook text files for each student in the course
-                    var studentsInClass = _context.StudentInClasses
-                        .Where(s => s.ClassId == courseDTO.ClassId)
-                        .Select(s => s.UserId)
-                        .ToList();
-                    foreach (var UserId in studentsInClass)
-                    {
-                        CreateTextFile("Notebooks", UserId, newCourseId);
-                    }
+                    //// Create notebook text files for each student in the course
+                    //var studentsInClass = _context.StudentInClasses
+                    //    .Where(s => s.ClassId == courseDTO.ClassId)
+                    //    .Select(s => s.UserId)
+                    //    .ToList();
+                    //foreach (int UserId in studentsInClass)
+                    //{
+                    //    CreateNotebookFile(newCourseId, UserId);
+                    //}
 
                     return Redirect($"/Courses/Index?user=0&permission=0");
                 }
@@ -155,20 +172,43 @@ namespace Learning_Space.Controllers
             }
         }
 
-        private void CreateFolder(string v, int newCourseId)
+        private void CreateFolder(int newCourseId)
         {
-            throw new NotImplementedException();
+            string baseFolderPath = Path.Combine(".", "TextFiles");
+            string courseFolderPath = Path.Combine(baseFolderPath, "Courses", $"{newCourseId}");
+            string courseChatFilePath = Path.Combine(baseFolderPath, "Chats", "Course", $"{newCourseId}"+".txt");
+            Console.WriteLine(courseFolderPath);
+            MyFile.Create(courseChatFilePath).Close();
+
+            //// Create the folder if it doesn't exist
+            //if (!DDirectory.Exists(courseFolderPath))
+            //{
+            //    DDirectory.CreateDirectory(courseChatFilePath);
+           
+            //    DDirectory.CreateDirectory(Path.Combine(courseFolderPath, "MoreStudy"));
+            //   DDirectory.CreateDirectory(Path.Combine(courseFolderPath, "Notebooks"));
+            //    DDirectory.CreateDirectory(Path.Combine(courseFolderPath, "Task"));
+            //    Console.WriteLine("Course folder created successfully!");
+            //}
+            //else
+            //{
+            //    Console.WriteLine("Course folder already exists!");
+            //}
         }
 
-        private void CreateFolder( int newCourseId, string? v1)
+        private void CreateNotebookFile(int courseid, int userid)
         {
-            throw new NotImplementedException();
+
+            string baseFolderPath = Path.Combine("..", "TextFiles");
+            string courseFolderPath = Path.Combine(baseFolderPath, "Courses", courseid.ToString());
+            string noteFolderPath = Path.Combine(courseFolderPath, "Notebooks");
+            string notebookFilePath = Path.Combine(noteFolderPath, userid.ToString() + ".txt");
+
+            // Create the file with the received UserId
+            MyFile.Create(notebookFilePath);
+            Console.WriteLine("Notebook file created successfully.");
         }
 
-        private void CreateTextFile(string v, int? userId, int newCourseId)
-        {
-            throw new NotImplementedException();
-        }
 
         // GET: Courses/Edit/5
         public async Task<IActionResult> Edit(int? id)
