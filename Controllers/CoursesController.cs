@@ -51,6 +51,7 @@ namespace Learning_Space.Controllers
                 {
                     return NotFound();
                 }
+                
 
                 var course = await _context.Courses
                     .FirstOrDefaultAsync(m => m.CourseId == courseid);
@@ -58,8 +59,8 @@ namespace Learning_Space.Controllers
                 {
                     return NotFound();
                 }
-                var teacher = _context.Teachers.FirstOrDefault(t => t.CourseId == course.CourseId);
-                var classs = _context.CourseInClasses.FirstOrDefault(c => c.CourseId == course.CourseId);
+                var teacher = _context.Teachers.FirstOrDefault(t => t.CourseId == courseid);
+                var classs = _context.CourseInClasses.FirstOrDefault(c => c.CourseId == courseid);
                 if (teacher == null || classs == null)
                 {
                     return NotFound();
@@ -79,9 +80,7 @@ namespace Learning_Space.Controllers
             catch (Exception ex)
             {
                 return View("Error", ex);
-            }
-
-          
+            }          
         }
 
 
@@ -147,6 +146,13 @@ namespace Learning_Space.Controllers
                     var newTeacherId = maxTeacherId + 1;
                     sql = $"INSERT INTO [Teachers] (TeacherId,UserId,CourseId) " +
                         $"VALUES ({newTeacherId},{courseDTO.TeacherId},{newCourseId})";
+                    await _context.Database.ExecuteSqlRawAsync(sql);
+
+                    //Create class in course
+                    var maxCourseInClassId = await _context.CourseInClasses.MaxAsync(u => (int?)u.CourseInClass1) ?? 0;
+                    var newCourseInClassId = maxCourseInClassId + 1;
+                    sql = $"INSERT INTO [CourseInClass] (CourseInClass,ClassId,CourseId) " +
+                        $"VALUES ({newCourseInClassId},{courseDTO.ClassId},{newCourseId})";
                     await _context.Database.ExecuteSqlRawAsync(sql);
 
                     //Create folders for course
@@ -263,36 +269,96 @@ namespace Learning_Space.Controllers
         }
 
         // GET: Courses/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? courseid)
         {
-            if (id == null)
+            try
             {
-                return NotFound();
-            }
+                if (!courseid.HasValue || courseid == null)
+                {
+                    return NotFound();
+                }
 
-            var course = await _context.Courses
-                .FirstOrDefaultAsync(m => m.CourseId == id);
-            if (course == null)
+                var course = await _context.Courses
+                    .FirstOrDefaultAsync(m => m.CourseId == courseid);
+                if (course == null)
+                {
+                    return NotFound();
+                }
+                var teacher = _context.Teachers.FirstOrDefault(t => t.CourseId == courseid);
+                var classs = _context.CourseInClasses.FirstOrDefault(c => c.CourseId == courseid);
+                if (teacher == null || classs == null)
+                {
+                    return NotFound();
+                }
+                var courseDTO = new CourseDTO
+                {
+                    CourseId = course.CourseId,
+                    CourseName = course.CourseName,
+                    CourseDescription = course.CourseDescription,
+                    TeacherId = teacher?.TeacherId,
+                   TeacherName = _context.Users.FirstOrDefault(u => u.UserId == teacher.UserId)?.FirstName,
+                    ClassId = classs?.ClassId,
+                    ClassName = _context.Classes.FirstOrDefault(c => c.ClassId == classs.ClassId)?.ClassName
+                };
+                return View(courseDTO);
+            }
+            catch (Exception ex)
             {
-                return NotFound();
+                return View("Error", ex);
             }
-
-            return View(course);
         }
 
         // POST: Courses/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int courseid)
         {
-            var course = await _context.Courses.FindAsync(id);
+            var course = await _context.Courses.FindAsync(courseid);
             if (course != null)
             {
+                var documentsToDelete = await _context.Teachers.Where(t => t.CourseId == courseid).ToListAsync();
+                _context.Teachers.RemoveRange(documentsToDelete);
+                await _context.SaveChangesAsync();
+                var documentsToDelete1 = await _context.CourseInClasses.Where(t => t.CourseId == courseid).ToListAsync();
+                _context.CourseInClasses.RemoveRange(documentsToDelete1);
+                await _context.SaveChangesAsync();
+                //var teacher = await _context.Teachers.FindAsync(courseid);
+                //if (teacher != null)
+
+
+                //{ _context.Teachers.Remove(teacher); }
+                
+                //var classs = await _context.CourseInClasses.FindAsync(courseid);
+                //if (classs != null)
+                //{
+                //  _context.CourseInClasses.Remove(classs);  
+                //}
+                //await _context.SaveChangesAsync();
                 _context.Courses.Remove(course);
+
+                string baseFolderPath = Path.Combine(".", "TextFiles");
+                string courseFolderPath = Path.Combine(baseFolderPath, "Courses", $"{courseid}");
+                string courseChatFilePath = Path.Combine(baseFolderPath, "Chats", "Course", $"{courseid}" + ".txt");
+                Console.WriteLine(courseFolderPath);
+                MyFile.Delete(courseChatFilePath);
+
+                //// delete the folder if it  exist
+                //if (DDirectory.Exists(courseFolderPath))
+                //{
+                //    DDirectory.DeleteDirectory(courseChatFilePath);
+
+                
+                //    Console.WriteLine("Course folder created successfully!");
+                //}
+                //else
+                //{
+                //    Console.WriteLine("Course folder already exists!");
+                //}
+
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return Redirect($"/Courses/Index?user=0&permission=0");
         }
 
         private bool CourseExists(int id)

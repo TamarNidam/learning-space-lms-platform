@@ -40,7 +40,7 @@
     </thead>
     <tbody>
 @foreach (var item in Model) {
-            <tr onclick="location.href='@Url.Action("Details", new { user = user, permission = permission, courseId = item.CourseId })';">          
+            <tr onclick="location.href='@Url.Action("Details", new { user = @user, permission = @permission, courseid = @item.CourseId })';">          
                 <td>
                    
                 @Html.DisplayFor(modelItem => item.CourseName)
