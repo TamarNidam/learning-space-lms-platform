@@ -14,6 +14,7 @@ using System.Text;
 using MyFile = System.IO.File;
 using DDirectory = System.IO.Directory;
 using System.Security.AccessControl;
+using NuGet.DependencyResolver;
 
 
 namespace Learning_Space.Controllers
@@ -28,9 +29,32 @@ namespace Learning_Space.Controllers
         }
 
         // GET: Courses
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int user)
         {
-            var courses = await _context.Courses.ToListAsync();
+            List<Course> courses = new List<Course>();
+            if (user == 0)
+            {
+courses = await _context.Courses.ToListAsync();
+                courses.RemoveAt(0);
+            }
+            else
+            {
+                // Get all the class IDs for the user
+                List<int> classIds = GetClassIdsForUser(user);
+
+                foreach (int classId in classIds)
+                {
+                    // Get the courses associated with each class
+                    List<Course> classCourses = await _context.CourseInClasses
+                        .Where(cic => cic.ClassId == classId)
+                        .Select(cic => cic.Course)
+                        .ToListAsync();
+
+                    courses.AddRange(classCourses);
+                }
+               
+            }
+            
             var courseDTOs = courses
                            .Select(u => new CourseDTO
                            {
@@ -39,6 +63,21 @@ namespace Learning_Space.Controllers
                                CourseDescription = u.CourseDescription
                            }).ToList();
             return View(courseDTOs);
+        }
+
+        private List<int> GetClassIdsForUser(int user)
+        {
+            List<int> classIds = new List<int>();
+
+            // Retrieve the class IDs associated with the user from the UserClass table
+            var userClasses = _context.StudentInClasses.Where(uc => uc.UserId == user);
+
+            foreach (var userClass in userClasses)
+            {
+                classIds.Add((int)userClass.ClassId);
+            }
+
+            return classIds;
         }
 
 
@@ -87,14 +126,7 @@ namespace Learning_Space.Controllers
         // GET: Courses/Create
         public IActionResult Create()
         {
-            //var teachers = _context.Teachers.ToList();
-            //var users = _context.Users
-            //    .Join(teachers, u => u.UserId, t => t.UserId, (u, t) => new
-            //    {
-            //        TeacherId = t.TeacherId,
-            //        FirstName = u.FirstName
-            //    })
-            //    .ToList();
+           
             var teacherUserIds = _context.Teachers.Select(t => t.UserId).Distinct().ToList();
             var users = _context.Users
                 .Where(u => teacherUserIds.Contains(u.UserId))
@@ -217,19 +249,54 @@ namespace Learning_Space.Controllers
 
 
         // GET: Courses/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int courseid)
         {
-            if (id == null)
+            try
             {
-                return NotFound();
-            }
+                if (courseid == null || !CourseExists(courseid))
+                {
+                    return NotFound();
+                }
 
-            var course = await _context.Courses.FindAsync(id);
-            if (course == null)
-            {
-                return NotFound();
+                var course = await _context.Courses.FindAsync(courseid);
+
+                if (course == null)
+                {
+                    return NotFound();
+                }
+                var teacher = _context.Teachers.FirstOrDefault(t => t.CourseId == courseid);
+                var classs = _context.CourseInClasses.FirstOrDefault(c => c.CourseId == courseid);
+                var courseDTO = new CourseDTO
+                {
+                    CourseId = course.CourseId,
+                    CourseName = course.CourseName,
+                    CourseDescription = course.CourseDescription,
+                    TeacherId = teacher?.TeacherId,
+                    TeacherName = _context.Users.FirstOrDefault(u => u.UserId == teacher.UserId)?.FirstName,
+                    ClassId = classs?.ClassId,
+                    ClassName = _context.Classes.FirstOrDefault(c => c.ClassId == classs.ClassId)?.ClassName
+                };
+                var teacherUserIds = _context.Teachers.Select(t => t.UserId).Distinct().ToList();
+                var users = _context.Users
+                    .Where(u => teacherUserIds.Contains(u.UserId))
+                    .Select(u => new
+                    {
+                        TeacherId = _context.Teachers.FirstOrDefault(t => t.UserId == u.UserId).UserId,
+                        FirstName = u.FirstName
+                    })
+                    .Distinct() // Optional: Remove duplicates if any
+                    .ToList();
+
+
+                ViewData["TeacherId"] = new SelectList(users, "TeacherId", "FirstName");
+                ViewData["ClassId"] = new SelectList(_context.Classes, "ClassId", "ClassName");
+
+                return View(courseDTO);
             }
-            return View(course);
+            catch (Exception ex)
+            {
+                return View("Error", ex);
+            }
 
         }
 
@@ -238,35 +305,45 @@ namespace Learning_Space.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CourseId,CourseName,CourseDescription")] Course course)
+        public async Task<IActionResult> Edit(int user, int permission, int? courseid, [Bind("CourseId,CourseName,CourseDescription,TeacherId,ClassId")] CourseDTO courseDTO)
         {
-            if (id != course.CourseId)
+            try
             {
-                return NotFound();
-            }
+                if (courseid != courseDTO.CourseId)
+                {
+                    return NotFound();
+                }
 
-            if (ModelState.IsValid)
-            {
-                try
+                if (ModelState.IsValid)
                 {
-                    _context.Update(course);
-                    await _context.SaveChangesAsync();
+                    //Update course
+                    var sql = $"UPDATE [Courses] SET " +
+                        $"CourseName = '{courseDTO.CourseName}',CourseDescription = '{courseDTO.CourseDescription}' " +
+                        $"WHERE CourseId = {courseDTO.CourseId}";
+                    await _context.Database.ExecuteSqlRawAsync(sql);
+
+                    //Update teacher for course
+                    sql = $"UPDATE [Teachers] SET " +
+                        $"UserId = '{courseDTO.TeacherId}' " +
+                        $"WHERE CourseId = {courseDTO.CourseId}";
+                    await _context.Database.ExecuteSqlRawAsync(sql);
+
+                    //Update class in course
+                    sql = $"UPDATE [CourseInClass] SET " +
+                        $"ClassId = '{courseDTO.ClassId}' " +
+                        $"WHERE CourseId = {courseDTO.CourseId}";
+                    await _context.Database.ExecuteSqlRawAsync(sql);
+
+                    return Redirect($"/Courses/Details?user={user}&permission={permission}&courseid={courseid}");
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CourseExists(course.CourseId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                return View(courseDTO);
             }
-            return View(course);
+            catch (Exception ex)
+            {
+                return View("Error", ex);
+            }
         }
+
 
         // GET: Courses/Delete/5
         public async Task<IActionResult> Delete(int? courseid)
