@@ -1,7 +1,13 @@
-﻿@model IEnumerable<Learning_Space.Models.Task>
+﻿@model IEnumerable<Learning_Space.DTO.TaskDTO>
 
 @{
     ViewData["Title"] = "Index";
+}
+@using Microsoft.AspNetCore.Http
+@{
+    int? user = Convert.ToInt32(Context.Request.Query["user"]);
+    int? permission = Convert.ToInt32(Context.Request.Query["permission"]);
+    int? courseid = Convert.ToInt32(Context.Request.Query["courseid"]);
 }
 
 <h1>Index</h1>
@@ -22,7 +28,7 @@
                 @Html.DisplayNameFor(model => model.EndDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Course)
+                @Html.DisplayNameFor(model => model.CourseName)
             </th>
             <th></th>
         </tr>
@@ -40,13 +46,26 @@
                 @Html.DisplayFor(modelItem => item.EndDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Course.CourseName)
+                @Html.DisplayFor(modelItem => item.CourseName)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.TaskId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.TaskId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.TaskId">Delete</a>
-            </td>
+                    @if (courseid.HasValue && courseid.Value != 0)
+                    {
+                        <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-taskid="@item.TaskId">Edit</a>
+                        <a asp-action="Details" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-taskid="@item.TaskId">Details</a>
+
+                        <a asp-action="Delete" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-taskid="@item.TaskId">Delete</a>
+
+                    }
+                    else
+                    {
+                        <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-taskid="@item.TaskId">Edit</a> 
+                    <a asp-action="Details" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-taskid="@item.TaskId">Details</a> 
+
+                    <a asp-action="Delete" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-taskid="@item.TaskId">Delete</a>
+            
+                    }
+                    </td>
         </tr>
 }
     </tbody>

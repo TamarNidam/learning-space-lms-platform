@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Learning_Space.Models;
 using Task = Learning_Space.Models.Task;
+using Learning_Space.DTO;
 
 namespace Learning_Space.Controllers
 {
@@ -20,14 +21,51 @@ namespace Learning_Space.Controllers
         }
 
         // GET: Tasks
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int user, int permission, int? courseid)
         {
-            var learningSpaceContext = _context.Tasks.Include(t => t.Course);
-            return View(await learningSpaceContext.ToListAsync());
+            try
+            {
+                List<Task> tasks;
+
+                if (!courseid.HasValue)
+                {
+                    var sql = $"SELECT t.*" +
+    $"FROM [Tasks] t " +
+    $"JOIN CourseInClass cc ON cc.CourseId = t.CourseId " +
+    $"JOIN StudentInClass sc ON sc.ClassId = cc.ClassId " +
+    $"WHERE sc.UserId = '{user}'";
+                    tasks = await _context.Tasks.FromSqlRaw(sql).ToListAsync();
+                }
+                else
+                {
+                    var sql = $"SELECT t.*" +
+                        $"FROM [Tasks] t " +
+                        $"WHERE t.CourseId = {courseid}";
+                    tasks = await _context.Tasks.FromSqlRaw(sql).ToListAsync();
+                }
+
+                var taskDTOs = tasks
+                            .Select(u => new TaskDTO
+                            {
+                                TaskId = u.TaskId,
+                                TaskType = u.TaskType,
+                                StartDate = u.StartDate,
+                                EndDate = u.EndDate,
+                                CourseId = u.CourseId,
+                                CourseName = u.Course.CourseName
+
+                            }).ToList();
+                return View(taskDTOs);
+            }
+            catch (Exception ex)
+            {
+                return View(ex);
+            }
+
         }
 
         // GET: Tasks/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? taskid)
         {
             if (id == null)
             {
