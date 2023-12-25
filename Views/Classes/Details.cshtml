@@ -1,7 +1,13 @@
-﻿@model Learning_Space.Models.Class
+﻿@model Learning_Space.DTO.ClassDTO
 
 @{
     ViewData["Title"] = "Details";
+}
+@using Microsoft.AspNetCore.Http
+@{
+    int? user = Convert.ToInt32(Context.Request.Query["user"]);
+    int? permission = Convert.ToInt32(Context.Request.Query["permission"]);
+    int? classid = Convert.ToInt32(Context.Request.Query["classid"]);
 }
 
 <h1>Details</h1>
@@ -17,8 +23,13 @@
             @Html.DisplayFor(model => model.ClassName)
         </dd>
     </dl>
+    <p> @Model.Students Stusents.</p>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.ClassId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-controller="Courses" asp-action="Index" asp-route-user="0" asp-route-permission="0" asp-route-classid="@Model?.ClassId">courses list</a>
+    <a asp-controller="Users" asp-action="Index" asp-route-user="0" asp-route-permission="0" asp-route-classid="@Model?.ClassId">students list</a>
+</div>
+<div>   
+        <a asp-action="Edit" asp-route-user="0" asp-route-permission="0" asp-route-classid="@Model?.ClassId">Edit</a>        
+    <a asp-action="Index" asp-route-user="0" asp-route-permission="0">Back to List</a>
 </div>

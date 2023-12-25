@@ -67,14 +67,14 @@ namespace Learning_Space.Controllers
         // GET: Tasks/Details/5
         public async Task<IActionResult> Details(int? taskid)
         {
-            if (id == null)
+            if (taskid == null)
             {
                 return NotFound();
             }
 
             var task = await _context.Tasks
                 .Include(t => t.Course)
-                .FirstOrDefaultAsync(m => m.TaskId == id);
+                .FirstOrDefaultAsync(m => m.TaskId == taskid);
             if (task == null)
             {
                 return NotFound();

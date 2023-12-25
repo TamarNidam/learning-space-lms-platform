@@ -21,21 +21,31 @@ namespace Learning_Space.Controllers
         }
 
         // GET: Users
-        public async Task<IActionResult> Index(int user, int permission, int? courseid)
+        public async Task<IActionResult> Index(int user, int permission, int? courseid, int? classid)
         {
             try
             {
-                List<Models.User> users;
+                List<User> users;
 
-                if (!courseid.HasValue)
+                if (classid.HasValue)
                 {
-                    users = await _context.Users.ToListAsync();
+                    var sql = $"SELECT Users.* FROM Users JOIN StudentInClass WHERE StudentInClass.ClassId = {classid}";
+                    users = await _context.Users.FromSqlRaw(sql).ToListAsync();
                 }
-                else
+                else if(courseid.HasValue)
                 {
                     var sql = $"SELECT Users.* FROM Users JOIN StudentInClass ON Users.UserId = StudentInClass.UserId JOIN CourseInClass ON StudentInClass.ClassId = CourseInClass.ClassId WHERE CourseInClass.Courseid = {courseid}";
                     users = await _context.Users.FromSqlRaw(sql).ToListAsync();
+                     sql = $"SELECT Users.* FROM Users JOIN Teacher ON Users.UserId = Teacher.UserId WHERE Teacher.CourseId = {courseid}";
+                    var teacher = await _context.Users.FromSqlRaw(sql).ToListAsync();
+
+                    users.AddRange(teacher);
                 }
+                else
+                {
+users = await _context.Users.ToListAsync();
+                }
+
                 var userDTOs = users
                             .Select(u => new UserDTO
                             {
@@ -49,13 +59,13 @@ namespace Learning_Space.Controllers
                    _context.Teachers.Any(t => t.UserId == u.UserId) ? "Teacher" :
                    "Student"
                             }).ToList();
+
                 return View(userDTOs);
-            }
+                            }
             catch (Exception ex)
             {
                 return View(ex);
             }
-
         }
 
 

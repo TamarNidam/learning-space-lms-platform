@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Learning_Space.Models;
+using Learning_Space.DTO;
 
 namespace Learning_Space.Controllers
 {
@@ -21,25 +22,46 @@ namespace Learning_Space.Controllers
         // GET: Classes
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Classes.ToListAsync());
+            var classes = await _context.Classes.ToListAsync();
+            var courseDTOs = classes
+                           .Select(u => new ClassDTO
+                           {
+                               ClassId = u.ClassId,
+                               ClassName = u.ClassName
+                           }).ToList();
+            return View(courseDTOs);
         }
 
         // GET: Classes/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? classid)
         {
-            if (id == null)
+            try
             {
-                return NotFound();
-            }
 
-            var @class = await _context.Classes
-                .FirstOrDefaultAsync(m => m.ClassId == id);
-            if (@class == null)
+                if (classid == null)
+                {
+                    return NotFound();
+                }
+
+                var @class = await _context.Classes
+                    .FirstOrDefaultAsync(m => m.ClassId == classid);
+                if (@class == null)
+                {
+                    return NotFound();
+                }
+                
+                var classDTO = new ClassDTO
+                {
+                    ClassId = @class.ClassId,
+                    ClassName = @class.ClassName,
+                    Students = _context.StudentInClasses.Count(s => s.ClassId == classid)
+                };
+                return View(classDTO);
+            }
+            catch (Exception ex)
             {
-                return NotFound();
+                return View("Error", ex);
             }
-
-            return View(@class);
         }
 
         // GET: Classes/Create

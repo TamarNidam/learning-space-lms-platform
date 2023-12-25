@@ -29,40 +29,56 @@ namespace Learning_Space.Controllers
         }
 
         // GET: Courses
-        public async Task<IActionResult> Index(int user)
+        public async Task<IActionResult> Index(int user, int? classid)
         {
-            List<Course> courses = new List<Course>();
-            if (user == 0)
+            try
             {
-courses = await _context.Courses.ToListAsync();
-                courses.RemoveAt(0);
-            }
-            else
-            {
-                // Get all the class IDs for the user
-                List<int> classIds = GetClassIdsForUser(user);
-
-                foreach (int classId in classIds)
+                List<Course> courses = new List<Course>();
+                if (user == 0)
                 {
-                    // Get the courses associated with each class
-                    List<Course> classCourses = await _context.CourseInClasses
-                        .Where(cic => cic.ClassId == classId)
-                        .Select(cic => cic.Course)
-                        .ToListAsync();
+                    if (classid.HasValue)
+                    {
+                        var sql = $"SELECT Courses.* FROM Courses JOIN CourseInClasses ON CourseInClasses.ClassId = {classid}";
+                        courses = await _context.Courses.FromSqlRaw(sql).ToListAsync();
 
-                    courses.AddRange(classCourses);
+                    }
+                    else
+                    {
+                        courses = await _context.Courses.ToListAsync();
+                        courses.RemoveAt(0);
+                    }
+
                 }
-               
+                else
+                {
+                    // Get all the class IDs for the user
+                    List<int> classIds = GetClassIdsForUser(user);
+
+                    foreach (int classId in classIds)
+                    {
+                        // Get the courses associated with each class
+                        List<Course> classCourses = await _context.CourseInClasses
+                            .Where(cic => cic.ClassId == classId)
+                            .Select(cic => cic.Course)
+                            .ToListAsync();
+
+                        courses.AddRange(classCourses);
+                    }
+                }
+
+                var courseDTOs = courses
+                               .Select(u => new CourseDTO
+                               {
+                                   CourseId = u.CourseId,
+                                   CourseName = u.CourseName,
+                                   CourseDescription = u.CourseDescription
+                               }).ToList();
+                return View(courseDTOs);
             }
-            
-            var courseDTOs = courses
-                           .Select(u => new CourseDTO
-                           {
-                               CourseId = u.CourseId,
-                               CourseName = u.CourseName,
-                               CourseDescription = u.CourseDescription
-                           }).ToList();
-            return View(courseDTOs);
+            catch (Exception ex)
+            {
+                return View(ex);
+            }
         }
 
         private List<int> GetClassIdsForUser(int user)

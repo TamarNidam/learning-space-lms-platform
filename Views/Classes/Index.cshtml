@@ -1,7 +1,12 @@
-﻿@model IEnumerable<Learning_Space.Models.Class>
+﻿@model IEnumerable<Learning_Space.DTO.ClassDTO>
 
 @{
     ViewData["Title"] = "Index";
+}
+@using Microsoft.AspNetCore.Http
+@{
+    int? user = Convert.ToInt32(Context.Request.Query["user"]);
+    int? permission = Convert.ToInt32(Context.Request.Query["permission"]);
 }
 
 <h1>Index</h1>
@@ -20,14 +25,14 @@
     </thead>
     <tbody>
 @foreach (var item in Model) {
-        <tr>
+            <tr onclick="location.href='@Url.Action("Details", new { user = @user, permission = @permission, classid = @item.ClassId })';">
+
             <td>
                 @Html.DisplayFor(modelItem => item.ClassName)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.ClassId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ClassId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ClassId">Delete</a>
+                    <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-classid="@item.ClassId">Edit</a>
+                    <a asp-action="Delete" asp-route-user="@user" asp-route-permission="@permission" asp-route-classid="@item.ClassId">Delete</a>
             </td>
         </tr>
 }
