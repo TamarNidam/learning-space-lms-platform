@@ -38,7 +38,10 @@ namespace Learning_Space.Controllers
                 {
                     if (classid.HasValue)
                     {
-                        var sql = $"SELECT Courses.*\r\nFROM Courses\r\nJOIN CourseInClass ON Courses.CourseId = CourseInClass.CourseId\r\nWHERE CourseInClass.ClassId = {classid}";
+                        var sql = $"SELECT Courses.* " +
+                            $"FROM Courses JOIN CourseInClass " +
+                            $"ON Courses.CourseId = CourseInClass.CourseId " +
+                            $"WHERE CourseInClass.ClassId = {classid}";
                         courses = await _context.Courses.FromSqlRaw(sql).ToListAsync();
 
                     }

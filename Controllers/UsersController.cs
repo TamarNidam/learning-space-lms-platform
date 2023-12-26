@@ -29,21 +29,27 @@ namespace Learning_Space.Controllers
 
                 if (classid.HasValue)
                 {
-                    var sql = $"SELECT Users.* FROM Users JOIN StudentInClass WHERE StudentInClass.ClassId = {classid}";
+                    var sql = $"SELECT Users.* " +
+     $"FROM Users JOIN StudentInClass " +
+     $" ON Users.UserId = StudentInClass.UserId " +
+     $"WHERE StudentInClass.ClassId = {classid}";
                     users = await _context.Users.FromSqlRaw(sql).ToListAsync();
+
+                    IEnumerable<User> studentNotInClass =await GetStudentsNotInClassAsync(classid);
+                    ViewBag.StudentNotInClass = new SelectList(studentNotInClass, "UserId", "FirstName");
                 }
-                else if(courseid.HasValue)
+                else if (courseid.HasValue)
                 {
                     var sql = $"SELECT Users.* FROM Users JOIN StudentInClass ON Users.UserId = StudentInClass.UserId JOIN CourseInClass ON StudentInClass.ClassId = CourseInClass.ClassId WHERE CourseInClass.Courseid = {courseid}";
                     users = await _context.Users.FromSqlRaw(sql).ToListAsync();
-                     sql = $"SELECT Users.* FROM Users JOIN Teacher ON Users.UserId = Teacher.UserId WHERE Teacher.CourseId = {courseid}";
+                    sql = $"SELECT Users.* FROM Users JOIN Teacher ON Users.UserId = Teacher.UserId WHERE Teacher.CourseId = {courseid}";
                     var teacher = await _context.Users.FromSqlRaw(sql).ToListAsync();
 
                     users.AddRange(teacher);
                 }
                 else
                 {
-users = await _context.Users.ToListAsync();
+                    users = await _context.Users.ToListAsync();
                 }
 
                 var userDTOs = users
@@ -68,6 +74,32 @@ users = await _context.Users.ToListAsync();
             }
         }
 
+        
+
+        private async Task<IEnumerable<User>> GetStudentsNotInClassAsync(int? classid)
+        {
+           
+            var users =await _context.Users.ToListAsync();
+
+            var studentNotInClass = users.Where(u => u.UserId != 0 && !IsUserInClass(u.UserId, classid.Value));
+
+            return studentNotInClass;
+        }
+
+        private bool IsUserInClass(int userid, int classid)
+        {
+            return (_context.StudentInClasses.Any(u => u.ClassId == classid && u.UserId == userid));
+        }
+
+            [HttpPost]
+        public async Task<IActionResult> AddStudentToClassAsync(int classId, int selectedStudentId)
+        {
+            var maxStudentInClass = await _context.StudentInClasses.MaxAsync(u => (int?)u.StudentInClass1) ?? 0;
+            var newStudentInClass = maxStudentInClass + 1;
+            var sql = $"INSERT INTO StudentInClass (StudentInClass, UserId, ClassId) VALUES ({newStudentInClass}, {selectedStudentId}, {classId}) ";
+await _context.Database.ExecuteSqlRawAsync(sql);
+            return Redirect($"/Users/Index?user=0&permission=0&classid={classId}");
+        }
 
         // GET: Users/Details/5
         public async Task<IActionResult> Details(int? userid)

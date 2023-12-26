@@ -8,10 +8,25 @@
     int? user = Convert.ToInt32(Context.Request.Query["user"]);
     int? permission = Convert.ToInt32(Context.Request.Query["permission"]);
     int? courseid = Convert.ToInt32(Context.Request.Query["courseid"]);
+    int? classid = Convert.ToInt32(Context.Request.Query["classid"]);
 }
  
 <h1>Index</h1>
-@if (permission == 0)
+@if (classid.HasValue && classid.Value != 0)
+{
+    <p>
+        Add Student
+    </p>
+    <form method="post" action="/Users/AddStudentToClass">
+        <div class="form-group">
+            <label for="SelectedStudentId" class="control-label">Select a student: </label>
+            <select id="SelectedStudentId" name="SelectedStudentId" class="form-control" asp-items="ViewBag.StudentNotInClass"></select>
+        </div>
+        <input type="hidden" name="classId" value="@classid.Value" />
+        <button type="submit" class="btn btn-primary">Add</button>
+    </form>
+}
+else if (permission == 0 && courseid.HasValue && courseid.Value != 0)
 {
     <p>
         <a asp-action="Create" asp-route-user="@user"  asp-route-ts="Student">Create New Student</a>
