@@ -1,31 +1,74 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IEnumerable<Learning_Space.DTO.CalendarDTO>
+
 @{
-    public class CalendarView
-    {
-    public void DisplayMonthlyCalendar(MonthlyCalendar calendar)
-    {
-        Console.WriteLine($"Calendar for {calendar.Month}/{calendar.Year}");
+    ViewData["Title"] = "Index";
+}
+@{
+    DateTime currentDate = DateTime.Now;
+    int currentYear = currentDate.Year;
+    int currentMonth = currentDate.Month;
+    int daysInMonth = DateTime.DaysInMonth(currentYear, currentMonth);
+    DateTime firstDayOfMonth = new DateTime(currentYear, currentMonth, 1);
+    int startDayOfWeek = (int)firstDayOfMonth.DayOfWeek;
+    int totalDays = daysInMonth + startDayOfWeek;
+    int rowCount = (int)Math.Ceiling((double)totalDays / 7);
+}
 
-        foreach (var day in calendar.Days)
-        {
-            Console.WriteLine($"Day {day.Day}:");
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
 
-            if (day.Events.Any())
+    th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .event-date {
+        background-color: yellow;
+    }
+
+    .empty-date {
+        background-color: lightgray;
+    }
+</style>
+
+<h1>Calendar - @currentDate.ToString("MMMM yyyy")</h1>
+
+<table>
+    <tr>
+        <th>Sun</th>
+        <th>Mon</th>
+        <th>Tue</th>
+        <th>Wed</th>
+        <th>Thu</th>
+        <th>Fri</th>
+        <th>Sat</th>
+    </tr>
+    @for (int row = 0; row < rowCount; row++)
+    {
+        <tr>
+            @for (int col = 0; col < 7; col++)
             {
-                foreach (var ev in day.Events)
+                int index = (row * 7) + col - startDayOfWeek + 1;
+                if (index > 0 && index <= daysInMonth)
                 {
-                    Console.WriteLine($" - {ev.Title} ({ev.Date.ToShortTimeString()}): {ev.Description}");
+                    DateTime date = new DateTime(currentYear, currentMonth, index);
+                    bool hasEvent = Model != null && Model.Any(e => e.Date.Date == date.Date);
+
+                    <td class="@(hasEvent ? "event-date" : "empty-date")">@index</td>
+                }
+                else
+                {
+                    <td></td>
                 }
             }
-            else
-            {
-                Console.WriteLine(" - No events");
-            }
-
-            Console.WriteLine();
-        }
+        </tr>
     }
-    }       
-}
+</table>
+
+<br />
+
+<a href="/Calendar/AddEvent">Add Event</a>
