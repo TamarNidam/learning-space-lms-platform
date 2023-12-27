@@ -42,8 +42,12 @@ namespace Learning_Space.Controllers
                 {
                     var sql = $"SELECT Users.* FROM Users JOIN StudentInClass ON Users.UserId = StudentInClass.UserId JOIN CourseInClass ON StudentInClass.ClassId = CourseInClass.ClassId WHERE CourseInClass.Courseid = {courseid}";
                     users = await _context.Users.FromSqlRaw(sql).ToListAsync();
-                    sql = $"SELECT Users.* FROM Users JOIN Teacher ON Users.UserId = Teacher.UserId WHERE Teacher.CourseId = {courseid}";
+                    sql = $"SELECT Users.* " +
+                        $"FROM Users JOIN Teachers " +
+                        $"ON Users.UserId = Teachers.UserId " +
+                        $"WHERE Teachers.CourseId = {courseid}";
                     var teacher = await _context.Users.FromSqlRaw(sql).ToListAsync();
+
 
                     users.AddRange(teacher);
                 }
@@ -81,9 +85,14 @@ namespace Learning_Space.Controllers
            
             var users =await _context.Users.ToListAsync();
 
-            var studentNotInClass = users.Where(u => u.UserId != 0 && !IsUserInClass(u.UserId, classid.Value));
+            var studentNotInClass = users.Where(u => u.UserId != 0 && !IsUserInClass(u.UserId, classid.Value) && !IsTeacher(u.UserId));
 
             return studentNotInClass;
+        }
+
+        private bool IsTeacher(int userId)
+        {
+            return (_context.Teachers.Any(u => u.UserId == userId ));
         }
 
         private bool IsUserInClass(int userid, int classid)
@@ -264,12 +273,12 @@ await _context.Database.ExecuteSqlRawAsync(sql);
                     }
                     if (courseid != null)
                     {
-                        return Redirect($"/Users/Details?user={userid}&permission={permission}&courseid={courseid}&userid={userid}");
+                        return Redirect($"/Users/Details?user={user}&permission={permission}&courseid={courseid}&userid={userid}");
 
                     }
                     else
                     {
-                        return Redirect($"/Users/Details?user={userid}&permission={permission}&userid={userid}");
+                        return Redirect($"/Users/Details?user={user}&permission={permission}&userid={userid}");
                     }
 
                 }
@@ -282,10 +291,11 @@ await _context.Database.ExecuteSqlRawAsync(sql);
         }
 
         // GET: Users/Delete/5
-        public async Task<IActionResult> Delete(int userid)
+        public async Task<IActionResult> Delete(int userid, int? classid)
         {
             try
             {
+               
                 if (!UserExists(userid))
                 {
                     return NotFound();
@@ -319,31 +329,39 @@ await _context.Database.ExecuteSqlRawAsync(sql);
         // POST: Users/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int user, int permission, int? courseid, int userid)
+        public async Task<IActionResult> DeleteConfirmed(int user, int permission, int? classid, int userid)
         {
             try
             {
-                var t = await _context.Teachers.FindAsync(userid);
-                if (t != null)
+                if (classid.HasValue)
                 {
-                    _context.Teachers.Remove(t);
-                }
-
-                var u = await _context.Users.FindAsync(userid);
-                if (u != null)
-                {
-                    _context.Users.Remove(u);
-                }
-
-                await _context.SaveChangesAsync();
-                if (courseid != null)
-                {
-                    return Redirect($"/Users/Index?user=0&permission={permission}&courseid={courseid}");
-
+                    var s = await _context.StudentInClasses.FirstOrDefaultAsync(s => s.UserId == userid && s.ClassId == classid);
+                    if (s != null )
+                    {
+                        _context.StudentInClasses.Remove(s);
+                        await _context.SaveChangesAsync();
+                    }
+                    return Redirect($"/Users/Index?user=0&permission=0&classid={classid}");
                 }
                 else
                 {
-                    return Redirect($"/Users/Index?user=0&permission={permission}");
+
+                    var t = await _context.Teachers.FindAsync(userid);
+                    if (t != null)
+                    {
+                        _context.Teachers.Remove(t);
+                    }
+
+                    var u = await _context.Users.FindAsync(userid);
+                    if (u != null)
+                    {
+                        _context.Users.Remove(u);
+                    }
+
+                    await _context.SaveChangesAsync();
+                 
+                        return Redirect($"/Users/Index?user=0&permission=0");
+                    
                 }
             }
             catch (Exception ex)

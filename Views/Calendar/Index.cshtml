@@ -58,7 +58,8 @@
                     DateTime date = new DateTime(currentYear, currentMonth, index);
                     bool hasEvent = Model != null && Model.Any(e => e.Date.Date == date.Date);
 
-                    <td class="@(hasEvent ? "event-date" : "empty-date")">@index</td>
+                    <td class="@(hasEvent ? "event-date" : "")">@index</td>
+                    @* <td class="@(hasEvent ? "event-date" : "empty-date")">@index</td> *@
                 }
                 else
                 {
