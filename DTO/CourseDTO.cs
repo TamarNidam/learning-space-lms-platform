@@ -5,11 +5,11 @@ namespace Learning_Space.DTO
     public class CourseDTO
     {
         public int CourseId { get; set; }
-        [RegularExpression(@"^[a-zA-Z0-9]+$",
+        [RegularExpression(@"^[a-zA-Z0-9\s]+$",
             ErrorMessage = "Invalid characters in the CourseName field.")]
         [Required]
         public string CourseName { get; set; }
-        [RegularExpression(@"^[a-zA-Z0-9]+$",
+        [RegularExpression(@"^[a-zA-Z0-9\s]+$",
             ErrorMessage = "Invalid characters in the CourseDescription field.")]
         [Required]
         public string CourseDescription { get; set; }

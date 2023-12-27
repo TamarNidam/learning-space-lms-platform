@@ -209,15 +209,15 @@ namespace Learning_Space.Controllers
                     //Create folders for course
                     CreateFolder(newCourseId);
 
-                    //// Create notebook text files for each student in the course
-                    //var studentsInClass = _context.StudentInClasses
-                    //    .Where(s => s.ClassId == courseDTO.ClassId)
-                    //    .Select(s => s.UserId)
-                    //    .ToList();
-                    //foreach (int UserId in studentsInClass)
-                    //{
-                    //    CreateNotebookFile(newCourseId, UserId);
-                    //}
+                    // Create notebook text files for each student in the course
+                    var studentsInClass = _context.StudentInClasses
+                        .Where(s => s.ClassId == courseDTO.ClassId)
+                        .Select(s => s.UserId)
+                        .ToList();
+                    foreach (int UserId in studentsInClass)
+                    {
+                        CreateNotebookFile(newCourseId, UserId);
+                    }
 
                     return Redirect($"/Courses/Index?user=0&permission=0");
                 }
@@ -233,24 +233,24 @@ namespace Learning_Space.Controllers
         {
             string baseFolderPath = Path.Combine(".", "TextFiles");
             string courseFolderPath = Path.Combine(baseFolderPath, "Courses", $"{newCourseId}");
-            string courseChatFilePath = Path.Combine(baseFolderPath, "Chats", "Course", $"{newCourseId}"+".txt");
+            string courseChatFilePath = Path.Combine(baseFolderPath, "Chats", "Courses", $"{newCourseId}"+".txt");
             Console.WriteLine(courseFolderPath);
             MyFile.Create(courseChatFilePath).Close();
 
-            //// Create the folder if it doesn't exist
-            //if (!DDirectory.Exists(courseFolderPath))
-            //{
-            //    DDirectory.CreateDirectory(courseChatFilePath);
-           
-            //    DDirectory.CreateDirectory(Path.Combine(courseFolderPath, "MoreStudy"));
-            //   DDirectory.CreateDirectory(Path.Combine(courseFolderPath, "Notebooks"));
-            //    DDirectory.CreateDirectory(Path.Combine(courseFolderPath, "Task"));
-            //    Console.WriteLine("Course folder created successfully!");
-            //}
-            //else
-            //{
-            //    Console.WriteLine("Course folder already exists!");
-            //}
+            // Create the folder if it doesn't exist
+            if (!DDirectory.Exists(courseFolderPath))
+            {
+                DDirectory.CreateDirectory(courseChatFilePath);
+
+                DDirectory.CreateDirectory(Path.Combine(courseFolderPath, "MoreStudy"));
+                DDirectory.CreateDirectory(Path.Combine(courseFolderPath, "Notebooks"));
+                DDirectory.CreateDirectory(Path.Combine(courseFolderPath, "Task"));
+                Console.WriteLine("Course folder created successfully!");
+            }
+            else
+            {
+                Console.WriteLine("Course folder already exists!");
+            }
         }
 
         private void CreateNotebookFile(int courseid, int userid)

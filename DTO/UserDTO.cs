@@ -6,12 +6,12 @@ namespace Learning_Space.DTO
     {
         public int UserId { get; set; }
 
-        [RegularExpression(@"^[a-zA-Z0-9]+$",
+        [RegularExpression(@"^[a-zA-Z0-9\s]+$",
             ErrorMessage = "Invalid characters in the Username field.")]
         [Required]
         public string FirstName { get; set; }
 
-        [RegularExpression(@"^[a-zA-Z]+$",
+        [RegularExpression(@"^[a-zA-Z\s]+$",
         ErrorMessage = "Invalid characters in the name field.")]
         [Required]
         public string LastName { get; set; }
