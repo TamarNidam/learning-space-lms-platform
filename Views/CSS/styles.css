@@ -1,0 +1,51 @@
+﻿body {
+}
+.Admin{
+    background-color: black;
+
+}
+.AdminLiList{
+    background-color: green;
+    width:contain;
+    height:contain;
+}
+.table {
+   
+}
+
+tr {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 10px; /* או כל ערך שתבחר למרווח בין הריבועים */
+    cursor: pointer; /* קובע את הסמל לסוג הקופירי */
+    font-family: 'Nunito', sans-serif;
+    background-color: darkorchid;
+}
+
+td {
+    width: 100px; /* או כל רוחב שתבחר לכל ריבוע */
+    height: 50px; /* או כל גובה שתבחר לכל ריבוע */
+    border: 1px solid black;
+    box-sizing: border-box;
+    text-align: center;
+    line-height: 50px;
+}
+.AdminMenu{
+  
+}
+.Menu{
+
+}
+.nuv-item {
+    background-color: hotpink;
+    border: 1px solid coral;
+    border-radius: 3px;
+    text-align: center;
+    font-family: 'Nunito', sans-serif;
+
+}
+.form-group{
+    background-color:mediumpurple;
+    border:1px solid black;
+    border-radius:5px;
+}
