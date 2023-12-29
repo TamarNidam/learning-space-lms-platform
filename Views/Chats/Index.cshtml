@@ -1,0 +1,66 @@
+﻿@model IEnumerable<Learning_Space.DTO.ChatMessageDTO>
+@{
+    ViewData["Title"] = "Index";
+}
+@using Microsoft.AspNetCore.Http
+@{
+    int? user = Convert.ToInt32(Context.Request.Query["user"]);
+    int? permission = Convert.ToInt32(Context.Request.Query["permission"]);
+    int? courseid = Convert.ToInt32(Context.Request.Query["courseid"]);
+}
+
+<style>
+    /* Style for the chat messages */
+    .chat-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        padding: 10px;
+    }
+
+    .chat-message {
+        display: inline-block;
+        padding: 8px;
+        border-radius: 10px;
+    }
+
+    .current-user {
+        background-color: #DCF8C6;
+        align-self: flex-end;
+    }
+
+    .other-user {
+        background-color: #E0E0E0;
+        align-self: flex-start;
+    }
+</style>
+
+<script>
+    // Scroll to the bottom of the messages div
+    function scrollToBottom() {
+        var messagesDiv = document.getElementById("messagesDiv");
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    // Call the scrollToBottom function after the messages are rendered
+    window.addEventListener('DOMContentLoaded', scrollToBottom);
+</script>
+<div id="messagesDiv" style="height: 400px; overflow-y: scroll;">
+    <div class="chat-container">
+        @foreach (var message in Model)
+    {
+            <div class="chat-message @(message.ISender == 1 ? "current-user" : "other-user")">
+            <strong>@($"{message.SenderFirstName} {message.SenderLastName}:")</strong>
+            <span>@($"{message.SentDateTime:dd-MM-yyyy : HH:mm}:")</span>
+            <p>@message.Body</p>
+        </div>
+    }
+    </div>
+</div>
+
+<div>
+    <form asp-action="SendMessage" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid">
+        <input type="text" name="Body" placeholder="Message" required />
+        <button type="submit">Send</button>
+    </form>
+</div>
