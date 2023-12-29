@@ -1,66 +1,33 @@
-﻿@model IEnumerable<Learning_Space.DTO.CalendarDTO>
-
+﻿@model Learning_Space.DTO.CalendarDTO
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
 @{
-    ViewData["Title"] = "Index";
-}
-@{
-    DateTime currentDate = DateTime.Now;
-    int currentYear = currentDate.Year;
-    int currentMonth = currentDate.Month;
-    int daysInMonth = DateTime.DaysInMonth(currentYear, currentMonth);
-    DateTime firstDayOfMonth = new DateTime(currentYear, currentMonth, 1);
-    int startDayOfWeek = (int)firstDayOfMonth.DayOfWeek;
-    int totalDays = daysInMonth + startDayOfWeek;
-    int rowCount = (int)Math.Ceiling((double)totalDays / 7);
-}
-
-<style>
-    table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    th, td {
-        padding: 8px;
-        text-align: left;
-        border-bottom: 1px solid #ddd;
-    }
-
-    .event-date {
-        background-color: yellow;
-    }
-
-    .empty-date {
-        background-color: lightgray;
-    }
-</style>
-
-<h1>Calendar - @currentDate.ToString("MMMM yyyy")</h1>
-
-<table>
-    <tr>
-        <th>Sun</th>
-        <th>Mon</th>
-        <th>Tue</th>
-        <th>Wed</th>
-        <th>Thu</th>
-        <th>Fri</th>
-        <th>Sat</th>
-    </tr>
-    @for (int row = 0; row < rowCount; row++)
+    public class CalendarView
     {
-        <tr>
-            @for (int col = 0; col < 7; col++)
-            {
-                int index = (row * 7) + col - startDayOfWeek + 1;
-                if (index > 0 && index <= daysInMonth)
-                {
-                    DateTime date = new DateTime(currentYear, currentMonth, index);
-                    bool hasEvent = Model != null && Model.Any(e => e.Date.Date == date.Date);
+    public void DisplayMonthlyCalendar( calendar)
+    {
+        Console.WriteLine($"Calendar for {calendar.Month}/{calendar.Year}");
 
-                    <td class="@(hasEvent ? "event-date" : "")">@index</td>
-                    @* <td class="@(hasEvent ? "event-date" : "empty-date")">@index</td> *@
+        foreach (var day in calendar.Days)
+        {
+            Console.WriteLine($"Day {day.Day}:");
+
+            if (day.Events.Any())
+            {
+                foreach (var ev in day.Events)
+                {
+                    Console.WriteLine($" - {ev.Title} ({ev.Date.ToShortTimeString()}): {ev.Description}");
                 }
+            }
+            else
+            {
+                Console.WriteLine(" - No events");
+            }
+
+            <td class="@(hasEvent ? "event-date" : "")">@index</td>
+            @* <td class="@(hasEvent ? "event-date" : "empty-date")">@index</td> *@
+        }
                 else
                 {
                     <td></td>
