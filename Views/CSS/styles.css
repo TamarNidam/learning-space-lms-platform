@@ -1,4 +1,9 @@
 ﻿body {
+    background-image: url('../../media/background.png'); /* שינוי לנתיב המתאים לתמונת הרקע שלך */
+    background-repeat: repeat; /* תמונת רקע מתאימה תתאים לרוב המסכים */
+    background-color: #f1f1f1; /* צבע רקע כתיבת הטקסט, אם התמונה לא נטענת */
+    font-family: Arial, sans-serif; /* דוגמא לסוג גופן כללי */
+}
 }
 .Admin{
     background-color: black;
@@ -10,7 +15,8 @@
     height:contain;
 }
 .table {
-   
+   opacity: 50%;
+   background-color:cornsilk;
 }
 
 tr {
