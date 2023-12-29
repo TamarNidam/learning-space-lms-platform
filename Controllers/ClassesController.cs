@@ -75,31 +75,48 @@ namespace Learning_Space.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ClassId,ClassName")] Class @class)
+        public async Task<IActionResult> Create([Bind("ClassId,ClassName")] ClassDTO @classDTO)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(@class);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+               var u = await _context.Classes
+                   .FromSqlRaw("SELECT TOP 1 * FROM Classes WHERE ClassName = {0}", @classDTO.ClassName)
+                   .FirstOrDefaultAsync();
+                if (u != null)
+                {
+                    ViewBag.ErrorMessage = "An existing name";
+                    return View(@classDTO);
+                }
+
+                var maxClassId = await _context.Classes.MaxAsync(u => (int?)u.ClassId) ?? 0;
+                var newClassId = maxClassId + 1;
+                var sql = $"INSERT INTO [Classes] (ClassId,ClassName) VALUES ({newClassId}, '{@classDTO.ClassName}')";
+                await _context.Database.ExecuteSqlRawAsync(sql);
             }
-            return View(@class);
+            return View(@classDTO);
         }
 
         // GET: Classes/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? classid)
         {
-            if (id == null)
+                       if (classid == null)
             {
                 return NotFound();
             }
 
-            var @class = await _context.Classes.FindAsync(id);
+            var @class = await _context.Classes.FindAsync(classid);
             if (@class == null)
             {
                 return NotFound();
             }
-            return View(@class);
+
+            var classDTO = new ClassDTO
+            {
+                ClassId = @class.ClassId,
+                ClassName = @class.ClassName
+            };
+
+            return View(classDTO);
         }
 
         // POST: Classes/Edit/5
@@ -107,9 +124,9 @@ namespace Learning_Space.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ClassId,ClassName")] Class @class)
+        public async Task<IActionResult> Edit(int user, int permission, int classid, [Bind("ClassId,ClassName")] ClassDTO @classDTO)
         {
-            if (id != @class.ClassId)
+            if (classid != @classDTO.ClassId)
             {
                 return NotFound();
             }
@@ -118,12 +135,12 @@ namespace Learning_Space.Controllers
             {
                 try
                 {
-                    _context.Update(@class);
-                    await _context.SaveChangesAsync();
+                    var sql = $"UPDATE [Classes] SET ClassName = '{@classDTO.ClassName}' WHERE ClassId = {@classDTO.ClassId}";
+                    await _context.Database.ExecuteSqlRawAsync(sql);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ClassExists(@class.ClassId))
+                    if (!ClassExists(@classDTO.ClassId))
                     {
                         return NotFound();
                     }
@@ -132,42 +149,62 @@ namespace Learning_Space.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return Redirect($"/Classes/Details?user={user}&permission={permission}&classid={classid}");
             }
-            return View(@class);
+            return View(@classDTO);
         }
 
         // GET: Classes/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int classid)
         {
-            if (id == null)
+
+            try
             {
-                return NotFound();
+
+                if (classid == null)
+                {
+                    return NotFound();
+                }
+
+                var @class = await _context.Classes
+                    .FirstOrDefaultAsync(m => m.ClassId == classid);
+                if (@class == null)
+                {
+                    return NotFound();
+                }
+
+                var classDTO = new ClassDTO
+                {
+                    ClassId = @class.ClassId,
+                    ClassName = @class.ClassName,
+                    Students = _context.StudentInClasses.Count(s => s.ClassId == classid)
+                };
+                return View(classDTO);
+            }
+            catch (Exception ex)
+            {
+                return View("Error", ex);
             }
 
-            var @class = await _context.Classes
-                .FirstOrDefaultAsync(m => m.ClassId == id);
-            if (@class == null)
-            {
-                return NotFound();
-            }
-
-            return View(@class);
         }
 
         // POST: Classes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int user, int permission, int classid)
         {
-            var @class = await _context.Classes.FindAsync(id);
+            var @class = await _context.Classes.FindAsync(classid);
+
             if (@class != null)
             {
+                var classes = await _context.StudentInClasses.Where(c => c.ClassId == classid).ToListAsync();
+                _context.StudentInClasses.RemoveRange(classes);
+                await _context.SaveChangesAsync();
                 _context.Classes.Remove(@class);
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return Redirect($"/Classes/Index?user=0&permission=0");
         }
 
         private bool ClassExists(int id)
