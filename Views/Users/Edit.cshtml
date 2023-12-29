@@ -3,6 +3,13 @@
 @{
     ViewData["Title"] = "Edit";
 }
+@using Microsoft.AspNetCore.Http
+@{
+    int user = Convert.ToInt32(Context.Request.Query["user"]);
+    int permission = Convert.ToInt32(Context.Request.Query["permission"]);
+    int? courseid = Convert.ToInt32(Context.Request.Query["courseid"]);
+    int userid = Convert.ToInt32(Context.Request.Query["userid"]);
+}
 
 <h1>Edit</h1>
 
@@ -10,7 +17,11 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" >
+            @if (courseid.HasValue)
+            {
+                <input type="hidden" name="courseid" value="@courseid" />
+            }
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="UserId" />
             <div class="form-group">

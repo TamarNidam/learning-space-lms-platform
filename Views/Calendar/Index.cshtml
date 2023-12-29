@@ -25,8 +25,18 @@
                 Console.WriteLine(" - No events");
             }
 
-            Console.WriteLine();
-        }
+                    <td class="@(hasEvent ? "event-date" : "")">@index</td>
+                    @* <td class="@(hasEvent ? "event-date" : "empty-date")">@index</td> *@
+                }
+                else
+                {
+                    <td></td>
+                }
+            }
+        </tr>
     }
-    }       
-}
+</table>
+
+<br />
+
+<a href="/Calendar/AddEvent">Add Event</a>
