@@ -12,14 +12,21 @@
 <style>
     /* Style for the chat messages */
     .chat-container {
+        width: 80%;
         display: flex;
         flex-direction: column;
-        gap: 20px;
+        gap: 10px;
         padding: 10px;
+        /* Set the background image */
+        background-image: url('https://png.pngtree.com/png-vector/20230531/ourmid/pngtree-black-and-white-cartoon-girl-coloring-page-vector-png-image_6773030.png');
+          background-size: cover; 
+         background-position: center; 
+       
     }
-
+  
     .chat-message {
-        display: inline-block;
+        /* display: inline-block; */
+        word-break: break-all;
         padding: 8px;
         border-radius: 10px;
     }
@@ -33,34 +40,89 @@
         background-color: #E0E0E0;
         align-self: flex-start;
     }
+
+    .message-details {
+        font-size: smaller;
+        color: #999999;
+        margin-top: -10px;
+    }
+
+        .message-details span {
+            margin-right: 10px;
+        }
+
+        .message-details strong {
+            font-weight: normal;
+            margin-right: 5px;
+        }
+
+    #chat-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 650px;
+        overflow-y: auto;
+        
+    }
+
+ 
+
+    #chat-input {
+        width: 150%;
+        align-items: center;
+    }
+
+    /* .delete-icon {
+        font-size: 16px;
+        visibility: hidden;
+    }
+
+        .delete-icon:hover {
+            
+            visibility: visible;
+        } */
+
 </style>
 
 <script>
     // Scroll to the bottom of the messages div
     function scrollToBottom() {
-        var messagesDiv = document.getElementById("messagesDiv");
+        var messagesDiv = document.getElementById("chat-wrapper");
         messagesDiv.scrollTop = messagesDiv.scrollHeight;
     }
 
     // Call the scrollToBottom function after the messages are rendered
     window.addEventListener('DOMContentLoaded', scrollToBottom);
 </script>
-<div id="messagesDiv" style="height: 400px; overflow-y: scroll;">
+<div id="chat-wrapper" style="height: 400px; overflow-y: scroll;">
     <div class="chat-container">
         @foreach (var message in Model)
     {
             <div class="chat-message @(message.ISender == 1 ? "current-user" : "other-user")">
-            <strong>@($"{message.SenderFirstName} {message.SenderLastName}:")</strong>
-            <span>@($"{message.SentDateTime:dd-MM-yyyy : HH:mm}:")</span>
-            <p>@message.Body</p>
-        </div>
-    }
-    </div>
-</div>
+            <strong>@($"{message.SenderFirstName} {message.SenderLastName}")</strong>
 
-<div>
+                <p>@message.Body</p> 
+                <div class="message-details">
+                    <span>@($"{message.SentDateTime:dd-MM-yyyy  HH:mm}")</span>
+                    @if (message.ISender == 1 || user == 0 || permission == 2)
+                    {
+                        <form asp-action="DeleteMessage" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid">
+                            <input type="hidden" name="message" value="@message" /> 
+                            <button type="submit">&#128465;</button>
+                        </form>
+                    }
+                </div>
+        </div>
+
+        }
+        
+        </div>
+</div>
+<div class="chat-input">
     <form asp-action="SendMessage" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid">
-        <input type="text" name="Body" placeholder="Message" required />
+        <input size="80 em" type="text" name="Body" placeholder="Message" required />
         <button type="submit">Send</button>
     </form>
 </div>
+

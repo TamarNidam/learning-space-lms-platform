@@ -31,8 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="TextFiles\Courses\2\MoreStudy\" />
-    <Folder Include="TextFiles\Courses\2\Tasks\1\Submissions\" />
+    <Folder Include="TextFiles\Tasks\1\Submissions\" />
     <Folder Include="Views\media\" />
   </ItemGroup>
 

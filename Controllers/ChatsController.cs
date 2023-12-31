@@ -47,10 +47,35 @@ namespace Learning_Space.Controllers
         }
 
         [HttpPost]
+        public async Task<ActionResult> DeleteMessage(int user, int permission, int courseid, ChatMessageDTO message)
+        {
+            // Implement the logic to delete the message from the chat text file based on the provided parameters
+            string filePath = Path.Combine(".", "TextFiles", "Chats", "Courses", $"{courseid}" + ".txt");
+
+            // Read all lines from the file
+            string[] lines = await MyFile.ReadAllLinesAsync(filePath);
+
+            // Find the line that matches the provided message details
+            string messageString = $"{message.SenderFirstName},{message.SenderLastName},{message.SentDateTime},{message.Body}";
+            string lineToRemove = lines.FirstOrDefault(line => line == messageString);
+
+            // Remove the line from the lines array
+            if (lineToRemove != null)
+            {
+                lines = lines.Where(line => line != lineToRemove).ToArray();
+                // Write the updated lines back to the file
+                await MyFile.WriteAllLinesAsync(filePath, lines);
+        }
+
+            return Redirect($"/Chats/Index?user={user}&permission={permission}&courseid={courseid}");
+
+        }
+
+        [HttpPost]
         public async Task<ActionResult> SendMessage(int user, int permission, int courseid, ChatMessageDTO message)
         {
             // Set the date and time the message was sent
-            message.SentDateTime = DateTime.Now;
+            message.SentDateTime = DateTime.Now ;
 
             string filePath = Path.Combine(".", "TextFiles", "Chats", "Courses", $"{courseid}" + ".txt");
             var useri = await _context.Users.FirstOrDefaultAsync(m => m.UserId == user);

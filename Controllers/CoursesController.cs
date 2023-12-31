@@ -13,8 +13,10 @@ using System.IO;
 using System.Text;
 using MyFile = System.IO.File;
 using DDirectory = System.IO.Directory;
+using MyTask = System.Threading.Tasks.Task;
 using System.Security.AccessControl;
 using NuGet.DependencyResolver;
+using Microsoft.Data.SqlClient;
 
 
 namespace Learning_Space.Controllers
@@ -22,6 +24,7 @@ namespace Learning_Space.Controllers
     public class CoursesController : Controller
     {
         private readonly LearningSpaceContext _context;
+        private readonly string baseFolderPath = Path.Combine(".", "TextFiles");
 
         public CoursesController(LearningSpaceContext context)
         {
@@ -206,9 +209,13 @@ namespace Learning_Space.Controllers
                         $"VALUES ({newCourseInClassId},{courseDTO.ClassId},{newCourseId})";
                     await _context.Database.ExecuteSqlRawAsync(sql);
 
-                    //Create folders for course
-                    CreateFolder(newCourseId);
+                    //Create chat file
+                    string courseChatFilePath = Path.Combine(baseFolderPath, "Chats", "Courses", $"{newCourseId}" + ".txt");
+                    MyFile.Create(courseChatFilePath).Close();
 
+                    ////Create folders for course
+                    //CreateFolder(newCourseId);
+                    string courseUserNotbookFilePath;
                     // Create notebook text files for each student in the course
                     var studentsInClass = _context.StudentInClasses
                         .Where(s => s.ClassId == courseDTO.ClassId)
@@ -216,32 +223,37 @@ namespace Learning_Space.Controllers
                         .ToList();
                     foreach (int UserId in studentsInClass)
                     {
-                        CreateNotebookFile(newCourseId, UserId);
+                        // CreateNotebookFile(newCourseId, UserId);
+                        courseUserNotbookFilePath= Path.Combine(baseFolderPath, "Notebooks", $"courseid_{newCourseId}__userid_" +  UserId.ToString() + ".txt");
+                        MyFile.Create(courseUserNotbookFilePath).Close();
                     }
 
                     return Redirect($"/Courses/Index?user=0&permission=0");
                 }
                 return View(courseDTO);
             }
-            catch (Exception ex)
+            catch (SqlException ex)
             {
-                return View("Error", ex);
+                ErrorViewModel errorModel = new ErrorViewModel
+                {
+                    ErrorMessage = ex.Message,
+                    // Populate any other necessary properties of ErrorViewModel
+                };
+
+                return View("Error", errorModel);
             }
         }
 
-        private void CreateFolder(int newCourseId)
+        private async MyTask CreateFolder(int newCourseId)
         {
-            string baseFolderPath = Path.Combine(".", "TextFiles");
+           
             string courseFolderPath = Path.Combine(baseFolderPath, "Courses", $"{newCourseId}");
-            string courseChatFilePath = Path.Combine(baseFolderPath, "Chats", "Courses", $"{newCourseId}"+".txt");
-            Console.WriteLine(courseFolderPath);
-            MyFile.Create(courseChatFilePath).Close();
+            
 
             // Create the folder if it doesn't exist
             if (!DDirectory.Exists(courseFolderPath))
             {
-                DDirectory.CreateDirectory(courseChatFilePath);
-
+                 
                 DDirectory.CreateDirectory(Path.Combine(courseFolderPath, "MoreStudy"));
                 DDirectory.CreateDirectory(Path.Combine(courseFolderPath, "Notebooks"));
                 DDirectory.CreateDirectory(Path.Combine(courseFolderPath, "Task"));
@@ -255,8 +267,6 @@ namespace Learning_Space.Controllers
 
         private void CreateNotebookFile(int courseid, int userid)
         {
-
-            string baseFolderPath = Path.Combine("..", "TextFiles");
             string courseFolderPath = Path.Combine(baseFolderPath, "Courses", courseid.ToString());
             string noteFolderPath = Path.Combine(courseFolderPath, "Notebooks");
             string notebookFilePath = Path.Combine(noteFolderPath, userid.ToString() + ".txt");
