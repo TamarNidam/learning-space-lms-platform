@@ -38,7 +38,7 @@ else if (permission == 0 && courseid.HasValue && courseid.Value != 0)
     <thead>
         <tr>
             <th>
-                @* @Html.DisplayNameFor(model => model.FirstName) *@
+             
                 <p>Name</p>
             </th>
             <th>
@@ -90,15 +90,15 @@ else if (permission == 0 && courseid.HasValue && courseid.Value != 0)
                         <p></p>
                         if (courseid.Value != 0)
                         {
-                            <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-userid="@item.UserId">Edit</a>
+                            <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-userid="@item.UserId">&#9998;</a>
                         }
                         else if(classid.Value != 0)
                         {
-                            <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-classid="@classid" asp-route-userid="@item.UserId">Edit</a>
+                            <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-classid="@classid" asp-route-userid="@item.UserId">&#9998;</a>
                         }
                         else{
 
-                            <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-userid="@item.UserId">Edit</a>
+                            <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-userid="@item.UserId">&#9998;</a>
 
                         }
 

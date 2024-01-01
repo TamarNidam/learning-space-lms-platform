@@ -122,7 +122,8 @@
 <div class="chat-input">
     <form asp-action="SendMessage" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid">
         <input size="80 em" type="text" name="Body" placeholder="Message" required />
-        <button type="submit">Send</button>
+        @* <button type="submit">Send</button> *@
+        
     </form>
 </div>
 
