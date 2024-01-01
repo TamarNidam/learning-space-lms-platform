@@ -24,8 +24,8 @@
                 @Html.DisplayFor(modelItem => item.ClassName)
             </td>
             <td>
-                    <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-classid="@item.ClassId">&#9998;</a>
-                    <a asp-action="Delete" asp-route-user="@user" asp-route-permission="@permission" asp-route-classid="@item.ClassId">Delete</a>
+                    <a class="icon" asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-classid="@item.ClassId">&#9998;</a>
+                    <a class="icon" asp-action="Delete" asp-route-user="@user" asp-route-permission="@permission" asp-route-classid="@item.ClassId">Delete</a>
             </td>
         </tr>
 }

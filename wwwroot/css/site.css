@@ -23,6 +23,7 @@ body {
     background-color: #f1f1f1; /* צבע רקע כתיבת הטקסט, אם התמונה לא נטענת */
     font-family: Arial, sans-serif; /* דוגמא לסוג גופן כללי */
     margin-bottom: 10px;
+    align-content:center;
 }
 
 .Admin {
@@ -37,18 +38,24 @@ body {
 
 .table {
     opacity: 50%;
-    background-color: gray;
+    background-color: whitesmoke;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+    border-radius:7px;
+    padding: 60px;
 }
 
 tr {
-    width: 60px; /* או כל רוחב שתבחר לכל ריבוע */
-    height: 60px;
+    width: 100px; /* או כל רוחב שתבחר לכל ריבוע */
+    height: 100px;
     display: flex;
+    flex-flow: row wrap;
     justify-content: space-around;
     margin-bottom: 10px; /* או כל ערך שתבחר למרווח בין הריבועים */
     cursor: pointer; /* קובע את הסמל לסוג הקופירי */
     font-family: 'Nunito', sans-serif;
-    background-color: darkorchid;
+    background-color: plum
 }
 
 td {
@@ -60,7 +67,10 @@ td {
     line-height: 50px;
     color:black;
     border-radius: 3px;
-    background-color:plum;
+    background-color:whitesmoke;
+}
+tr:hover{
+    background-color:grey;
 }
 
 .AdminMenu {
