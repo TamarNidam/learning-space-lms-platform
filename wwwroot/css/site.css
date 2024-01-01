@@ -41,6 +41,8 @@ body {
 }
 
 tr {
+    width: 60px; /* או כל רוחב שתבחר לכל ריבוע */
+    height: 60px;
     display: flex;
     justify-content: space-around;
     margin-bottom: 10px; /* או כל ערך שתבחר למרווח בין הריבועים */
@@ -50,14 +52,14 @@ tr {
 }
 
 td {
-    width: 50px; /* או כל רוחב שתבחר לכל ריבוע */
-    height: 50px; /* או כל גובה שתבחר לכל ריבוע */
+    width: 30px; /* או כל רוחב שתבחר לכל ריבוע */
+    height: 8px; /* או כל גובה שתבחר לכל ריבוע */
     border: 1px solid black;
     box-sizing: border-box;
     text-align: center;
     line-height: 50px;
     color:black;
-    border-radius: 10px;
+    border-radius: 3px;
     background-color:plum;
 }
 
