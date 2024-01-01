@@ -10,8 +10,8 @@
     int? courseid = Convert.ToInt32(Context.Request.Query["courseid"]);
     int userid = Convert.ToInt32(Context.Request.Query["userid"]);
 }
-<link rel="stylesheet" type="text/css" href="./css/styles.css">
-<h4>@Html.DisplayNameFor(model => model.FirstName)</h4>
+
+<h4>@Html.DisplayFor(model => model.FirstName)</h4>
 <h3>Details</h3>
 
 <div>

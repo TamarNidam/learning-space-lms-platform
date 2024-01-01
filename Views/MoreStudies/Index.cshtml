@@ -39,7 +39,7 @@
             <td>
                 @if(permission == 2 || permission == 0)
                 {
-                    <a asp-action="Edit" asp-route-id="@item.MoreId">&#9999; </a>
+                    <a asp-action="Edit" asp-route-moreid="@item.MoreId">&#9999; </a>
                       <form asp-action="Delete">
                         <input type="hidden" asp-for="@item.MoreId" />
                         <input type="submit" value="&#9746;" class="btn btn-danger" />

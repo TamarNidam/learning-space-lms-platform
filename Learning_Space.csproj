@@ -32,7 +32,6 @@
 
   <ItemGroup>
     <Folder Include="TextFiles\Tasks\1\Submissions\" />
-    <Folder Include="Views\media\" />
   </ItemGroup>
 
   <ItemGroup>

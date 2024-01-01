@@ -129,44 +129,27 @@ namespace Learning_Space.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return Redirect($"/Classes/Details?user=");
             }
             ViewData["CourseId"] = new SelectList(_context.Courses, "CourseId", "CourseName", moreStudy.CourseId);
             return View(moreStudy);
         }
 
-        // GET: MoreStudies/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var moreStudy = await _context.MoreStudies
-                .Include(m => m.Course)
-                .FirstOrDefaultAsync(m => m.MoreId == id);
-            if (moreStudy == null)
-            {
-                return NotFound();
-            }
-
-            return View(moreStudy);
-        }
+       
 
         // POST: MoreStudies/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int user, int permission, int courseid, int moreid)
         {
-            var moreStudy = await _context.MoreStudies.FindAsync(id);
+            var moreStudy = await _context.MoreStudies.FindAsync(moreid);
             if (moreStudy != null)
             {
                 _context.MoreStudies.Remove(moreStudy);
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return Redirect($"/Classes/Details?user={user}&permission={permission}&classid={courseid}");
         }
 
         private bool MoreStudyExists(int id)
