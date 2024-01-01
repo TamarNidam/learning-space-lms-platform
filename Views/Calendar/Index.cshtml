@@ -12,6 +12,9 @@
     int startDayOfWeek = (int)firstDayOfMonth.DayOfWeek;
     int totalDays = daysInMonth + startDayOfWeek;
     int rowCount = (int)Math.Ceiling((double)totalDays / 7);
+
+    DateTime previousMonth = currentDate.AddMonths(-1);
+    DateTime nextMonth = currentDate.AddMonths(1);
 }
 
 <style>
@@ -35,7 +38,11 @@
     }
 </style>
 
-<h1>Calendar - @currentDate.ToString("MMMM yyyy")</h1>
+<h1>
+    <a href="/Calendar/Index?currentDate=@previousMonth.ToString("yyyy-MM")">&lt;</a>
+    Calendar - @currentDate.ToString("MMMM yyyy")
+    <a href="/Calendar/Index?currentDate=@nextMonth.ToString("yyyy-MM")">&gt;</a>
+</h1>
 
 <table>
     <tr>

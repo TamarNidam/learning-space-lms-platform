@@ -5,6 +5,7 @@
     using System;
     using System.Globalization;
 using System.Collections.Generic;
+using System.Linq;
 
 
 namespace Learning_Space.Controllers
@@ -26,11 +27,56 @@ namespace Learning_Space.Controllers
         }
 
         // GET: Classes
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(DateTime? currentDate)
         {
-            
-            return View(events);
+            if (currentDate.HasValue)
+            {
+                ViewData["Title"] = "Index - " + currentDate.Value.ToString("MMMM yyyy");
+            }
+            else
+            {
+                ViewData["Title"] = "Index";
+                currentDate = DateTime.Now;
+            }
+
+            //        // Get today's date
+            //        DateOnly currentDatee = DateOnly.FromDateTime(DateTime.Today);
+
+            //        // Create a new list to store the convenient events
+
+            //        List<Models.Task> filteredTasks = _context.Tasks
+            //.Where(task => task.StartDate <= currentDatee && task.EndDate >= currentDatee)
+            //.ToList();
+
+
+            //        return View(filteredTasks);
+
+
+            // Your logic to fetch or generate CalendarDTO data
+            IEnumerable<CalendarDTO> calendarData = GetCalendarData(currentDate.Value.Year, currentDate.Value.Month);
+
+            return View(calendarData);
         }
+
+
+        private IEnumerable<CalendarDTO> GetCalendarData(int year, int month)
+        {
+            // Your logic to fetch or generate CalendarDTO data
+            // For example:
+            DateTime firstDayOfMonth = new DateTime(year, month, 1);
+            int startDayOfWeek = (int)firstDayOfMonth.DayOfWeek;
+            int daysInMonth = DateTime.DaysInMonth(year, month);
+            int totalDays = daysInMonth + startDayOfWeek;
+            int rowCount = (int)Math.Ceiling((double)totalDays / 7);
+
+            List<CalendarDTO> calendarData = new List<CalendarDTO>();
+
+            // Populate calendarData with events or data for the specified month
+
+            return calendarData;
+        }
+
+
         //private List<DTO.EventDTO> _events;
 
         //public CalendarController()

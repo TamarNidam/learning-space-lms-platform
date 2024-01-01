@@ -35,4 +35,11 @@
     <Folder Include="Views\media\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\media\background.png" />
+    <None Include="wwwroot\media\home-page.png" />
+    <None Include="wwwroot\media\home.png" />
+    <None Include="wwwroot\media\homeIcon.png" />
+  </ItemGroup>
+
 </Project>

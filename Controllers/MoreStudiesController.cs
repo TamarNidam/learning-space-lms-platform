@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Learning_Space.Models;
+using Learning_Space.DTO;
 
 namespace Learning_Space.Controllers
 {
@@ -19,10 +20,23 @@ namespace Learning_Space.Controllers
         }
 
         // GET: MoreStudies
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? courseid)
         {
-            var learningSpaceContext = _context.MoreStudies.Include(m => m.Course);
-            return View(await learningSpaceContext.ToListAsync());
+            if (!courseid.HasValue)
+            {
+                return NotFound();
+            }
+               var moreStudies = await _context.MoreStudies
+                .Where(m => m.CourseId == courseid)
+                .Select(u => new MoreStudyDTO
+                           {
+                              MoreId = u.MoreId,
+                               CourseId = u.CourseId,
+                               MoreStudySubject= u.MoreStudySubject,
+                               Content = u.Content,
+                               MoreStudyUrl = u.MoreStudyUrl
+                           }).ToListAsync();
+            return View(moreStudies);
         }
 
         // GET: MoreStudies/Details/5
