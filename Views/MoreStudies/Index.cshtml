@@ -14,7 +14,7 @@
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid">Create New</a>
 </p>
 <table class="table">
     <thead>
@@ -33,7 +33,7 @@
                 <td>
                     
                 @Html.DisplayFor(modelItem => item.MoreStudySubject)
-                            </td>
+                </td>
           </a> 
 
             <td>

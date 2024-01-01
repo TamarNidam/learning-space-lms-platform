@@ -61,24 +61,22 @@ namespace Learning_Space.Controllers
         // GET: MoreStudies/Create
         public IActionResult Create()
         {
-            ViewData["CourseId"] = new SelectList(_context.Courses, "CourseId", "CourseName");
             return View();
         }
 
         // POST: MoreStudies/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MoreId,CourseId,MoreStudySubject,Content,MoreStudyUrl")] MoreStudy moreStudy)
+        public async Task<IActionResult> Create(int user, int permission, int courseid, [Bind("MoreId,CourseId,MoreStudySubject,Content,MoreStudyUrl")] MoreStudyDTO moreStudy)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(moreStudy);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var maxId = await _context.MoreStudies.MaxAsync(u => (int?)u.MoreId) ?? 0;
+                var newId = maxId + 1;
+                var sql = $"INSERT INTO [MoreStudies] (MoreId,CourseId,MoreStudySubject,Content,MoreStudyUrl) VALUES ({newId}, {courseid},'{moreStudy.MoreStudySubject}', '{moreStudy.Content}', '{moreStudy.MoreStudyUrl}')";
+                await _context.Database.ExecuteSqlRawAsync(sql);
+                return Redirect($"/MoreStudies/Index?user={user}&permission={permission}&courseid={courseid}");
             }
-            ViewData["CourseId"] = new SelectList(_context.Courses, "CourseId", "CourseName", moreStudy.CourseId);
             return View(moreStudy);
         }
 
@@ -149,7 +147,7 @@ namespace Learning_Space.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return Redirect($"/Classes/Details?user={user}&permission={permission}&classid={courseid}");
+            return Redirect($"/MoreStudies/Index?user={user}&permission={permission}&courseid={courseid}");
         }
 
         private bool MoreStudyExists(int id)
