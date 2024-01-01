@@ -10,7 +10,7 @@
     int? courseid = Convert.ToInt32(Context.Request.Query["courseid"]);
     int? classid = Convert.ToInt32(Context.Request.Query["classid"]);
 }
-<link rel="stylesheet" type="text/css" href="./css/styles.css">
+
 <h1>Index</h1>
 @if (classid.HasValue && classid.Value != 0)
 {

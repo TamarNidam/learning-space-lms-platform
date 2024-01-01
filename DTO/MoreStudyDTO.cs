@@ -14,7 +14,7 @@ namespace Learning_Space.DTO
         [Required]
         public string Content { get; set; }
 
-        public string MoreStudyUrl { get; set; }
+        public string? MoreStudyUrl { get; set; }
 
        // public string CourseName { get; set; }
     }
