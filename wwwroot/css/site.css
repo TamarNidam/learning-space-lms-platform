@@ -23,8 +23,8 @@ body {
     background-color: #f1f1f1; /* צבע רקע כתיבת הטקסט, אם התמונה לא נטענת */
     font-family: Arial, sans-serif; /* דוגמא לסוג גופן כללי */
     margin-bottom: 10px;
-    display: flex;
-    align-content:center;
+    display: block;
+   
     align-items:center;
 }
 
@@ -42,24 +42,28 @@ body {
     opacity: 50%;
     background-color: whitesmoke;
     display: flex;
-    flex-direction:row;
+    flex-wrap: wrap;
+    /*flex-direction:row;
     align-items: flex-start;
-    
-    justify-content: center;
-    border-radius:7px;
+    justify-content: center;*/
+    border-radius: 7px;
     padding: 60px;
 }
 
 tr {
     width: 200px; /* או כל רוחב שתבחר לכל ריבוע */
     height: 200px;
-    display: flex;
+    /*display: flex;
     flex-flow: row wrap;
     justify-content: space-around;
     margin-bottom: 10px; /* או כל ערך שתבחר למרווח בין הריבועים */
-    cursor: pointer; /* קובע את הסמל לסוג הקופירי */
+    /*cursor: pointer; */ /* קובע את הסמל לסוג הקופירי */
     font-family: 'Nunito', sans-serif;
-    background-color: plum
+    background-color: plum;
+    flex: 1;
+    min-width: 0; /* נדרש כאשר משתמשים ב-flex: 1; ב-flexbox */
+    margin: 5px; /* יוסיף רווח בין ה-td */
+    border: 1px solid black;
 }
 
 td {
@@ -71,7 +75,8 @@ td {
     background-color:whitesmoke;
 }
 tr:hover {
-    background-color:whitesmoke;
+    background-color: whitesmoke;
+    border: 1px solid grey;
 }
 tr:hover > td{
     border: 1px solid grey;
@@ -92,9 +97,9 @@ tr:hover > td{
 }
 
 .form-group {
-    background-color: plum;
+    background-color: rgb(172, 50, 169);
     border: 0.5px solid black;
     color: gray;
-    border-radius: 5px;
-    padding: 5px;
+    border-radius: 7px;
+    margin: 10px;
 }
