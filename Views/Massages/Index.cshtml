@@ -1,13 +1,19 @@
-﻿@model IEnumerable<Learning_Space.Models.Massage>
+﻿@model IEnumerable<Learning_Space.DTO.MassageDTO>
 
 @{
     ViewData["Title"] = "Index";
 }
-<link rel="stylesheet" type="text/css" href="./css/styles.css">
+@using Microsoft.AspNetCore.Http
+@{
+    int? user = Convert.ToInt32(Context.Request.Query["user"]);
+    int? permission = Convert.ToInt32(Context.Request.Query["permission"]);
+    int? courseid = Convert.ToInt32(Context.Request.Query["courseid"]);
+}
+
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid">&#x002B; Create New</a>
 </p>
 <table class="table">
     <thead>
@@ -15,38 +21,28 @@
             <th>
                 @Html.DisplayNameFor(model => model.MassageSubject)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MassageDateTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Content)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Course)
-            </th>
+           
             <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
+                <td onclick="location.href='@Url.Action("Details", new { user = @user, permission = @permission, courseid = @courseid, messageid = @item.MessageId })';">
                 @Html.DisplayFor(modelItem => item.MassageSubject)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.MassageDateTime)
             </td>
+
             <td>
-                @Html.DisplayFor(modelItem => item.Content)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Course.CourseName)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.MessageId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.MessageId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.MessageId">Delete</a>
-            </td>
+                    @if (permission == 1 || permission == 0)
+                    {
+                        <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-messageid="@item.MessageId">&#x270E;</a>
+                        <form asp-action="Deletey" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-messageid="@item.MessageId">
+                            <input type="hidden" asp-for="@item.MessageId" />
+                            <input type="submit" value="&#9746;" class="btn btn-danger" />
+                        </form>
+                    }
+                </td>
         </tr>
 }
     </tbody>

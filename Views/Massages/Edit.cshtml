@@ -1,23 +1,25 @@
-﻿@model Learning_Space.Models.Massage
-
+﻿@model Learning_Space.DTO.MassageDTO
 @{
     ViewData["Title"] = "Edit";
 }
-<link rel="stylesheet" type="text/css" href="./css/styles.css">
+@using Microsoft.AspNetCore.Http
+@{
+    int? user = Convert.ToInt32(Context.Request.Query["user"]);
+    int? permission = Convert.ToInt32(Context.Request.Query["permission"]);
+    int? courseid = Convert.ToInt32(Context.Request.Query["courseid"]);
+}
+
+
 <h1>Edit</h1>
 
 <h4>Massage</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="MessageId" />
-            <div class="form-group">
-                <label asp-for="CourseId" class="control-label"></label>
-                <select asp-for="CourseId" class="form-control" asp-items="ViewBag.CourseId"></select>
-                <span asp-validation-for="CourseId" class="text-danger"></span>
-            </div>
+          
             <div class="form-group">
                 <label asp-for="MassageSubject" class="control-label"></label>
                 <input asp-for="MassageSubject" class="form-control" />
@@ -40,9 +42,9 @@
     </div>
 </div>
 
-<div>
+@* <div>
     <a asp-action="Index">Back to List</a>
-</div>
+</div> *@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
