@@ -24,10 +24,11 @@ body {
     font-family: Arial, sans-serif; /* דוגמא לסוג גופן כללי */
     margin-bottom: 10px;
     display: block;
-   
-    align-items:center;
 }
-
+.general{
+    display:flex;
+    justify-content:center;
+}
 .Admin {
     background-color: black;
 }
@@ -39,47 +40,44 @@ body {
 }
 
 .table {
-    opacity: 50%;
     background-color: whitesmoke;
+   
+}
+.items_list {
     display: flex;
-    flex-wrap: wrap;
-    /*flex-direction:row;
-    align-items: flex-start;
-    justify-content: center;*/
+    justify-content:space-around;
     border-radius: 7px;
-    padding: 60px;
+    margin: 60px;
+}
+users_list{
+
 }
 
 tr {
     width: 200px; /* או כל רוחב שתבחר לכל ריבוע */
     height: 200px;
-    /*display: flex;
-    flex-flow: row wrap;
-    justify-content: space-around;
-    margin-bottom: 10px; /* או כל ערך שתבחר למרווח בין הריבועים */
-    /*cursor: pointer; */ /* קובע את הסמל לסוג הקופירי */
     font-family: 'Nunito', sans-serif;
     background-color: plum;
-    flex: 1;
-    min-width: 0; /* נדרש כאשר משתמשים ב-flex: 1; ב-flexbox */
     margin: 5px; /* יוסיף רווח בין ה-td */
     border: 1px solid black;
 }
 
-td {
+/*td {
     box-sizing: border-box;
     text-align: center;
     line-height: 50px;
     color:black;
     border-radius: 3px;
     background-color:whitesmoke;
-}
-tr:hover {
-    background-color: whitesmoke;
-    border: 1px solid grey;
-}
+}*/
+    tr:hover {
+        border: 1px solid grey;
+        background-color: #f5f5f5;
+        cursor: pointer;
+    }
 tr:hover > td{
     border: 1px solid grey;
+
 }
 
 .AdminMenu {
@@ -88,7 +86,7 @@ tr:hover > td{
 .Menu {
 }
 
-.nuv-item {
+.nav-item {
     background-color: hotpink;
     border: 1px solid coral;
     border-radius: 3px;
@@ -97,9 +95,27 @@ tr:hover > td{
 }
 
 .form-group {
-    background-color: rgb(172, 50, 169);
+    background-color: #ea6464;
     border: 0.5px solid black;
-    color: gray;
+    color: black;
     border-radius: 7px;
     margin: 10px;
+}
+
+#sign_up_button {
+    background-color: #ea6464;
+    border: 0.5px solid black;
+    color: black;
+    border-radius: 7px;
+    margin-left: 10px;
+}
+.home_button {
+    background-color: #ea6464;
+    border: 0.5px solid black;
+    color: black;
+    border-radius: 7px;
+}
+.All_permission{
+    display: flex;
+    justify-content:space-around
 }

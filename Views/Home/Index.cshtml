@@ -6,35 +6,34 @@
     int? user = Convert.ToInt32(Context.Request.Query["user"]);
     int? permission = Convert.ToInt32(Context.Request.Query["permission"]);
 }
-
-<link rel="stylesheet"  href="./css/styles.css">
+<div class="general">
 <div class="text-center">
             <h1 class="display-4">Welcome</h1>
             <div class="All_permission">
-                <button>
+                <button class="home_button">
             <a asp-controller="Users" asp-action="Details" asp-route-user="@user" asp-route-permission="@permission" asp-route-userid="@user">User Settings</a>
                 </button>
-                <button>
+            <button class="home_button">
                     <a asp-controller="Home" asp-action="SignUp">Sign Up</a>
                 </button>
-                <button>
+            <button class="home_button">
                     <a asp-controller="Alarms" asp-action="index" asp-route-user="@user" asp-route-permission="@permission">Alarams</a>
                 </button>
-                <button>
-            <a asp-controller="Calendar" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission">Calendea</a>
+            <button class="home_button">
+            <a asp-controller="Calendar" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission">Calender</a>
             </button>
-                
-         <button>
+
+            <button class="home_button">
             <a asp-controller="Courses" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission">Courses List</a>
             </button>
    
             @if (permission == 0)
             {
-               
-                <button>
+
+                <button class="home_button">
                    <a asp-controller="Users" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission">Users List</a>
                 </button>
-                <button>
+                <button class="home_button">
                     <a asp-controller="Classes" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission">Classes</a>
                 </button>
 
@@ -43,13 +42,14 @@
 
     {
         
-            <button>
+                <button class="home_button">
                 <a asp-controller="Tasks" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission">Tasks</a>
             </button>
-            <button>
+                <button class="home_button">
                 <a asp-controller="Classes" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission">Classes</a>
             </button>
         
     }
+    </div>
     </div>
 </div>

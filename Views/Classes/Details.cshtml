@@ -9,7 +9,7 @@
     int? permission = Convert.ToInt32(Context.Request.Query["permission"]);
     int? classid = Convert.ToInt32(Context.Request.Query["classid"]);
 }
-<link rel="stylesheet" type="text/css" href="./css/styles.css">
+<div class="general">
 <h1>Details</h1>
 
 <div>
@@ -32,4 +32,5 @@
 <div>   
         <a asp-action="Edit" asp-route-user="0" asp-route-permission="0" asp-route-classid="@Model?.ClassId">Edit</a>        
     <a asp-action="Index" asp-route-user="0" asp-route-permission="0">Back to List</a>
+</div>
 </div>
