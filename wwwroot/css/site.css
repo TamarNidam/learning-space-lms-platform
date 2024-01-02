@@ -44,7 +44,9 @@ body {
 }
 .items_list {
     display: flex;
+    flex-direction:row;
     justify-content:space-around;
+    flex-wrap:wrap;
     border-radius: 7px;
     padding: 30px;
 }
@@ -119,7 +121,14 @@ tr:hover > td{
     padding: 5px
 
 }
-.All_permission{
+.All_permission {
     display: flex;
-    justify-content:space-around
+    justify-content: space-around ;
+    width: 200px; /* או כל רוחב שתבחר לכל ריבוע */
+    height: 200px;
+    font-family: 'Nunito', sans-serif;
+    background-color: plum;
+    margin: 5px; /* יוסיף רווח בין ה-td */
+    padding: 7px;
+    border: 1px solid black;
 }
