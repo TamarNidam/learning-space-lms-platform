@@ -47,7 +47,7 @@ namespace Learning_Space.Controllers
         // GET: Massages/Create
         public IActionResult Create()
         {
-            ViewData["CourseId"] = new SelectList(_context.Courses, "CourseId", "CourseName");
+
             return View();
         }
 
@@ -64,7 +64,7 @@ namespace Learning_Space.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CourseId"] = new SelectList(_context.Courses, "CourseId", "CourseName", massage.CourseId);
+           
             return View(massage);
         }
 
