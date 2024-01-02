@@ -29,23 +29,23 @@
     <tbody>
 @foreach (var item in Model) {
             <tr>
-                <a asp-action="Details" asp-route-id="@item.MoreId">
+                <a asp-action="Details" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-moreid="@item.MoreId">
                 <td>
                     
                 @Html.DisplayFor(modelItem => item.MoreStudySubject)
                 </td>
-          </a> 
+         
 
             <td>
                 @if(permission == 1 || permission == 0)
                 {
-                    <a asp-action="Edit" asp-route-moreid="@item.MoreId">&#9999; </a>
-                      <form asp-action="Delete">
+                        <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-moreid="@item.MoreId">&#9999; </a>
+                        <form asp-action="Deletey" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-moreid="@item.MoreId">
                         <input type="hidden" asp-for="@item.MoreId" />
                         <input type="submit" value="&#9746;" class="btn btn-danger" />
                         </form>
                     }
-            </td>
+                </td> </a>
         </tr>
 }
     </tbody>

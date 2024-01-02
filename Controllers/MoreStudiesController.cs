@@ -40,22 +40,28 @@ namespace Learning_Space.Controllers
         }
 
         // GET: MoreStudies/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? moreid)
         {
-            if (id == null)
+            if (moreid == null)
             {
                 return NotFound();
             }
 
-            var moreStudy = await _context.MoreStudies
-                .Include(m => m.Course)
-                .FirstOrDefaultAsync(m => m.MoreId == id);
+            var moreStudy = await _context.MoreStudies.FirstOrDefaultAsync(m => m.MoreId == moreid);
             if (moreStudy == null)
             {
                 return NotFound();
             }
+            var moreStudyDTO = new MoreStudyDTO
+            {
+                MoreId = moreStudy.MoreId,
+                CourseId = moreStudy.CourseId,
+                MoreStudySubject = moreStudy.MoreStudySubject,
+                Content = moreStudy.Content,
+                MoreStudyUrl = moreStudy.MoreStudyUrl
+            };
 
-            return View(moreStudy);
+            return View(moreStudyDTO);
         }
 
         // GET: MoreStudies/Create
@@ -81,20 +87,27 @@ namespace Learning_Space.Controllers
         }
 
         // GET: MoreStudies/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? moreid)
         {
-            if (id == null)
+            if (moreid == null)
             {
                 return NotFound();
             }
 
-            var moreStudy = await _context.MoreStudies.FindAsync(id);
+            var moreStudy = await _context.MoreStudies.FindAsync(moreid);
             if (moreStudy == null)
             {
                 return NotFound();
             }
-            ViewData["CourseId"] = new SelectList(_context.Courses, "CourseId", "CourseName", moreStudy.CourseId);
-            return View(moreStudy);
+            var moreStudyDTO = new MoreStudyDTO
+            {
+                MoreId = moreStudy.MoreId,
+                CourseId = moreStudy.CourseId,
+                MoreStudySubject = moreStudy.MoreStudySubject,
+                Content = moreStudy.Content,
+                MoreStudyUrl = moreStudy.MoreStudyUrl
+            };
+            return View(moreStudyDTO);
         }
 
         // POST: MoreStudies/Edit/5
@@ -102,9 +115,9 @@ namespace Learning_Space.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("MoreId,CourseId,MoreStudySubject,Content,MoreStudyUrl")] MoreStudy moreStudy)
+        public async Task<IActionResult> Edit(int user, int permission, int courseid, int moreid, [Bind("MoreId,CourseId,MoreStudySubject,Content,MoreStudyUrl")] MoreStudyDTO moreStudy)
         {
-            if (id != moreStudy.MoreId)
+            if (moreid != moreStudy.MoreId)
             {
                 return NotFound();
             }
@@ -113,7 +126,15 @@ namespace Learning_Space.Controllers
             {
                 try
                 {
-                    _context.Update(moreStudy);
+                    var moreStudyDTO = new MoreStudy
+                    {
+                        MoreId = moreStudy.MoreId,
+                        CourseId = courseid,
+                        MoreStudySubject = moreStudy.MoreStudySubject,
+                        Content = moreStudy.Content,
+                        MoreStudyUrl = moreStudy.MoreStudyUrl
+                    };
+                    _context.Update(moreStudyDTO);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -127,18 +148,18 @@ namespace Learning_Space.Controllers
                         throw;
                     }
                 }
-                return Redirect($"/Classes/Details?user=");
+                return Redirect($"/MoreStudies/Details?user={user}&permission={permission}&courseid={courseid}&moreid={moreid}");
             }
-            ViewData["CourseId"] = new SelectList(_context.Courses, "CourseId", "CourseName", moreStudy.CourseId);
+           
             return View(moreStudy);
         }
 
        
 
         // POST: MoreStudies/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int user, int permission, int courseid, int moreid)
+        [HttpPost]
+   
+        public async Task<IActionResult> Deletey(int user, int permission, int courseid, int moreid)
         {
             var moreStudy = await _context.MoreStudies.FindAsync(moreid);
             if (moreStudy != null)
