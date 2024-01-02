@@ -10,7 +10,7 @@
     int? courseid = Convert.ToInt32(Context.Request.Query["courseid"]);
 }
 
-<link rel="stylesheet" type="text/css" href="./css/styles.css">
+
 <h1>Index</h1>
 
 <p>
@@ -37,7 +37,7 @@
           </a> 
 
             <td>
-                @if(permission == 2 || permission == 0)
+                @if(permission == 1 || permission == 0)
                 {
                     <a asp-action="Edit" asp-route-moreid="@item.MoreId">&#9999; </a>
                       <form asp-action="Delete">

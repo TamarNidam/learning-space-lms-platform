@@ -105,7 +105,7 @@
                 <p>@message.Body</p> 
                 <div class="message-details">
                     <span>@($"{message.SentDateTime:dd-MM-yyyy  HH:mm}")</span>
-                    @if (message.ISender == 1 || user == 0 || permission == 2)
+                    @if (message.ISender == 1 || user == 0 || permission == 1)
                     {
                         <form asp-action="DeleteMessage" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid">
                             <input type="hidden" name="message" value="@message" /> 
