@@ -6,7 +6,7 @@
 {
     <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
 }
-<link rel="stylesheet" type="text/css" href="./css/styles.css">
+<div class="general">
 <h1>Sign up</h1>
 <hr />
 <div class="row">
@@ -23,14 +23,14 @@
                 <input asp-for="Password" class="form-control" />
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
-            <input type="submit" value="Sign Up" class="btn btn-primary" />          
+            <input id="sign_up_button" type="submit" value="Sign Up" class="btn btn-primary" />          
         </form>
     </div>
 </div>
 
 <div>
 </div>
-
+</div>
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

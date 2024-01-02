@@ -7,6 +7,7 @@
 {
     <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
 }
+<div class="general">
 <h1>Create</h1>
 
 <h4>Class</h4>
@@ -30,7 +31,7 @@
 <div>
     <a asp-action="Index" asp-route-user="0" asp-route-permission="0">Cancel</a>
 </div>
-
+</div>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
