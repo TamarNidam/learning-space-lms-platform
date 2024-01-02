@@ -23,7 +23,6 @@ body {
     background-color: #f1f1f1; /* צבע רקע כתיבת הטקסט, אם התמונה לא נטענת */
     font-family: Arial, sans-serif; /* דוגמא לסוג גופן כללי */
     margin-bottom: 10px;
-    display: block;
 }
 .general{
     display:flex;
@@ -47,7 +46,7 @@ body {
     display: flex;
     justify-content:space-around;
     border-radius: 7px;
-    margin: 60px;
+    padding: 30px;
 }
 users_list{
 
@@ -59,6 +58,7 @@ tr {
     font-family: 'Nunito', sans-serif;
     background-color: plum;
     margin: 5px; /* יוסיף רווח בין ה-td */
+    padding: 7px;
     border: 1px solid black;
 }
 
@@ -87,33 +87,37 @@ tr:hover > td{
 }
 
 .nav-item {
-    background-color: hotpink;
-    border: 1px solid coral;
+    background-color: dodgerblue;
+    border: 1px solid grey;
     border-radius: 3px;
     text-align: center;
     font-family: 'Nunito', sans-serif;
+    padding: 5px;
 }
 
 .form-group {
-    background-color: #ea6464;
+    background-color: rgb(211, 83, 83, 0.85);
     border: 0.5px solid black;
     color: black;
     border-radius: 7px;
+    width: 100%;
     margin: 10px;
 }
 
 #sign_up_button {
-    background-color: #ea6464;
+    background-color: rgb(211, 83, 83, 0.85);
     border: 0.5px solid black;
     color: black;
     border-radius: 7px;
     margin-left: 10px;
 }
 .home_button {
-    background-color: #ea6464;
+    background-color: rgb(211, 83, 83, 0.85);
     border: 0.5px solid black;
     color: black;
     border-radius: 7px;
+    padding: 5px
+
 }
 .All_permission{
     display: flex;
