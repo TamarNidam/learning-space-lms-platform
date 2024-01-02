@@ -14,7 +14,7 @@
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Create" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid">Create New</a>
+    <a asp-action="Create" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid">&#x002B; Create New</a>
 </p>
 <table class="table">
     <thead>
@@ -29,23 +29,23 @@
     <tbody>
 @foreach (var item in Model) {
             <tr>
-                <a asp-action="Details" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-moreid="@item.MoreId">
-                <td>
+                @* <a asp-action="Details" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-moreid="@item.MoreId"></a> *@
+                <td onclick="location.href='@Url.Action("Details", new { user = @user, permission = @permission,courseid=@courseid, moreid = @item.MoreId })';">
                     
                 @Html.DisplayFor(modelItem => item.MoreStudySubject)
                 </td>
-         
+                
 
             <td>
                 @if(permission == 1 || permission == 0)
                 {
-                        <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-moreid="@item.MoreId">&#9999; </a>
+                        <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-moreid="@item.MoreId">&#x270E;</a>
                         <form asp-action="Deletey" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-moreid="@item.MoreId">
                         <input type="hidden" asp-for="@item.MoreId" />
                         <input type="submit" value="&#9746;" class="btn btn-danger" />
                         </form>
                     }
-                </td> </a>
+                </td> 
         </tr>
 }
     </tbody>

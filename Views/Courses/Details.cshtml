@@ -10,7 +10,11 @@
     int? courseid = Convert.ToInt32(Context.Request.Query["courseid"]);
 }
 <div class="general">
-<h1>Details</h1>
+    @if(permission == 2|| permission == 0)
+    {
+        
+    }
+    <h1>Details</h1>
 
 <div>
     <h4>Course</h4>
@@ -46,15 +50,20 @@
 <div>
     @if(permission == 0 || permission == 1)
     {
-        <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId">Edit</a>
+            <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId">&#xf044;</a>
     }
-    <a asp-controller="Tasks" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId">Tasks</a> |
+    <a asp-controller="Tasks" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId">Tasks</a> | 
     <a asp-controller="Users" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId">Student List</a> |
-    <a asp-controller="Chats" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId">Chat</a> |
-    <a asp-controller="MoreStudies" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId">More Studies</a> 
+        <a asp-controller="Chats" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId">	&#xf086; Chat</a> |
+    <a asp-controller="MoreStudies" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId">More Studies</a> |
+        <a asp-controller="Calendar" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId">Calendar</a> |
+        <a asp-controller="Lessons" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId">Lessons</a>
+        <a asp-controller="LessonAttends" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId">Lesson Attends</a>
+        <a asp-controller="Massages" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId">Massages</a>
 
 
-   
-    @* <a asp-action="Index">Back to List</a> *@
+
+
+        @* <a asp-action="Index">Back to List</a> *@
 </div>
 </div>
