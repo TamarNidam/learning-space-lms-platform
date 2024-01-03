@@ -3,7 +3,12 @@
 @{
     ViewData["Title"] = "Details";
 }
-
+@using Microsoft.AspNetCore.Http
+@{
+    int? user = Convert.ToInt32(Context.Request.Query["user"]);
+    int? permission = Convert.ToInt32(Context.Request.Query["permission"]);
+    int? courseid = Convert.ToInt32(Context.Request.Query["courseid"]);
+}
 <h1>Details</h1>
 
 <div>
@@ -32,5 +37,5 @@
     </dl>
 </div>
 <div>
-   
+    <a asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid">Back to List</a>
 </div>
