@@ -1,9 +1,9 @@
-﻿@model Learning_Space.Models.Lesson
+﻿@model Learning_Space.DTO.LessonDTO
 
 @{
     ViewData["Title"] = "Create";
 }
-<link rel="stylesheet" type="text/css" href="./css/styles.css">
+
 <h1>Create</h1>
 
 <h4>Lesson</h4>
@@ -12,15 +12,7 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="LessonId" class="control-label"></label>
-                <input asp-for="LessonId" class="form-control" />
-                <span asp-validation-for="LessonId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CourseId" class="control-label"></label>
-                <select asp-for="CourseId" class ="form-control" asp-items="ViewBag.CourseId"></select>
-            </div>
+            
             <div class="form-group">
                 <label asp-for="LessonSubject" class="control-label"></label>
                 <input asp-for="LessonSubject" class="form-control" />
@@ -33,18 +25,26 @@
             </div>
             <div class="form-group">
                 <label asp-for="StartTime" class="control-label"></label>
-                <input asp-for="StartTime" class="form-control" />
+                <input type="time" min="07:00" max="22:00" step="3600" asp-for="StartTime" class="form-control" />
                 <span asp-validation-for="StartTime" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="EndTime" class="control-label"></label>
-                <input asp-for="EndTime" class="form-control" />
+                <input type="time" min="08:00" max="23:00" step="3600" asp-for="EndTime" class="form-control" />
                 <span asp-validation-for="EndTime" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="LessonType" class="control-label"></label>
-                <input asp-for="LessonType" class="form-control" />
+                <select asp-for="LessonType" class="form-control">
+                    <option value="Zoom">Zoom</option>
+                    <option value="Offline">Offline</option>
+                </select>            
                 <span asp-validation-for="LessonType" class="text-danger"></span>
+            </div>
+            <div class="form-group" id="zoomUrlContainer" style="display:none;">
+                <label asp-for="ZoomUrl" class="control-label"></label>
+                <input asp-for="ZoomUrl" class="form-control" />
+                <span asp-validation-for="ZoomUrl" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -54,9 +54,42 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+   @*  <a asp-action="Index">Back to List</a> *@
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        var startTimeInput = document.getElementById("startTimeInput");
+        var endTimeInput = document.getElementById("endTimeInput");
+        var zoomUrlContainer = document.getElementById("zoomUrlContainer");
+
+        startTimeInput.addEventListener("change", validateEndTime);
+        endTimeInput.addEventListener("change", validateEndTime);
+
+        function validateEndTime() {
+            var startTime = startTimeInput.value;
+            var endTime = endTimeInput.value;
+
+            if (startTime && endTime) {
+                if (endTime <= startTime) {
+                    endTimeInput.setCustomValidity("End time must be greater than start time.");
+                } else {
+                    endTimeInput.setCustomValidity("");
+                }
+            } else {
+                endTimeInput.setCustomValidity("");
+            }
+        }
+
+        var lessonTypeSelect = document.getElementById("LessonType");
+
+        lessonTypeSelect.addEventListener("change", function () {
+            if (lessonTypeSelect.value === "Zoom") {
+                zoomUrlContainer.style.display = "block";
+            } else {
+                zoomUrlContainer.style.display = "none";
+            }
+        });
+    </script>
 }

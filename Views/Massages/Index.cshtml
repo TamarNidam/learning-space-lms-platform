@@ -11,10 +11,12 @@
 }
 
 <h1>Index</h1>
-
-<p>
-    <a asp-action="Create" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid">&#x002B; Create New</a>
-</p>
+@if (permission == 1 || permission == 0)
+{
+    <p>
+        <a asp-action="Create" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid">&#x002B; Create New</a>
+    </p>
+}
 <table class="table">
     <thead>
         <tr>
