@@ -1,5 +1,8 @@
 ﻿@model Learning_Space.DTO.LessonDTO
-
+@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+{
+    <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
+}
 @{
     ViewData["Title"] = "Create";
 }
@@ -26,24 +29,25 @@
             </div>
             <div class="form-group">
                 <label asp-for="LessonDate" class="control-label"></label>
-                <input asp-for="LessonDate" class="form-control" />
+                <input type="date" asp-for="LessonDate" class="form-control" required />
                 <span asp-validation-for="LessonDate" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="StartTime" class="control-label"></label>
-                <input type="time" min="07:00" max="22:00" step="3600" asp-for="StartTime" class="form-control" />
+                <input id="startTimeInput" type="time" min="07:00" max="22:00" step="3600" asp-for="StartTime" class="form-control" />
                 <span asp-validation-for="StartTime" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="EndTime" class="control-label"></label>
-                <input type="time" min="08:00" max="23:00" step="3600" asp-for="EndTime" class="form-control" />
+                <input id="endTimeInput" type="time" min="08:00" max="23:00" step="3600" asp-for="EndTime" class="form-control" />
                 <span asp-validation-for="EndTime" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="LessonType" class="control-label"></label>
-                <select asp-for="LessonType" class="form-control">
+                <select asp-for="LessonType" name="LessonType" class="form-control" id="LessonType">
+                    <option value="Frontal">Frontal</option>
                     <option value="Zoom">Zoom</option>
-                    <option value="Offline">Offline</option>
+                    
                 </select>            
                 <span asp-validation-for="LessonType" class="text-danger"></span>
             </div>
@@ -69,7 +73,18 @@
         var startTimeInput = document.getElementById("startTimeInput");
         var endTimeInput = document.getElementById("endTimeInput");
         var zoomUrlContainer = document.getElementById("zoomUrlContainer");
+        var lessonTypeSelect = document.getElementById("LessonType");
 
+        // Show/hide zoomUrlContainer based on Lesson Type
+        window.addEventListener("DOMContentLoaded", function () {
+            if (lessonTypeSelect.value === "Zoom") {
+                zoomUrlContainer.style.display = "block";
+            } else {
+                zoomUrlContainer.style.display = "none";
+            }
+        });
+
+        // Validate end time
         startTimeInput.addEventListener("change", validateEndTime);
         endTimeInput.addEventListener("change", validateEndTime);
 
@@ -88,8 +103,7 @@
             }
         }
 
-        var lessonTypeSelect = document.getElementById("LessonType");
-
+        // Show/hide zoomUrlContainer on Lesson Type change
         lessonTypeSelect.addEventListener("change", function () {
             if (lessonTypeSelect.value === "Zoom") {
                 zoomUrlContainer.style.display = "block";

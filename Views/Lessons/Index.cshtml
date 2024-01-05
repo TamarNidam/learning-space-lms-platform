@@ -24,13 +24,17 @@
     <div class="lesson-row">
         <div class="lesson-info">
             <span class="lesson-date">@Html.DisplayFor(modelItem => item.LessonDate)</span>
+            <br/>
             <span class="lesson-time">@Html.DisplayFor(modelItem => item.StartTime) - @Html.DisplayFor(modelItem => item.EndTime)</span>
-            <span class="lesson-subject">@Html.DisplayFor(modelItem => item.LessonSubject)</span>
-            <span class="lesson-type">@Html.DisplayFor(modelItem => item.LessonType)</span>
+            <br />
+            <span class="lesson-subject">subject: @Html.DisplayFor(modelItem => item.LessonSubject)</span>
+            <br/>
+            <span class="lesson-type">@Html.DisplayFor(modelItem => item.LessonType) lesson</span>
             @if(item.LessonType == "Zoom")
             {
-                <span class="lesson-ZOOM">&#x1F517; @Html.DisplayFor(modelItem => item.ZoomUrl)</span>
+                <span class="lesson-ZOOM">: &#x1F517; @Html.DisplayFor(modelItem => item.ZoomUrl)</span>
             }
+            
         </div>
         @if (permission == 1 || permission == 0)
         {
@@ -41,7 +45,7 @@
                 <input type="submit" value="&#9746;" class="btn btn-danger" />
             </form>
 
-        </div>
+        </div><hr/>
         }
     </div>
 }
