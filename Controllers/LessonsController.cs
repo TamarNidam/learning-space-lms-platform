@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Learning_Space.Models;
+using Learning_Space.DTO;
 
 namespace Learning_Space.Controllers
 {
@@ -19,35 +20,78 @@ namespace Learning_Space.Controllers
         }
 
         // GET: Lessons
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? courseid)
         {
-            var learningSpaceContext = _context.Lessons.Include(l => l.Course);
-            return View(await learningSpaceContext.ToListAsync());
+            if (!courseid.HasValue)
+            {
+                return NotFound();
+            }
+            var currentDate = DateOnly.FromDateTime(DateTime.Today);
+
+            var lessons = await _context.Lessons
+    .Where(m => m.CourseId == courseid && m.LessonDate >= currentDate)
+    .OrderBy(m => m.LessonDate)
+    .Join(
+        _context.Courses,
+        l => l.CourseId,
+        c => c.CourseId,
+        (l, c) => new { Lesson = l, CourseName = c.CourseName }
+    )
+    .GroupJoin(
+        _context.ZoomLessons,
+        l => l.Lesson.LessonId,
+        z => z.LessonId,
+        (l, z) => new LessonDTO
+        {
+            LessonId = l.Lesson.LessonId,
+            CourseId = l.Lesson.CourseId,
+            CourseName = l.CourseName,
+            LessonSubject = l.Lesson.LessonSubject,
+            LessonDate = l.Lesson.LessonDate,
+            StartTime = (TimeOnly)l.Lesson.StartTime,
+            EndTime = (TimeOnly)l.Lesson.EndTime,
+            LessonType = l.Lesson.LessonType,
+            ZoomUrl = l.Lesson.LessonType == "Zoom" ? z.FirstOrDefault().ZoomUrl : null
+        }
+    )
+    .ToListAsync();
+
+            return View(lessons);
         }
 
         // GET: Lessons/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? lessonid)
         {
-            if (id == null)
+            if (lessonid == null)
             {
                 return NotFound();
             }
 
-            var lesson = await _context.Lessons
-                .Include(l => l.Course)
-                .FirstOrDefaultAsync(m => m.LessonId == id);
-            if (lesson == null)
+            var l = await _context.Lessons.FirstOrDefaultAsync(m => m.LessonId == lessonid);
+            if (l == null)
             {
                 return NotFound();
             }
-
-            return View(lesson);
+            var courseName = _context.Courses.FirstOrDefault(c => c.CourseId == l.CourseId).CourseName;
+            var lessonDTO = new LessonDTO
+            {
+                LessonId = l.LessonId,
+                CourseId = l.CourseId,
+                CourseName = courseName,
+                LessonSubject = l.LessonSubject,
+                LessonDate = l.LessonDate,
+                StartTime = (TimeOnly)l.StartTime,
+                EndTime = (TimeOnly)l.EndTime,
+                LessonType = l.LessonType,
+                ZoomUrl = l.LessonType == "Zoom" ? _context.ZoomLessons.FirstOrDefault().ZoomUrl : null
+            };
+            return View(lessonDTO);
         }
 
         // GET: Lessons/Create
         public IActionResult Create()
         {
-            ViewData["CourseId"] = new SelectList(_context.Courses, "CourseId", "CourseName");
+           
             return View();
         }
 
@@ -56,16 +100,68 @@ namespace Learning_Space.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("LessonId,CourseId,LessonSubject,LessonDate,StartTime,EndTime,LessonType")] Lesson lesson)
+        public async Task<IActionResult> Create(int user, int permission, int courseid, [Bind("LessonId,CourseId,LessonSubject,LessonDate,StartTime,EndTime,LessonType,ZoomUrl")] LessonDTO lesson)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(lesson);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var clas = _context.CourseInClasses.FirstOrDefault(c => c.CourseId == courseid).ClassId;
+                // Check if there are any lessons scheduled for the course within the specified time range
+                bool isCourseAvailable = await CheckCourseAvailability(clas, lesson.StartTime, lesson.EndTime);
+
+                // Check if the teacher has any lessons scheduled within the specified time range for the course
+                bool isTeacherAvailable = await CheckTeacherAvailability(courseid, lesson.StartTime, lesson.EndTime);
+
+                if (!isCourseAvailable)
+                {
+                    ViewBag.ErrorMessage =  "There is already a lesson scheduled for the course within the specified time range.";
+                    return View(lesson);
+                }
+
+                if (!isTeacherAvailable)
+                {
+                    ViewBag.ErrorMessage = "The teacher already has lessons scheduled within the specified time range for the course.";
+                    return View(lesson);
+                }
+
+                var maxId = await _context.Lessons.MaxAsync(u => (int?)u.LessonId) ?? 0;
+                var newId = maxId + 1;
+              
+                var sql = $"INSERT INTO [Lessons] (LessonId,CourseId,LessonSubject,LessonDate,StartTime,EndTime,LessonType) VALUES ({newId}, {courseid},'{lesson.LessonSubject}', '{lesson.LessonDate}', '{lesson.StartTime}', '{lesson.EndTime}', '{lesson.LessonType}')";
+                await _context.Database.ExecuteSqlRawAsync(sql);
+               
+                if(lesson.LessonType == "Zoom")
+                {
+                    var maxIdzoom = await _context.ZoomLessons.MaxAsync(u => (int?)u.ZoomLesson1) ?? 0;
+                    var newIdzoom = maxIdzoom + 1;
+                     sql = $"INSERT INTO [ZoomLessons] (ZoomLesson,LessonId,ZoomUrl) VALUES ({newIdzoom}, {newId}, '{lesson.ZoomUrl}')";
+                    await _context.Database.ExecuteSqlRawAsync(sql);
+                }
+
+                return Redirect($"/Lessons/Index?user={user}&permission={permission}&courseid={courseid}");
             }
-            ViewData["CourseId"] = new SelectList(_context.Courses, "CourseId", "CourseName", lesson.CourseId);
             return View(lesson);
+        }
+
+        private async Task<bool> CheckCourseAvailability(int? classId, TimeOnly startTime, TimeOnly endTime)
+        {
+            // Get the list of CourseIds for the given ClassId
+            var courseIds = await _context.CourseInClasses.Where(cic => cic.ClassId == classId).Select(cic => cic.CourseId).ToListAsync();
+            // Check if there are any lessons scheduled for the course within the specified time range
+            bool isAvailable = await _context.Lessons.AnyAsync(l => courseIds.Contains(l.CourseId) && l.StartTime <= endTime && l.EndTime >= startTime);
+            return !isAvailable;
+        }
+
+        private async Task<bool> CheckTeacherAvailability(int courseId, TimeOnly startTime, TimeOnly endTime)
+        {
+            //Get the teacher
+            var teacher =await  _context.Teachers.FirstOrDefaultAsync(m => m.CourseId == courseId);
+
+            // Get the list of CourseIds for the given ClassId
+            var courseIds = await _context.Teachers.Where(t => t.TeacherId == teacher.TeacherId).Select(t => t.CourseId).ToListAsync();
+
+            // Check if the teacher has any lessons scheduled within the specified time range for the course
+            bool isAvailable = await _context.Lessons.AnyAsync(l => courseIds.Contains(l.CourseId) && l.StartTime <= endTime && l.EndTime >= startTime);
+            return !isAvailable;
         }
 
         // GET: Lessons/Edit/5

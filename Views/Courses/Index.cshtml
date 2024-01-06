@@ -45,7 +45,7 @@
             <td>
                 @if(permission == 0 || permission == 1)
                 {
-                        <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@item.CourseId">Edit</a>
+                    <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@item.CourseId">&#x270E;</a>
                             if(permission == 0)
                             {
                             <a asp-action="Delete" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@item.CourseId">Delete</a>

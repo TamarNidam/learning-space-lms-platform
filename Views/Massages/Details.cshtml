@@ -1,9 +1,14 @@
-﻿@model Learning_Space.Models.Massage
+﻿@model Learning_Space.DTO.MassageDTO
 
 @{
     ViewData["Title"] = "Details";
 }
-<link rel="stylesheet" type="text/css" href="./css/styles.css">
+@using Microsoft.AspNetCore.Http
+@{
+    int? user = Convert.ToInt32(Context.Request.Query["user"]);
+    int? permission = Convert.ToInt32(Context.Request.Query["permission"]);
+    int? courseid = Convert.ToInt32(Context.Request.Query["courseid"]);
+}
 <h1>Details</h1>
 
 <div>
@@ -28,15 +33,9 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Content)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Course)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Course.CourseName)
-        </dd>
+    
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.MessageId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid">Back to List</a>
 </div>

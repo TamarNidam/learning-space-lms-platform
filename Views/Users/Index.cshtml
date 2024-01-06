@@ -23,14 +23,14 @@
             <select id="SelectedStudentId" name="SelectedStudentId" class="form-control" asp-items="ViewBag.StudentNotInClass"></select>
         </div>
         <input type="hidden" name="classId" value="@classid.Value" />
-        <button type="submit" class="btn btn-primary">Add</button>
+        <button type="submit" class="btn btn-primary">&#x002B; Add</button>
     </form>
 }
 else if (permission == 0 @* && !courseid.HasValue *@ && courseid.Value == 0)
 {
     <p>
-        <a asp-action="Create" asp-route-user="@user"  asp-route-ts="Student">Create New Student</a>
-        <a asp-action="Create" asp-route-user="@user"  asp-route-ts="Teacher">Create New Teacher</a>
+        <a asp-action="Create" asp-route-user="@user" asp-route-ts="Student">&#x002B; Create New Student</a>
+        <a asp-action="Create" asp-route-user="@user" asp-route-ts="Teacher">&#x002B; Create New Teacher</a>
     </p>
 }
 
@@ -90,15 +90,15 @@ else if (permission == 0 @* && !courseid.HasValue *@ && courseid.Value == 0)
                         <p></p>
                         if (courseid.Value != 0)
                         {
-                            <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-userid="@item.UserId">&#9998;</a>
+                            <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-userid="@item.UserId">&#xf044;</a>
                         }
                         else if(classid.Value != 0)
                         {
-                            <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-classid="@classid" asp-route-userid="@item.UserId">&#9998;</a>
+                            <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-classid="@classid" asp-route-userid="@item.UserId">&#xf044;</a>
                         }
                         else{
 
-                            <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-userid="@item.UserId">&#9998;</a>
+                            <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-userid="@item.UserId">&#xf044;</a>
 
                         }
 

@@ -1,65 +1,51 @@
-﻿@model IEnumerable<Learning_Space.Models.Lesson>
+﻿@model IEnumerable<Learning_Space.DTO.LessonDTO>
 
 @{
     ViewData["Title"] = "Index";
 }
-<link rel="stylesheet" type="text/css" href="./css/styles.css">
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.LessonSubject)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LessonDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StartTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EndTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LessonType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Course)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.LessonSubject)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LessonDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EndTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LessonType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Course.CourseName)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.LessonId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.LessonId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.LessonId">Delete</a>
-            </td>
-        </tr>
+@using Microsoft.AspNetCore.Http
+@{
+    int? user = Convert.ToInt32(Context.Request.Query["user"]);
+    int? permission = Convert.ToInt32(Context.Request.Query["permission"]);
+    int? courseid = Convert.ToInt32(Context.Request.Query["courseid"]);
 }
-    </tbody>
-</table>
+
+
+<h1>Index</h1>
+@if (permission == 1 || permission == 0)
+{
+    <p>
+        <a asp-action="Create" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid">&#x002B; Create New</a>
+    </p>
+}
+
+@foreach (var item in Model)
+{
+    <div class="lesson-row">
+        <div class="lesson-info">
+            <span class="lesson-date">@Html.DisplayFor(modelItem => item.LessonDate)</span>
+            <br/>
+            <span class="lesson-time">@Html.DisplayFor(modelItem => item.StartTime) - @Html.DisplayFor(modelItem => item.EndTime)</span>
+            <br />
+            <span class="lesson-subject">subject: @Html.DisplayFor(modelItem => item.LessonSubject)</span>
+            <br/>
+            <span class="lesson-type">@Html.DisplayFor(modelItem => item.LessonType) lesson</span>
+            @if(item.LessonType == "Zoom")
+            {
+                <span class="lesson-ZOOM">: &#x1F517; @Html.DisplayFor(modelItem => item.ZoomUrl)</span>
+            }
+            
+        </div>
+        @if (permission == 1 || permission == 0)
+        {
+            <div class="lesson-actions">
+                <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-lessonid="@item.LessonId">&#x270E;</a>
+                <form asp-action="Deletey" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-lessonid="@item.LessonId">
+                <input type="hidden" asp-for="@item.LessonId" />
+                <input type="submit" value="&#9746;" class="btn btn-danger" />
+            </form>
+
+        </div><hr/>
+        }
+    </div>
+}

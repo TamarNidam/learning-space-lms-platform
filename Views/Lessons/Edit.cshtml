@@ -1,23 +1,26 @@
-﻿@model Learning_Space.Models.Lesson
+﻿@model Learning_Space.DTO.LessonDTO
 
 @{
     ViewData["Title"] = "Edit";
 }
-<link rel="stylesheet" type="text/css" href="./css/styles.css">
+@using Microsoft.AspNetCore.Http
+@{
+    int? user = Convert.ToInt32(Context.Request.Query["user"]);
+    int? permission = Convert.ToInt32(Context.Request.Query["permission"]);
+    int? courseid = Convert.ToInt32(Context.Request.Query["courseid"]);
+}
+
+
 <h1>Edit</h1>
 
 <h4>Lesson</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="LessonId" />
-            <div class="form-group">
-                <label asp-for="CourseId" class="control-label"></label>
-                <select asp-for="CourseId" class="form-control" asp-items="ViewBag.CourseId"></select>
-                <span asp-validation-for="CourseId" class="text-danger"></span>
-            </div>
+           
             <div class="form-group">
                 <label asp-for="LessonSubject" class="control-label"></label>
                 <input asp-for="LessonSubject" class="form-control" />
@@ -30,18 +33,28 @@
             </div>
             <div class="form-group">
                 <label asp-for="StartTime" class="control-label"></label>
-                <input asp-for="StartTime" class="form-control" />
+                <input type="time" min="07:00" max="10:00" step="3600" asp-for="StartTime" class="form-control" />
                 <span asp-validation-for="StartTime" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="EndTime" class="control-label"></label>
-                <input asp-for="EndTime" class="form-control" />
+                <input type="time" min="07:00" max="10:00" step="3600" asp-for="EndTime" class="form-control" />
                 <span asp-validation-for="EndTime" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="LessonType" class="control-label"></label>
-                <input asp-for="LessonType" class="form-control" />
+                @* <input asp-for="LessonType" class="form-control" /> *@
+                <select asp-for="LessonType" class="form-control">
+                    <option value="">Select lesson type</option>
+                    <option value="Zoom">Zoom</option>
+                    <option value="Offline">Offline</option>
+                </select>
                 <span asp-validation-for="LessonType" class="text-danger"></span>
+            </div>
+            <div class="form-group" id="zoomUrlContainer" style="display:none;">
+                <label asp-for="ZoomUrl" class="control-label"></label>
+                <input asp-for="ZoomUrl" class="form-control" />
+                <span asp-validation-for="ZoomUrl" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
@@ -54,6 +67,28 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
+
+<script>
+    $(document).ready(function () {
+        $('#LessonType').on('change', function () {
+            if ($(this).val() === 'Zoom') {
+                $('#zoomUrlContainer').show();
+            } else {
+                $('#zoomUrlContainer').hide();
+            }
+        });
+        $('#startTime, #endTime').on('change', function () {
+            var startTime = $('#startTime').val();
+            var endTime = $('#endTime').val();
+
+            if (startTime && endTime && startTime >= endTime) {
+                $('#endTime').val('');
+                alert('End Time must be after Start Time');
+            }
+        });
+    });
+</script>
 @section Scripts {
+
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
