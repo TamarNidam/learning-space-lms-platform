@@ -18,10 +18,10 @@ html {
 }
 
 body {
-    background-image: url('../media/background.png'); /* שינוי לנתיב המתאים לתמונת הרקע שלך */
-    background-repeat: repeat; /* תמונת רקע מתאימה תתאים לרוב המסכים */
-    background-color: #f1f1f1; /* צבע רקע כתיבת הטקסט, אם התמונה לא נטענת */
-    font-family: Arial, sans-serif; /* דוגמא לסוג גופן כללי */
+    background-image: url('../media/background.png'); 
+    background-repeat: repeat; 
+    background-color: #f1f1f1;
+    font-family: Arial, sans-serif; 
     margin-bottom: 10px;
 }
 .general{
@@ -55,11 +55,11 @@ users_list{
 }
 
 tr {
-    width: 200px; /* או כל רוחב שתבחר לכל ריבוע */
+    width: 200px; 
     height: 200px;
     font-family: 'Nunito', sans-serif;
     background-color: plum;
-    margin: 5px; /* יוסיף רווח בין ה-td */
+    margin: 5px;
     padding: 7px;
     border: 1px solid black;
 }
@@ -93,6 +93,7 @@ tr:hover > td{
     border: 1px solid grey;
     border-radius: 3px;
     text-align: center;
+    margin: 5px;
     font-family: 'Nunito', sans-serif;
     padding: 5px;
 }
@@ -102,7 +103,7 @@ tr:hover > td{
     border: 0.5px solid black;
     color: black;
     border-radius: 7px;
-    width: 100%;
+    width: 500px;
     margin: 10px;
 }
 
@@ -131,4 +132,16 @@ tr:hover > td{
     margin: 5px; /* יוסיף רווח בין ה-td */
     padding: 7px;
     border: 1px solid black;
+}
+.control-label{
+    padding:5px
+}
+.item {
+    width: 200px;
+    height: 200px;
+    background-color: rgb(252, 82, 161);
+    border: 0.5px solid black;
+    border-radius:7px;
+    display:flex;
+    flex-wrap:wrap;
 }

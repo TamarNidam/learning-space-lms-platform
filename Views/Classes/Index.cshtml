@@ -14,21 +14,20 @@
 <p>
     <a asp-action="Create" asp-route-user="@user" asp-route-permission="@permission" >Create New</a>
 </p>
-<table class="items_list">
+<div >
 
-    <tbody>
-@foreach (var item in Model) {
-            <tr >
-
+    <div class = "items_list">
+        @foreach (var item in Model) {
+        <div class="item">
                 <td onclick ="location.href='@Url.Action("Details", new { user = @user, permission = @permission, classid = @item.ClassId })';">
                 @Html.DisplayFor(modelItem => item.ClassName)
-            </td>
-            <td>
-                    <a class="icon" asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-classid="@item.ClassId">&#9998;</a>
-                    <a class="icon" asp-action="Delete" asp-route-user="@user" asp-route-permission="@permission" asp-route-classid="@item.ClassId">Delete</a>
-            </td>
-        </tr>
+                </td>
+                <td>
+                   <a class="icon" asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-classid="@item.ClassId">&#9998;</a>
+                   <a class="icon" asp-action="Delete" asp-route-user="@user" asp-route-permission="@permission" asp-route-classid="@item.ClassId">Delete</a>
+                </td>
+        </div>
 }
-    </tbody>
-</table>
+    </div>
+</div>
 </div>
