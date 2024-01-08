@@ -89,15 +89,19 @@ tr:hover > td{
 }
 
 .nav-item {
-    background-color: dodgerblue;
+    background-color: rgb(211, 83, 83, 0.85);
     border: 1px solid grey;
-    border-radius: 3px;
+    border-radius: 7px;
     text-align: center;
     margin: 5px;
     font-family: 'Nunito', sans-serif;
     padding: 5px;
 }
 
+    .nav-item:hover {
+        padding: 8px;
+        border: 1px solid black;
+    }
 .form-group {
     background-color: rgb(211, 83, 83, 0.85);
     border: 0.5px solid black;
@@ -108,11 +112,7 @@ tr:hover > td{
 }
 
 #sign_up_button {
-    background-color: rgb(211, 83, 83, 0.85);
-    border: 0.5px solid black;
-    color: black;
-    border-radius: 7px;
-    margin-left: 10px;
+    
 }
 .home_button {
     background-color: rgb(211, 83, 83, 0.85);
@@ -139,9 +139,19 @@ tr:hover > td{
 .item {
     width: 200px;
     height: 200px;
-    background-color: rgb(252, 82, 161);
+    background-color: rgb(211, 83, 83, 0.85);
     border: 0.5px solid black;
-    border-radius:7px;
-    display:flex;
-    flex-wrap:wrap;
+    border-radius: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    text-align: center;
+    font-size: 7px;
+    margin: 10px;
+}
+.btn btn-primary {
+    background-color: rgb(211, 83, 83, 0.85);
+    border: 0.5px solid black;
+    color: black;
+    border-radius: 7px;
+    margin-left: 10px;
 }

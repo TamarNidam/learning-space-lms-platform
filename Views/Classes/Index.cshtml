@@ -8,9 +8,10 @@
     int? user = Convert.ToInt32(Context.Request.Query["user"]);
     int? permission = Convert.ToInt32(Context.Request.Query["permission"]);
 }
-<div class="general">
-<h1>Classes</h1>
 
+<h1>Classes</h1>
+<hr/>
+<div class="general">
 <p>
     <a asp-action="Create" asp-route-user="@user" asp-route-permission="@permission" >Create New</a>
 </p>
@@ -19,13 +20,13 @@
     <div class = "items_list">
         @foreach (var item in Model) {
         <div class="item">
-                <td onclick ="location.href='@Url.Action("Details", new { user = @user, permission = @permission, classid = @item.ClassId })';">
+                <div onclick ="location.href='@Url.Action("Details", new { user = @user, permission = @permission, classid = @item.ClassId })';">
                 @Html.DisplayFor(modelItem => item.ClassName)
-                </td>
-                <td>
+                </div>
+                <div>
                    <a class="icon" asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-classid="@item.ClassId">&#x270E;</a>
                    <a class="icon" asp-action="Delete" asp-route-user="@user" asp-route-permission="@permission" asp-route-classid="@item.ClassId">&#x2716;</a>
-                </td>
+                </div>
         </div>
 }
     </div>
