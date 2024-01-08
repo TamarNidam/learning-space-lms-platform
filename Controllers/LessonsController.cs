@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Learning_Space.Models;
 using Learning_Space.DTO;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
 
 namespace Learning_Space.Controllers
 {
@@ -104,6 +106,14 @@ namespace Learning_Space.Controllers
         {
             if (ModelState.IsValid)
             {
+                DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+                
+
+                if (lesson.LessonDate > today && lesson.StartTime > TimeOnly.FromDateTime(DateTime.Now))
+                {
+                    ViewBag.ErrorMessage = "A class can only be scheduled for a date that has not yet passed.";
+                    return View(lesson);
+                }
                 var clas = _context.CourseInClasses.FirstOrDefault(c => c.CourseId == courseid).ClassId;
                 // Check if there are any lessons scheduled for the course within the specified time range
                 bool isCourseAvailable = await CheckCourseAvailability(clas, lesson.StartTime, lesson.EndTime);
