@@ -17,26 +17,6 @@
     DateTime nextMonth = currentDate.AddMonths(1);
 }
 
-<style>
-    table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    th, td {
-        padding: 8px;
-        text-align: left;
-        border-bottom: 1px solid #ddd;
-    }
-
-    .event-date {
-        background-color: yellow;
-    }
-
-    .empty-date {
-        background-color: lightgray;
-    }
-</style>
 
 <h1>
     <a href="/Calendar/Index?currentDate=@previousMonth.ToString("yyyy-MM")">&lt;</a>
@@ -44,8 +24,8 @@
     <a href="/Calendar/Index?currentDate=@nextMonth.ToString("yyyy-MM")">&gt;</a>
 </h1>
 
-<table>
-    <tr>
+<table class="calendar">
+    <tr class="days">
         <th>Sun</th>
         <th>Mon</th>
         <th>Tue</th>
@@ -70,7 +50,7 @@
                 }
                 else
                 {
-                    <td></td>
+                    <td class="dayInMonth"></td>
                 }
             }
         </tr>

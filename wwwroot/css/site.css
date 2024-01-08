@@ -54,8 +54,39 @@ users_list{
 
 }
 
+
+.calendar {
+    width: 500px;
+    height: 500px;
+    border-collapse: collapse;
+}
+
+.days {
+    padding: 8px;
+    margin-bottom:5px;
+    border-bottom: 1px solid #ddd;
+}
+
+.event-date {
+    background-color: yellow;
+}
+
+.empty-date {
+    background-color: lightgray;
+}
+
+.datInMonth {
+    width: 200px;
+    height: 200px;
+    font-family: 'Nunito', sans-serif;
+    background-color: plum;
+    margin: 5px;
+    padding: 7px;
+    border: 1px solid black;
+    border-radius: 7px;
+}
 tr {
-    width: 200px; 
+    width: 200px;
     height: 200px;
     font-family: 'Nunito', sans-serif;
     background-color: plum;
