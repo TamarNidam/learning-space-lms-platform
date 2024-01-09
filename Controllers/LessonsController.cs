@@ -322,6 +322,13 @@ namespace Learning_Space.Controllers
             var lesson = await _context.Lessons.FindAsync(lessonid);
             if (lesson != null)
             {
+                var lessonsAtend = await _context.LessonAttends.Where(l => l.LessonId == lessonid).ToListAsync();
+                if (lessonsAtend != null)
+                {
+                    _context.LessonAttends.RemoveRange(lessonsAtend);
+                }
+
+                await _context.SaveChangesAsync();
                 _context.Lessons.Remove(lesson);
             }
 

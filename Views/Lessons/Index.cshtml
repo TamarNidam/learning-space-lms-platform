@@ -18,34 +18,70 @@
         <a asp-action="Create" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid">&#x002B; Create New</a>
     </p>
 }
+@{
+    DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+}
 
 @foreach (var item in Model)
 {
-    <div class="lesson-row">
-        <div class="lesson-info">
-            <span class="lesson-date">@Html.DisplayFor(modelItem => item.LessonDate)</span>
-            <br/>
-            <span class="lesson-time">@Html.DisplayFor(modelItem => item.StartTime) - @Html.DisplayFor(modelItem => item.EndTime)</span>
-            <br />
-            <span class="lesson-subject">subject: @Html.DisplayFor(modelItem => item.LessonSubject)</span>
-            <br/>
-            <span class="lesson-type">@Html.DisplayFor(modelItem => item.LessonType) lesson</span>
-            @if(item.LessonType == "Zoom")
-            {
-                <span class="lesson-ZOOM">: &#x1F517; @Html.DisplayFor(modelItem => item.ZoomUrl)</span>
-            }
-            
-        </div>
-        @if (permission == 1 || permission == 0)
-        {
-            <div class="lesson-actions">
-                <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-lessonid="@item.LessonId">&#x270E;</a>
-                <form asp-action="Deletey" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-lessonid="@item.LessonId">
-                <input type="hidden" asp-for="@item.LessonId" />
-                <input type="submit" value="&#9746;" class="btn btn-danger" />
-            </form>
+    @if (item.LessonDate >= today)
+    {
+        <div class="lesson-row">
+            <div class="lesson-info">
+                <span class="lesson-date">@Html.DisplayFor(modelItem => item.LessonDate)</span>
+                <br/>
+                <span class="lesson-time">@Html.DisplayFor(modelItem => item.StartTime) - @Html.DisplayFor(modelItem => item.EndTime)</span>
+                <br />
+                <span class="lesson-subject">subject: @Html.DisplayFor(modelItem => item.LessonSubject)</span>
+                <br/>
+                <span class="lesson-type">@Html.DisplayFor(modelItem => item.LessonType) lesson</span>
+                @if (item.LessonType == "Zoom")
+                {
+                    <span class="lesson-ZOOM">: &#x1F517; @Html.DisplayFor(modelItem => item.ZoomUrl)</span>
+                }
 
-        </div><hr/>
-        }
-    </div>
+            </div>
+            @if (permission == 1 || permission == 0)
+            {
+                <div class="lesson-actions">
+                    <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-lessonid="@item.LessonId">&#x270E;</a>
+                    <form asp-action="Deletey" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-lessonid="@item.LessonId">
+                        <input type="hidden" asp-for="@item.LessonId" />
+                        <input type="submit" value="&#9746;" class="btn btn-danger" />
+                    </form>
+
+                </div><hr/>
+            }
+        </div>
+    }
+}
+
+
+
+<hr/>
+<p>Lessons passed</p>
+<hr/>
+
+@foreach (var item in Model)
+{
+    @if (item.LessonDate >= today)
+    {
+        <div class="lesson-row">
+            <div class="lesson-info">
+                <span class="lesson-date">@Html.DisplayFor(modelItem => item.LessonDate)</span>
+                <br />
+                <span class="lesson-time">@Html.DisplayFor(modelItem => item.StartTime) - @Html.DisplayFor(modelItem => item.EndTime)</span>
+                <br />
+                <span class="lesson-subject">subject: @Html.DisplayFor(modelItem => item.LessonSubject)</span>
+                <br />
+                <span class="lesson-type">@Html.DisplayFor(modelItem => item.LessonType) lesson</span>
+                @if (item.LessonType == "Zoom")
+                {
+                    <span class="lesson-ZOOM">: &#x1F517; @Html.DisplayFor(modelItem => item.ZoomUrl)</span>
+                }
+
+            </div>
+
+        </div>
+    }
 }
