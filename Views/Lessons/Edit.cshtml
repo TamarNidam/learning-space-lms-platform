@@ -10,7 +10,10 @@
     int? courseid = Convert.ToInt32(Context.Request.Query["courseid"]);
 }
 
-
+@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+{
+    <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
+}
 <h1>Edit</h1>
 
 <h4>Lesson</h4>
@@ -28,32 +31,27 @@
             </div>
             <div class="form-group">
                 <label asp-for="LessonDate" class="control-label"></label>
-                <input asp-for="LessonDate" class="form-control" />
+                <input type="date" min="@DateTime.Today.ToString("dd-MM-yyyy")" asp-for="LessonDate" class="form-control" />
                 <span asp-validation-for="LessonDate" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="StartTime" class="control-label"></label>
-                <input type="time" min="07:00" max="10:00" step="3600" asp-for="StartTime" class="form-control" />
+                <input type="time" min="08:00" max="22:00" step="3600" asp-for="StartTime" class="form-control" />
                 <span asp-validation-for="StartTime" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="EndTime" class="control-label"></label>
-                <input type="time" min="07:00" max="10:00" step="3600" asp-for="EndTime" class="form-control" />
+                <input type="time" min="09:00" max="23:00" step="3600" asp-for="EndTime" class="form-control" />
                 <span asp-validation-for="EndTime" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="LessonType" class="control-label"></label>
-                @* <input asp-for="LessonType" class="form-control" /> *@
-                <select asp-for="LessonType" class="form-control">
-                    <option value="">Select lesson type</option>
-                    <option value="Zoom">Zoom</option>
-                    <option value="Offline">Offline</option>
-                </select>
+                <input asp-for="LessonType" class="form-control" readonly />
                 <span asp-validation-for="LessonType" class="text-danger"></span>
             </div>
             <div class="form-group" id="zoomUrlContainer" style="display:none;">
                 <label asp-for="ZoomUrl" class="control-label"></label>
-                <input asp-for="ZoomUrl" class="form-control" />
+                <input asp-for="ZoomUrl" class="form-control" required/>
                 <span asp-validation-for="ZoomUrl" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -64,31 +62,40 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 
-<script>
-    $(document).ready(function () {
-        $('#LessonType').on('change', function () {
-            if ($(this).val() === 'Zoom') {
-                $('#zoomUrlContainer').show();
-            } else {
-                $('#zoomUrlContainer').hide();
-            }
-        });
-        $('#startTime, #endTime').on('change', function () {
-            var startTime = $('#startTime').val();
-            var endTime = $('#endTime').val();
 
-            if (startTime && endTime && startTime >= endTime) {
-                $('#endTime').val('');
-                alert('End Time must be after Start Time');
-            }
-        });
-    });
-</script>
 @section Scripts {
 
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+ 
+        var zoomUrlContainer = document.getElementById("zoomUrlContainer");
+        var lessonTypeSelect = document.getElementById("LessonType");
+        var lessonForm = document.querySelector("form");
+
+        lessonTypeSelect.addEventListener("change", function () {
+            if (lessonTypeSelect.value === "Zoom") {
+                zoomUrlContainer.style.display = "block";
+            } else {
+                zoomUrlContainer.style.display = "none";
+            }
+        });
+
+        lessonForm.addEventListener("submit", function (event) {
+            if (lessonTypeSelect.value === "Zoom" && !document.getElementById("ZoomUrl").value) {
+                event.preventDefault(); // Prevent form submission if ZoomUrl is empty
+                alert("Please enter a Zoom URL.");
+            }
+        });
+
+        // Initially show/hide the zoomUrlContainer based on the initial value of LessonType
+        if (lessonTypeSelect.value === "Zoom") {
+            zoomUrlContainer.style.display = "block";
+        } else {
+            zoomUrlContainer.style.display = "none";
+        }
+    </script>
 }
