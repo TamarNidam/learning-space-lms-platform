@@ -9,40 +9,40 @@
     int? permission = Convert.ToInt32(Context.Request.Query["permission"]);
 }
 
-<div class="general">
-<h1>Courses</h1>
 
-@if(permission == 0)
-{
-    <p>
-    <a asp-action="Create" asp-route-user="@user" asp-route-permission="@permission">Create New</a>
-    </p>
-}
-<table class="items_list" >
-    <thead>
-        <tr>
+<h1>Courses</h1>
+<hr/>
+
+<div class="general">
+    @if (permission == 0)
+    {
+        <p>
+            <a asp-action="Create" asp-route-user="@user" asp-route-permission="@permission">Create New</a>
+        </p>
+    }
+    <div class="items_list">
+        
+        <div class="item">
             <div>
-            <th>
                 @Html.DisplayNameFor(model => model.CourseName)
-            </th>
+            </div>
             @* <th>
                 @Html.DisplayNameFor(model => model.CourseDescription)
             </th> *@
-            <th></th></div>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-            <tr onclick="location.href='@Url.Action("Details", new { user = @user, permission = @permission, courseid = @item.CourseId })';">          
-                <td>
+            <hr/>
+                 
+             @foreach (var item in Model) 
+        {
+                <div onclick="location.href='@Url.Action("Details", new { user = @user, permission = @permission, courseid = @item.CourseId })';">          
+                     <div>
                    
-                @Html.DisplayFor(modelItem => item.CourseName)
-                </td>
+                     @Html.DisplayFor(modelItem => item.CourseName)
+                     </div>
                 
             @* <td>
                 @Html.DisplayFor(modelItem => item.CourseDescription)
             </td> *@
-            <td>
+                <div>
                 @if(permission == 0 || permission == 1)
                 {
                     <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@item.CourseId">&#x270E;</a>
@@ -50,14 +50,13 @@
                             {
                             <a asp-action="Delete" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@item.CourseId">Delete</a>
                             }
-                        }
+                }
                 
                @*  <a asp-action="Details" asp-route-id="@item.CourseId"> *@
 
-                </td>
-              </tr>
+                </div>
+            </div>
         }
-
-    </tbody>
-    </table>
+    </div>
+    </div>
 </div>
