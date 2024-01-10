@@ -1,5 +1,52 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@using Learning_Space.DTO
+@model IEnumerable<Learning_Space.DTO.LessonDTO>
+
 @{
+    ViewData["Title"] = "Schedule";
 }
+@using Microsoft.AspNetCore.Http
+@{
+    int user = Convert.ToInt32(Context.Request.Query["user"]);
+    int permission = Convert.ToInt32(Context.Request.Query["permission"]);
+    int? courseid = Convert.ToInt32(Context.Request.Query["courseid"]);
+    int weekOffset = Convert.ToInt32(Context.Request.Query["weekOffset"]);
+}
+
+<h1>Schedule</h1>
+
+<div class="schedule-navigation">
+    <a asp-action="Schedule" asp-route-weekOffset="{@weekOffset-1}">&lt; Previous Week</a>
+    <span>@DateTime.Today.AddDays(Model.First().LessonDate.DayOfWeek == DayOfWeek.Sunday ? 0 : 7 - (int)Model.First().LessonDate.DayOfWeek).ToString("dd/MM/yyyy") - @DateTime.Today.AddDays(6 + (int)Model.First().LessonDate.DayOfWeek).ToString("dd/MM/yyyy")</span>
+    <a asp-action="Schedule" asp-route-weekOffset="{@weekOffset+1}">Next Week &gt;</a>
+</div>
+
+<table class="schedule-table">
+    <tr>
+        <th>Time</th>
+        @foreach (var item in Model.GroupBy(x => x.LessonDate))
+        {
+            <th>@item.Key.ToString("dd/MM/yyyy")</th>
+        }
+    </tr>
+
+    @for (int hour = 8; hour <= 23; hour++)
+    {
+        <tr>
+            <td>@hour:00</td>
+            @foreach (var item in Model.GroupBy(x => x.LessonDate))
+            {
+                var timeSlot = DateTime.Today.AddDays((int)item.Key.DayOfWeek).AddHours(hour);
+                LessonDTO lesson = item.FirstOrDefault(x => x.LessonDate.ToDateTime() == timeSlot);
+                <td>
+                    @if (lesson != null)
+                    {
+                        <strong>@lesson.CourseName - @lesson.LessonSubject</strong>
+                        <br />
+                        <small>@lesson.LessonType: <a href="@lesson.ZoomUrl">@lesson.ZoomUrl</a></small>
+                    }
+                </td>
+            }
+        </tr>
+    }
+</table>
+

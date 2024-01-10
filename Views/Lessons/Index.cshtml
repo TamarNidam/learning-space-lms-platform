@@ -10,6 +10,8 @@
     int? courseid = Convert.ToInt32(Context.Request.Query["courseid"]);
 }
 
+<a asp-action="Schedule" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-weekOffset="0">טטטטט</a>
+
 
 <h1>Index</h1>
 @if (permission == 1 || permission == 0)

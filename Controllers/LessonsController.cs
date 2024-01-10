@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Learning_Space.Models;
 using Learning_Space.DTO;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Linq;
+using NuGet.Packaging;
 
 
 namespace Learning_Space.Controllers
@@ -60,6 +62,97 @@ namespace Learning_Space.Controllers
     .ToListAsync();
 
             return View(lessons);
+        }
+
+        public async Task<IActionResult> Schedule(int user, int? courseid, int weekOffset)
+        {
+            DateOnly startDate = DateOnly.FromDateTime(DateTime.Today.AddDays(weekOffset * 7));
+            DateOnly endDate = startDate.AddDays(6);
+
+            List<Lesson> lessons = new List<Lesson>();
+            if (courseid.HasValue)
+            {
+                lessons =await _context.Lessons
+                    .Where(x => x.CourseId == courseid && x.LessonDate >= startDate && x.LessonDate <= endDate)
+                    .ToListAsync();
+            }
+            else
+            {
+                if (user == 0)
+                {
+                    lessons = await _context.Lessons
+                        .Where(x => x.LessonDate >= startDate && x.LessonDate <= endDate)
+                        .ToListAsync();
+
+                }
+                else
+                {
+                   
+                    List<int> classIds = GetClassIdsForUser(user);
+                    List<int> courseids = new List<int>();
+                    foreach (int classId in classIds)
+                    {
+                        var sql = $"SELECT Courses.CourseId " +
+                            $"FROM Courses JOIN CourseInClass " +
+                            $"ON Courses.CourseId = CourseInClass.CourseId " +
+                            $"WHERE CourseInClass.ClassId = {classId}";
+                        var courses = await _context.Courses.FromSqlRaw(sql).ToListAsync();
+                        courseids.AddRange((IEnumerable<int>)courses);
+                    }
+                   
+
+                    foreach (int courseId in courseids)
+                    {
+                        // Get the courses associated with each class
+                        List<Lesson> lesso = await _context.Lessons
+                            .Where(x => x.CourseId == courseId && x.LessonDate >= startDate && x.LessonDate <= endDate)
+                            .ToListAsync();
+
+
+                        lessons.AddRange(lesso);
+                    }
+                }
+            }
+
+            List<LessonDTO> lessonDTOs = new List<LessonDTO>();
+
+            foreach (var l in lessons)
+            {
+                var course = await _context.Courses.FindAsync(l.CourseId);
+                string courseName = course != null ? course.CourseName : "Unknown";
+
+                var lessonDTO = new LessonDTO
+                {
+                    LessonId = l.LessonId,
+                    CourseId = l.CourseId,
+                    CourseName = courseName,
+                    LessonSubject = l.LessonSubject,
+                    LessonDate = l.LessonDate,
+                    StartTime = (TimeOnly)l.StartTime,
+                    EndTime = (TimeOnly)l.EndTime,
+                    LessonType = l.LessonType,
+                    ZoomUrl = l.LessonType == "Zoom" ? _context.ZoomLessons.FirstOrDefault().ZoomUrl : null
+                };
+
+                lessonDTOs.Add(lessonDTO);
+            }
+
+            return View(lessons);
+        }
+
+        private List<int> GetClassIdsForUser(int user)
+        {
+            List<int> classIds = new List<int>();
+
+            
+            var userClasses = _context.StudentInClasses.Where(uc => uc.UserId == user);
+
+            foreach (var userClass in userClasses)
+            {
+                classIds.Add((int)userClass.ClassId);
+            }
+
+            return classIds;
         }
 
         // GET: Lessons/Details/5
