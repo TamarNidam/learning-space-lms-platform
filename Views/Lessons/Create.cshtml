@@ -29,17 +29,17 @@
             </div>
             <div class="form-group">
                 <label asp-for="LessonDate" class="control-label"></label>
-                <input type="date" asp-for="LessonDate" class="form-control" required />
+                <input type="date" min="@DateTime.Today.ToString("dd-MM-yyyy")" asp-for="LessonDate" class="form-control" required />
                 <span asp-validation-for="LessonDate" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="StartTime" class="control-label"></label>
-                <input id="startTimeInput" type="time" min="07:00" max="22:00" step="3600" asp-for="StartTime" class="form-control" />
+                <input id="startTimeInput" type="time" min="08:00" max="22:00" step="3600" asp-for="StartTime" class="form-control" />
                 <span asp-validation-for="StartTime" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="EndTime" class="control-label"></label>
-                <input id="endTimeInput" type="time" min="08:00" max="23:00" step="3600" asp-for="EndTime" class="form-control" />
+                <input id="endTimeInput" type="time" min="09:00" max="23:00" step="3600" asp-for="EndTime" class="form-control" />
                 <span asp-validation-for="EndTime" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -70,38 +70,34 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
-        var startTimeInput = document.getElementById("startTimeInput");
-        var endTimeInput = document.getElementById("endTimeInput");
+        
+        });
+        // var startTimeInput = document.getElementById("startTimeInput");
+        // var endTimeInput = document.getElementById("endTimeInput");
         var zoomUrlContainer = document.getElementById("zoomUrlContainer");
         var lessonTypeSelect = document.getElementById("LessonType");
 
-        // Show/hide zoomUrlContainer based on Lesson Type
-        window.addEventListener("DOMContentLoaded", function () {
-            if (lessonTypeSelect.value === "Zoom") {
-                zoomUrlContainer.style.display = "block";
-            } else {
-                zoomUrlContainer.style.display = "none";
-            }
-        });
 
-        // Validate end time
-        startTimeInput.addEventListener("change", validateEndTime);
-        endTimeInput.addEventListener("change", validateEndTime);
+        // // Validate end time
+        // startTimeInput.addEventListener("change", validateEndTime);
+        // endTimeInput.addEventListener("change", validateEndTime);
 
-        function validateEndTime() {
-            var startTime = startTimeInput.value;
-            var endTime = endTimeInput.value;
+        // function validateEndTime() {
+        //     var startTime = startTimeInput.value;
+        //     var endTime = endTimeInput.value;
 
-            if (startTime && endTime) {
-                if (endTime <= startTime) {
-                    endTimeInput.setCustomValidity("End time must be greater than start time.");
-                } else {
-                    endTimeInput.setCustomValidity("");
-                }
-            } else {
-                endTimeInput.setCustomValidity("");
-            }
-        }
+        //     if (startTime && endTime) {
+        //                 var startDateTime = new Date("2000-01-01 " + startTime);
+        //         var endDateTime = new Date("2000-01-01 " + endTime);
+        //         if (endDateTime <= startDateTime) {
+        //             endTimeInput.setCustomValidity("End time must be greater than start time.");
+        //         } else {
+        //             endTimeInput.setCustomValidity("");
+        //         }
+        //     } else {
+        //         endTimeInput.setCustomValidity("");
+        //     }
+        // }
 
         // Show/hide zoomUrlContainer on Lesson Type change
         lessonTypeSelect.addEventListener("change", function () {

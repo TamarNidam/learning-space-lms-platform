@@ -92,6 +92,8 @@ namespace Learning_Space.Controllers
                 var newClassId = maxClassId + 1;
                 var sql = $"INSERT INTO [Classes] (ClassId,ClassName) VALUES ({newClassId}, '{@classDTO.ClassName}')";
                 await _context.Database.ExecuteSqlRawAsync(sql);
+
+                return Redirect($"/Classes/Index?user=0&permission=0");
             }
             return View(@classDTO);
         }

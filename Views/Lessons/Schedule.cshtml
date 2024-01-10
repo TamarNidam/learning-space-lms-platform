@@ -1,0 +1,78 @@
+﻿@model IEnumerable<Learning_Space.DTO.LessonDTO>
+
+@{
+    ViewData["Title"] = "Schedule";
+}
+@using Microsoft.AspNetCore.Http
+@{
+    int user = Convert.ToInt32(Context.Request.Query["user"]);
+    int permission = Convert.ToInt32(Context.Request.Query["permission"]);
+    int? courseid = Convert.ToInt32(Context.Request.Query["courseid"]);
+    int weekOffset = Convert.ToInt32(Context.Request.Query["weekOffset"]);
+}
+
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        border: 1px solid black;
+        padding: 8px;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    .schedule-table {
+        overflow-x: auto;
+    }
+</style>
+
+<h1>Schedule</h1>
+
+<div class="schedule-navigation">
+    <a asp-action="Schedule" asp-route-weekOffset="@(weekOffset-1)">&lt; Previous Week</a>
+    <span>
+        @{
+            var startDate = DateTime.Today.AddDays(weekOffset * 7);
+            var endDate = startDate.AddDays(6);
+        }
+        @startDate.ToString("dd/MM/yyyy") - @endDate.ToString("dd/MM/yyyy")
+    </span>
+    <a asp-action="Schedule" asp-route-weekOffset="@(weekOffset+1)">Next Week &gt;</a>
+</div>
+
+<table class="schedule-table">
+    <tr>
+        <th>Time</th>
+        @foreach (var day in Enumerable.Range(0, 7).Select(offset => DateTime.Today.AddDays(offset)))
+        {
+            <th>@day.DayOfWeek<br />@day.ToShortDateString()</th>
+        }
+    </tr>
+    @for (int i = 8; i < 23; i++)
+    {
+        <tr>
+            <td>@i:00 - @(i + 1):00</td>
+            @foreach (var day in Enumerable.Range(0, 7).Select(offset => DateTime.Today.AddDays(offset)))
+            {
+                <td>
+                    @foreach (var lessonDTO in Model)
+                    {
+                        if (lessonDTO.LessonDate.Day == day.Date.Day && lessonDTO.StartTime.Hour <= i && lessonDTO.EndTime.Hour >= (i+1))
+                        {
+                            <strong>@lessonDTO.CourseName - @lessonDTO.LessonSubject</strong>
+                            <br />
+                            <small>@lessonDTO.LessonType: <a href="@lessonDTO.ZoomUrl">@lessonDTO.ZoomUrl</a></small>
+                        }
+                    }
+                </td>
+            }
+        </tr>
+    }
+
+</table>
+

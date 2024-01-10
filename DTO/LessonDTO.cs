@@ -16,14 +16,19 @@ namespace Learning_Space.DTO
         [Required]
         public string LessonSubject { get; set; }
 
+        [Required]
         public DateOnly LessonDate { get; set; }
 
+        [Required]
         public TimeOnly StartTime { get; set; }
 
+        [Required]
         public TimeOnly EndTime { get; set; }
 
         public string LessonType { get; set; }
 
+        [Display(Name = "Zoom URL")]
+        [Url(ErrorMessage = "Please enter a valid URL for the Zoom URL.")]
         public string? ZoomUrl { get; set; }
     }
 }
