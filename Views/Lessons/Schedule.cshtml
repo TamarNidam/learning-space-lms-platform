@@ -25,14 +25,24 @@
     th {
         background-color: #f2f2f2;
     }
+
+    .schedule-table {
+        overflow-x: auto;
+    }
 </style>
 
 <h1>Schedule</h1>
 
 <div class="schedule-navigation">
-    <a asp-action="Schedule" asp-route-weekOffset="{@weekOffset-1}">&lt; Previous Week</a>
-@*     <span>@DateTime.Today.AddDays(Model.First().LessonDate.DayOfWeek == DayOfWeek.Sunday ? 0 : 7 - (int)Model.First().LessonDate.DayOfWeek).ToString("dd/MM/yyyy") - @DateTime.Today.AddDays(6 + (int)Model.First().LessonDate.DayOfWeek).ToString("dd/MM/yyyy")</span>
- *@    <a asp-action="Schedule" asp-route-weekOffset="{@weekOffset+1}">Next Week &gt;</a>
+    <a asp-action="Schedule" asp-route-weekOffset="@(weekOffset-1)">&lt; Previous Week</a>
+    <span>
+        @{
+            var startDate = DateTime.Today.AddDays(weekOffset * 7);
+            var endDate = startDate.AddDays(6);
+        }
+        @startDate.ToString("dd/MM/yyyy") - @endDate.ToString("dd/MM/yyyy")
+    </span>
+    <a asp-action="Schedule" asp-route-weekOffset="@(weekOffset+1)">Next Week &gt;</a>
 </div>
 
 <table class="schedule-table">
@@ -46,13 +56,13 @@
     @for (int i = 8; i < 23; i++)
     {
         <tr>
-            <td>@i:00 - {@i+1}:00</td>
+            <td>@i:00 - @(i + 1):00</td>
             @foreach (var day in Enumerable.Range(0, 7).Select(offset => DateTime.Today.AddDays(offset)))
             {
                 <td>
                     @foreach (var lessonDTO in Model)
                     {
-                        if (lessonDTO.LessonDate.Day == day.Date.Day && lessonDTO.StartTime.Hour <= i && lessonDTO.EndTime.Hour > i+1)
+                        if (lessonDTO.LessonDate.Day == day.Date.Day && lessonDTO.StartTime.Hour <= i && lessonDTO.EndTime.Hour >= (i+1))
                         {
                             <strong>@lessonDTO.CourseName - @lessonDTO.LessonSubject</strong>
                             <br />
