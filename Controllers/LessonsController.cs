@@ -137,7 +137,7 @@ namespace Learning_Space.Controllers
                 lessonDTOs.Add(lessonDTO);
             }
 
-            return View(lessons);
+            return View(lessonDTOs);
         }
 
         private List<int> GetClassIdsForUser(int user)

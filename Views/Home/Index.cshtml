@@ -25,6 +25,9 @@
                 <button class="home_button">
                    <a asp-controller="Courses" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission">Courses List</a>
                 </button>
+            <button class="home_button">
+                <a asp-controller="Lessons" asp-action="Schedule" asp-route-user="@user" asp-route-permission="@permission" asp-route-weekOffset="0">Schedule</a>
+            </button>
                  @if (permission == 0)
                  {
                     <button class="home_button">

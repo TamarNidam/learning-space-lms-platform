@@ -1,5 +1,4 @@
-﻿@using Learning_Space.DTO
-@model IEnumerable<Learning_Space.DTO.LessonDTO>
+﻿@model IEnumerable<Learning_Space.DTO.LessonDTO>
 
 @{
     ViewData["Title"] = "Schedule";
@@ -12,41 +11,58 @@
     int weekOffset = Convert.ToInt32(Context.Request.Query["weekOffset"]);
 }
 
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        border: 1px solid black;
+        padding: 8px;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+</style>
+
 <h1>Schedule</h1>
 
 <div class="schedule-navigation">
     <a asp-action="Schedule" asp-route-weekOffset="{@weekOffset-1}">&lt; Previous Week</a>
-    <span>@DateTime.Today.AddDays(Model.First().LessonDate.DayOfWeek == DayOfWeek.Sunday ? 0 : 7 - (int)Model.First().LessonDate.DayOfWeek).ToString("dd/MM/yyyy") - @DateTime.Today.AddDays(6 + (int)Model.First().LessonDate.DayOfWeek).ToString("dd/MM/yyyy")</span>
-    <a asp-action="Schedule" asp-route-weekOffset="{@weekOffset+1}">Next Week &gt;</a>
+@*     <span>@DateTime.Today.AddDays(Model.First().LessonDate.DayOfWeek == DayOfWeek.Sunday ? 0 : 7 - (int)Model.First().LessonDate.DayOfWeek).ToString("dd/MM/yyyy") - @DateTime.Today.AddDays(6 + (int)Model.First().LessonDate.DayOfWeek).ToString("dd/MM/yyyy")</span>
+ *@    <a asp-action="Schedule" asp-route-weekOffset="{@weekOffset+1}">Next Week &gt;</a>
 </div>
 
 <table class="schedule-table">
     <tr>
         <th>Time</th>
-        @foreach (var item in Model.GroupBy(x => x.LessonDate))
+        @foreach (var day in Enumerable.Range(0, 7).Select(offset => DateTime.Today.AddDays(offset)))
         {
-            <th>@item.Key.ToString("dd/MM/yyyy")</th>
+            <th>@day.DayOfWeek<br />@day.ToShortDateString()</th>
         }
     </tr>
-
-    @for (int hour = 8; hour <= 23; hour++)
+    @for (int i = 8; i < 23; i++)
     {
         <tr>
-            <td>@hour:00</td>
-            @foreach (var item in Model.GroupBy(x => x.LessonDate))
+            <td>@i:00 - {@i+1}:00</td>
+            @foreach (var day in Enumerable.Range(0, 7).Select(offset => DateTime.Today.AddDays(offset)))
             {
-                var timeSlot = DateTime.Today.AddDays((int)item.Key.DayOfWeek).AddHours(hour);
-                LessonDTO lesson = item.FirstOrDefault(x => x.LessonDate.ToDateTime() == timeSlot);
                 <td>
-                    @if (lesson != null)
+                    @foreach (var lessonDTO in Model)
                     {
-                        <strong>@lesson.CourseName - @lesson.LessonSubject</strong>
-                        <br />
-                        <small>@lesson.LessonType: <a href="@lesson.ZoomUrl">@lesson.ZoomUrl</a></small>
+                        if (lessonDTO.LessonDate.Day == day.Date.Day && lessonDTO.StartTime.Hour <= i && lessonDTO.EndTime.Hour > i+1)
+                        {
+                            <strong>@lessonDTO.CourseName - @lessonDTO.LessonSubject</strong>
+                            <br />
+                            <small>@lessonDTO.LessonType: <a href="@lessonDTO.ZoomUrl">@lessonDTO.ZoomUrl</a></small>
+                        }
                     }
                 </td>
             }
         </tr>
     }
+
 </table>
 
