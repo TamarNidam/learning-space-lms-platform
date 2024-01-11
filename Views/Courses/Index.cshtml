@@ -22,7 +22,7 @@
     }
     <div class="items_list">
         
-        <div class="item">
+        <div >
             <div>
                 @Html.DisplayNameFor(model => model.CourseName)
             </div>
@@ -33,8 +33,8 @@
                  
              @foreach (var item in Model) 
         {
-                <div onclick="location.href='@Url.Action("Details", new { user = @user, permission = @permission, courseid = @item.CourseId })';">          
-                     <div>
+                <div class="item" onclick="location.href='@Url.Action("Details", new { user = @user, permission = @permission, courseid = @item.CourseId })';">
+                    <div>
                    
                      @Html.DisplayFor(modelItem => item.CourseName)
                      </div>

@@ -18,17 +18,18 @@
 <div >
 
     <div class = "items_list">
-        @foreach (var item in Model) {
-        <div class="item">
-                <div onclick ="location.href='@Url.Action("Details", new { user = @user, permission = @permission, classid = @item.ClassId })';">
-                @Html.DisplayFor(modelItem => item.ClassName)
+        @foreach (var item in Model)    
+        {
+            <div class="item">
+            <div class="item_link" onclick ="location.href='@Url.Action("Details", new { user = @user, permission = @permission, classid = @item.ClassId })';">
+                     @Html.DisplayFor(modelItem => item.ClassName)
                 </div>
-                <div>
+                    <div class="item_link" onclick="location.href='@Url.Action("Details", new { user = @user, permission = @permission, classid = @item.ClassId })';">
                    <a class="icon" asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-classid="@item.ClassId">&#x270E;</a>
                    <a class="icon" asp-action="Delete" asp-route-user="@user" asp-route-permission="@permission" asp-route-classid="@item.ClassId">&#x2716;</a>
                 </div>
-        </div>
-}
+            </div>
+        }
     </div>
 </div>
 </div>

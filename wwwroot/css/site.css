@@ -47,7 +47,7 @@ body {
     flex-direction:row;
     justify-content:space-around;
     flex-wrap:wrap;
-    border-radius: 7px;ו
+    border-radius: 7px;
     padding: 30px;
 }
 users_list{
@@ -127,11 +127,12 @@ tr:hover > td{
 .nav-item {
     background-color: rgb(211, 83, 83, 0.65);
     border: 1px solid grey;
-    border-radius: 10px;
+    border-radius: 50%;
     text-align: center;
     margin: 5px;
     font-family: 'Nunito', sans-serif;
     padding: 5px;
+    font-size: larger;
 }
 
     .nav-item:hover {
@@ -147,27 +148,26 @@ tr:hover > td{
     margin: 10px;
 }
 
-#sign_up_button {
-    
-}
 .home_button {
+    width: 100px;
+    height: 100px;
     background-color: rgb(211, 83, 83, 0.85);
     border: 0.5px solid black;
-    color: black;
-    border-radius: 7px;
-    padding: 5px
-
+    border-radius: 15%;
+    display: flex;
+    flex-wrap: wrap;
+    text-align: center;
+    font-size: 7px;
+    margin: 10px;
 }
 .All_permission {
     display: flex;
-    justify-content: space-around ;
-    width: 200px; /* או כל רוחב שתבחר לכל ריבוע */
-    height: 200px;
-    font-family: 'Nunito', sans-serif;
-    background-color: plum;
-    margin: 5px; /* יוסיף רווח בין ה-td */
-    padding: 7px;
-    border: 1px solid black;
+    flex-direction: row;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    border-radius: 7px;
+    padding: 30px;
+}
 }
 .control-label{
     padding:5px
@@ -177,14 +177,14 @@ tr:hover > td{
     height: 200px;
     background-color: rgb(211, 83, 83, 0.85);
     border: 0.5px solid black;
-    border-radius: 15px;
+    border-radius: 15%;
     display: flex;
     flex-wrap: wrap;
     text-align: center;
     font-size: 7px;
     margin: 10px;
 }
-.btn btn-primary {
+.sign_up_button {
     background-color: rgb(211, 83, 83, 0.85);
     border: 0.5px solid black;
     color: black;
@@ -195,4 +195,8 @@ tr:hover > td{
     background-color: white;
     border: none;
 
+}
+.item_link{
+    font-size:large;
+    align-content:center;
 }

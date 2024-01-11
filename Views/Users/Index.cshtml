@@ -23,7 +23,7 @@
             <select id="SelectedStudentId" name="SelectedStudentId" class="form-control" asp-items="ViewBag.StudentNotInClass"></select>
         </div>
         <input type="hidden" name="classId" value="@classid.Value" />
-        <button type="submit" class="btn btn-primary">&#x002B; Add</button>
+        <button type="submit" class="sign_up_button">&#x002B; Add</button>
     </form>
 }
 else if (permission == 0 @* && !courseid.HasValue *@ && courseid.Value == 0)
