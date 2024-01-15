@@ -56,8 +56,8 @@ users_list{
 
 
 .calendar {
-    width: 500px;
-    height: 500px;
+    width: 1000px;
+    height: 1000px;
     border-collapse: collapse;
 }
 
@@ -67,7 +67,15 @@ users_list{
     border-bottom: 1px solid #ddd;
 }
 
+
 .event-date {
+    width: 100px;
+    height: 100px;
+    font-family: 'Nunito', sans-serif;
+    margin: 5px;
+    padding: 7px;
+    border: 1px solid black;
+    border-radius: 10px;
     background-color: yellow;
 }
 
@@ -78,11 +86,13 @@ users_list{
 .week{
     display: flex;
     flex-wrap: wrap;
+    border-bottom: 0.5px, solid, black;
+
 }
 
 .datInMonth {
-    width: 200px;
-    height: 200px;
+    width: 100px;
+    height: 100px;
     font-family: 'Nunito', sans-serif;
     background-color: rgb(211, 83, 83, 0.85);
     margin: 5px;
@@ -127,12 +137,24 @@ tr:hover > td{
 .nav-item {
     background-color: rgb(211, 83, 83, 0.65);
     border: 1px solid grey;
-    border-radius: 50%;
+    border-radius: 30%;
     text-align: center;
     margin: 5px;
     font-family: 'Nunito', sans-serif;
     padding: 5px;
     font-size: larger;
+    font-weight: bold;
+}
+.nav-item-home {
+    width: 30px;
+    height: 30px;
+    border-radius: 30;
+    text-align: center;
+    margin: 5px;
+    font-family: 'Nunito', sans-serif;
+    padding: 5px;
+    font-size: larger;
+    font-weight: bold
 }
 
     .nav-item:hover {
@@ -199,4 +221,8 @@ tr:hover > td{
 .item_link{
     font-size:large;
     align-content:center;
+}
+
+.icon{
+    color: rgb(207, 58, 193);
 }
