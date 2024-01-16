@@ -29,14 +29,13 @@
             <a asp-action="Create" asp-route-user="@user" asp-route-permission="@permission">&#xf055;</a>
         </p>   
         }
-        
+         <div>
+                @Html.DisplayNameFor(model => model.CourseName)
+            </div>
     }
     <div class="items_list">
         
-        <div >
-            <div>
-                @Html.DisplayNameFor(model => model.CourseName)
-            </div>
+           
             @* <th>
                 @Html.DisplayNameFor(model => model.CourseDescription)
             </th> *@
@@ -68,6 +67,6 @@
                 </div>
             </div>
         }
-    </div>
+    
     </div>
 </div>

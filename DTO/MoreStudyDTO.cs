@@ -13,7 +13,8 @@ namespace Learning_Space.DTO
         public string MoreStudySubject { get; set; }
         [Required]
         public string Content { get; set; }
-
+        [Display(Name = "Study URL")]
+        [Url(ErrorMessage = "Please enter a valid URL for the Study URL.")]
         public string? MoreStudyUrl { get; set; }
 
        // public string CourseName { get; set; }

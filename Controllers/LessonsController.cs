@@ -230,7 +230,7 @@ namespace Learning_Space.Controllers
                 var maxId = await _context.Lessons.MaxAsync(u => (int?)u.LessonId) ?? 0;
                 var newId = maxId + 1;
 
-                var sql = $"INSERT INTO [Lessons] (LessonId,CourseId,LessonSubject,LessonDate,StartTime,EndTime,LessonType) VALUES ({newId}, {courseid},'{lesson.LessonSubject}', '{lesson.LessonDate}', '{lesson.StartTime}', '{lesson.EndTime}', '{lesson.LessonType}')";
+                var sql = $"INSERT INTO [Lessons] (LessonId,CourseId,LessonSubject,LessonDate,StartTime,EndTime,LessonType) VALUES ({newId}, {courseid},'{lesson.LessonSubject}', '{lesson.LessonDate.ToString("yyyy-MM-dd")}', '{lesson.StartTime}', '{lesson.EndTime}', '{lesson.LessonType}')";
                 await _context.Database.ExecuteSqlRawAsync(sql);
 
                 if (lesson.LessonType == "Zoom")

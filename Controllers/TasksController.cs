@@ -33,14 +33,16 @@ namespace Learning_Space.Controllers
     $"FROM [Tasks] t " +
     $"JOIN CourseInClass cc ON cc.CourseId = t.CourseId " +
     $"JOIN StudentInClass sc ON sc.ClassId = cc.ClassId " +
-    $"WHERE sc.UserId = '{user}'";
+    $"WHERE sc.UserId = '{user}'" +
+    $"AND t.TaskType = 'Task'";
                     tasks = await _context.Tasks.FromSqlRaw(sql).ToListAsync();
                 }
                 else
                 {
                     var sql = $"SELECT t.*" +
                         $"FROM [Tasks] t " +
-                        $"WHERE t.CourseId = {courseid}";
+                        $"WHERE t.CourseId = {courseid}" +
+                        $"AND t.TaskType = 'Task'";
                     tasks = await _context.Tasks.FromSqlRaw(sql).ToListAsync();
                 }
 
