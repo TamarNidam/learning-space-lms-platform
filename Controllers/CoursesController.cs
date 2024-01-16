@@ -46,14 +46,12 @@ namespace Learning_Space.Controllers
                             $"ON Courses.CourseId = CourseInClass.CourseId " +
                             $"WHERE CourseInClass.ClassId = {classid}";
                         courses = await _context.Courses.FromSqlRaw(sql).ToListAsync();
-
                     }
                     else
                     {
                         courses = await _context.Courses.ToListAsync();
                         courses.RemoveAt(0);
                     }
-
                 }
                 else
                 {
@@ -413,8 +411,6 @@ namespace Learning_Space.Controllers
                 return View("Error", ex);
             }
         }
-
-        // POST: Courses/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int courseid)
@@ -428,41 +424,13 @@ namespace Learning_Space.Controllers
                 var documentsToDelete1 = await _context.CourseInClasses.Where(t => t.CourseId == courseid).ToListAsync();
                 _context.CourseInClasses.RemoveRange(documentsToDelete1);
                 await _context.SaveChangesAsync();
-                //var teacher = await _context.Teachers.FindAsync(courseid);
-                //if (teacher != null)
-
-
-                //{ _context.Teachers.Remove(teacher); }
-                
-                //var classs = await _context.CourseInClasses.FindAsync(courseid);
-                //if (classs != null)
-                //{
-                //  _context.CourseInClasses.Remove(classs);  
-                //}
-                //await _context.SaveChangesAsync();
                 _context.Courses.Remove(course);
-
                 string baseFolderPath = Path.Combine(".", "TextFiles");
                 string courseFolderPath = Path.Combine(baseFolderPath, "Courses", $"{courseid}");
                 string courseChatFilePath = Path.Combine(baseFolderPath, "Chats", "Course", $"{courseid}" + ".txt");
                 Console.WriteLine(courseFolderPath);
                 MyFile.Delete(courseChatFilePath);
-
-                //// delete the folder if it  exist
-                //if (DDirectory.Exists(courseFolderPath))
-                //{
-                //    DDirectory.DeleteDirectory(courseChatFilePath);
-
-                
-                //    Console.WriteLine("Course folder created successfully!");
-                //}
-                //else
-                //{
-                //    Console.WriteLine("Course folder already exists!");
-                //}
-
             }
-
             await _context.SaveChangesAsync();
             return Redirect($"/Courses/Index?user=0&permission=0");
         }
@@ -473,44 +441,3 @@ namespace Learning_Space.Controllers
         }
     }
 }
-
-
-
-
-
-//using System;
-//using System.Net.Http;
-//using System.Threading.Tasks;
-//using Newtonsoft.Json.Linq;
-//string ZOOM_API_KEY="דד"
-
-//class Program
-//{
-//    static async Task Main(string[] args)
-//    {
-//        var apiKey = ZOOM_API_KEY;
-//        var apiSecret = "YOUR_ZOOM_API_SECRET";
-
-//        // Step 1: Generate a JWT token for authentication
-//        var jwtToken = ZoomTokenHelper.GenerateJWTToken(apiKey, apiSecret);
-
-//        // Step 2: Create a new meeting
-//        var httpClient = new HttpClient();
-//        httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {jwtToken}");
-
-//        var requestUri = "https://api.zoom.us/v2/users/YOUR_USER_ID/meetings";
-//        var requestData = new
-//        {
-//            topic = "New Video Meeting",
-//            type = 1 // 1 for instant meetings
-//        };
-//        var response = await httpClient.PostAsJsonAsync(requestUri, requestData);
-//        var responseBody = await response.Content.ReadAsStringAsync();
-//        var meetingId = JObject.Parse(responseBody)["id"].ToString();
-
-//        // Step 3: Generate the meeting link
-//        var meetingLink = $"https://zoom.us/j/{meetingId}";
-
-//        Console.WriteLine($"Meeting Link: {meetingLink}");
-//    }
-//}

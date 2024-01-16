@@ -52,14 +52,14 @@
     {
             <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId">&#xf044;</a>
     }
-    <a asp-controller="Tasks" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId">Tasks</a> | 
-    <a asp-controller="Users" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId">Student List</a> |
-        <a asp-controller="Chats" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId">	&#xf086; Chat</a> |
-    <a asp-controller="MoreStudies" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId">More Studies</a> |
-        <a asp-controller="Calendar" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId">Calendar</a> |
-        <a asp-controller="Lessons" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId">Lessons</a>
-        <a asp-controller="LessonAttends" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId">Lesson Attends</a>
-        <a asp-controller="Massages" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId">Massages</a>
+    <a asp-controller="Tasks" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId" class="options">Tasks</a> |
+        <a asp-controller="Users" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId" class="options">Student List</a> |
+        <a asp-controller="Chats" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId" class="options">	&#xf086; Chat</a> |
+        <a asp-controller="MoreStudies" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId" class="options">More Studies</a> |
+        <a asp-controller="Calendar" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId" class="options">Calendar</a> |
+        <a asp-controller="Lessons" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId" class="options">Lessons</a>
+        <a asp-controller="LessonAttends" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId" class="options">Lesson Attends</a>
+        <a asp-controller="Massages" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId" class="options">Massages</a>
 
 
 
