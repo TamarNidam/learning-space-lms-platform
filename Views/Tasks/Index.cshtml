@@ -9,12 +9,15 @@
     int? permission = Convert.ToInt32(Context.Request.Query["permission"]);
     int? courseid = Convert.ToInt32(Context.Request.Query["courseid"]);
 }
-<link rel="stylesheet" type="text/css" href="./css/styles.css">
-<h1>Index</h1>
 
+<h1>Tasks</h1>
+
+@if (permission == 0 || permission == 1)
+{
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+}
 <table class="table">
     <thead>
         <tr>

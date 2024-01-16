@@ -48,8 +48,13 @@
 <table class="schedule-table">
     <tr>
         <th>Time</th>
-        @foreach (var day in Enumerable.Range(0, 7).Select(offset => DateTime.Today.AddDays(offset)))
+        @* @foreach (var day in Enumerable.Range(0, 7).Select(offset => DateTime.Today.AddDays(offset)))
         {
+            <th>@day.DayOfWeek<br />@day.ToShortDateString()</th>
+        } *@
+        @foreach (var dayOffset in Enumerable.Range(0, 7))
+        {
+            var day = startDate.AddDays(dayOffset);
             <th>@day.DayOfWeek<br />@day.ToShortDateString()</th>
         }
     </tr>
@@ -57,12 +62,27 @@
     {
         <tr>
             <td>@i:00 - @(i + 1):00</td>
-            @foreach (var day in Enumerable.Range(0, 7).Select(offset => DateTime.Today.AddDays(offset)))
+            @* @foreach (var day in Enumerable.Range(0, 7).Select(offset => DateTime.Today.AddDays(offset)))
             {
                 <td>
                     @foreach (var lessonDTO in Model)
                     {
                         if (lessonDTO.LessonDate.Day == day.Date.Day && lessonDTO.StartTime.Hour <= i && lessonDTO.EndTime.Hour >= (i+1))
+                        {
+                            <strong>@lessonDTO.CourseName - @lessonDTO.LessonSubject</strong>
+                            <br />
+                            <small>@lessonDTO.LessonType: <a href="@lessonDTO.ZoomUrl">@lessonDTO.ZoomUrl</a></small>
+                        }
+                    }
+                </td>
+            } *@
+            @foreach (var dayOffset in Enumerable.Range(0, 7))
+            {
+                var day = startDate.AddDays(dayOffset);
+                <td>
+                    @foreach (var lessonDTO in Model)
+                    {
+                        if (lessonDTO.LessonDate.Day == day.Date.Day && lessonDTO.StartTime.Hour <= i && lessonDTO.EndTime.Hour >= (i + 1))
                         {
                             <strong>@lessonDTO.CourseName - @lessonDTO.LessonSubject</strong>
                             <br />

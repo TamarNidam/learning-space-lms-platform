@@ -146,7 +146,7 @@ namespace Learning_Space.Controllers
 
 
         // GET: Courses/Create
-        public IActionResult Create()
+        public async Task<IActionResult> CreateAsync(int? classid)
         {
            
             var teacherUserIds = _context.Teachers.Select(t => t.UserId).Distinct().ToList();
@@ -162,7 +162,17 @@ namespace Learning_Space.Controllers
 
 
             ViewData["TeacherId"] = new SelectList(users, "TeacherId", "FirstName");
+            if(classid.HasValue)
+            {
+                var clas = await _context.Classes.Where(c => c.ClassId == classid.Value).ToListAsync();
+                var selectList = new SelectList(clas, "ClassId", "ClassName");
+                ViewData["ClassId"] = selectList;
+            }
+            else
+            {
+
             ViewData["ClassId"] = new SelectList(_context.Classes, "ClassId", "ClassName");
+            }
             return View();
         }
 

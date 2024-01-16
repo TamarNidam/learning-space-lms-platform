@@ -20,9 +20,13 @@ html {
 body {
     background-image: url('../media/background.png'); 
     background-repeat: repeat; 
-    background-color: #f1f1f1;
     font-family: Arial, sans-serif; 
     margin-bottom: 10px;
+}
+
+a {
+    text-decoration-color: initial;
+
 }
 .general{
     display:flex;
@@ -39,8 +43,7 @@ body {
 }
 
 .table {
-    background-color: whitesmoke;
-   
+    background-color: rgb(211, 83, 83, 0.65);
 }
 .items_list {
     display: flex;
@@ -117,12 +120,12 @@ users_list{
     color:black;
     border-radius: 3px;
     background-color:whitesmoke;
-}*/
+}
     tr:hover {
         border: 1px solid grey;
         background-color: #f5f5f5;
         cursor: pointer;
-    }
+    }*/
 tr:hover > td{
     border: 1px solid grey;
 
@@ -137,7 +140,7 @@ tr:hover > td{
 .nav-item {
     background-color: rgb(211, 83, 83, 0.65);
     border: 1px solid grey;
-    border-radius: 30%;
+    border-radius: 200px;
     text-align: center;
     margin: 5px;
     font-family: 'Nunito', sans-serif;
@@ -148,7 +151,7 @@ tr:hover > td{
 .nav-item-home {
     width: 30px;
     height: 30px;
-    border-radius: 30;
+    border-radius: 30px;
     text-align: center;
     margin: 5px;
     font-family: 'Nunito', sans-serif;
@@ -179,7 +182,8 @@ tr:hover > td{
     display: flex;
     flex-wrap: wrap;
     text-align: center;
-    font-size: 7px;
+    align-items:center;
+    font-size: 19px;
     margin: 10px;
 }
 .All_permission {

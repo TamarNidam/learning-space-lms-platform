@@ -5,8 +5,9 @@
 }
 @using Microsoft.AspNetCore.Http
 @{
-    int? user = Convert.ToInt32(Context.Request.Query["user"]);
-    int? permission = Convert.ToInt32(Context.Request.Query["permission"]);
+    int user = Convert.ToInt32(Context.Request.Query["user"]);
+    int permission = Convert.ToInt32(Context.Request.Query["permission"]);
+    int? classid = Convert.ToInt32(Context.Request.Query["classid"]);
 }
 
 
@@ -14,11 +15,21 @@
 <hr/>
 
 <div class="general">
-    @if (permission == 0)
+    @if (permission == 0 )
     {
-        <p>
+        if (classid.HasValue)
+        {
+            <p>
+                <a asp-action="Create" asp-route-user="@user" asp-route-permission="@permission" asp-route-classid="@classid">&#xf055;</a>
+            </p>
+        }
+        else
+        {
+         <p>
             <a asp-action="Create" asp-route-user="@user" asp-route-permission="@permission">&#xf055;</a>
-        </p>
+        </p>   
+        }
+        
     }
     <div class="items_list">
         
@@ -33,7 +44,7 @@
                  
              @foreach (var item in Model) 
         {
-                <div class="item" onclick="location.href='@Url.Action("Details", new { user = @user, permission = @permission, courseid = @item.CourseId })';">
+                <div class="item" onclick="location.href='@Url.Action("Details", new { user = @user, permission = @permission, courseid = item.CourseId})';">
                     <div>
                    
                      @Html.DisplayFor(modelItem => item.CourseName)
