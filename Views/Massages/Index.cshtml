@@ -10,11 +10,11 @@
     int? courseid = Convert.ToInt32(Context.Request.Query["courseid"]);
 }
 
-<h1>Index</h1>
+<h1 class="title">Massages</h1>
 @if (permission == 1 || permission == 0)
 {
     <p>
-        <a asp-action="Create" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid">&#x002B; Create New</a>
+        <a asp-action="Create" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" class="options">&#x002B; Create New</a>
     </p>
 }
 <table class="table">

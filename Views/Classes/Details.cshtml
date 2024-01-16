@@ -26,11 +26,11 @@
     <p> @Model.Students Stusents.</p>
 </div>
 <div>
-    <a asp-controller="Courses" asp-action="Index" asp-route-user="0" asp-route-permission="0" asp-route-classid="@Model?.ClassId">courses list</a>
-    <a asp-controller="Users" asp-action="Index" asp-route-user="0" asp-route-permission="0" asp-route-classid="@Model?.ClassId">students list</a>
+        <a asp-controller="Courses" asp-action="Index" asp-route-user="0" asp-route-permission="0" asp-route-classid="@Model?.ClassId" class="options">courses list</a>
+        <a asp-controller="Users" asp-action="Index" asp-route-user="0" asp-route-permission="0" asp-route-classid="@Model?.ClassId" class="options">students list</a>
 </div>
 <div>   
-        <a asp-action="Edit" asp-route-user="0" asp-route-permission="0" asp-route-classid="@Model?.ClassId">Edit</a>        
-    <a asp-action="Index" asp-route-user="0" asp-route-permission="0">Back to List</a>
+        <a asp-action="Edit" asp-route-user="0" asp-route-permission="0" asp-route-classid="@Model?.ClassId" class="options">Edit</a>
+        <a asp-action="Index" asp-route-user="0" asp-route-permission="0" class="options">Back to List</a>
 </div>
 </div>
