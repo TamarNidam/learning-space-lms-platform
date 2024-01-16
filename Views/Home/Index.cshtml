@@ -9,43 +9,66 @@
 <div class="general">
 <div class="text-center">
      <h1 class="display-4">Welcome</h1>
-         <div class="All_permission">
-                <button class="home_button">
-                  <a asp-controller="Users" asp-action="Details" asp-route-user="@user" asp-route-permission="@permission" asp-route-userid="@user">User Settings</a>
+        <div class="All_permission">
+            <a asp-controller="Users" asp-action="Details" asp-route-user="@user" asp-route-permission="@permission" asp-route-userid="@user" class="home_button">
+               
+                <button>
+                    User Settings
                 </button>
-                <button class="home_button">
-                  <a asp-controller="Home" asp-action="SignUp">Sign Up</a>
+            </a> 
+            <a asp-controller="Home" asp-action="SignUp" class="home_button">
+                
+                <button>
+                    Sign Up  
                 </button>
-                <button class="home_button">
-                   <a asp-controller="Alarms" asp-action="index" asp-route-user="@user" asp-route-permission="@permission">Alarams</a>
+            </a>
+            <a asp-controller="Alarms" asp-action="index" asp-route-user="@user" asp-route-permission="@permission" class="home_button">
+               
+                <button >
+                   Alarams
                 </button>
-                <button class="home_button">
-                   <a asp-controller="Calendar" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission">Calender</a>
+            </a>
+            <a asp-controller="Calendar" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" class="home_button">
+                <button >
+                   Calender
                 </button>
-                <button class="home_button">
-                   <a asp-controller="Courses" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission">Courses List</a>
+            </a>
+            <a asp-controller="Courses" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" class="home_button">
+                <button >
+                   Courses
                 </button>
-            <button class="home_button">
-                <a asp-controller="Lessons" asp-action="Schedule" asp-route-user="@user" asp-route-permission="@permission" asp-route-weekOffset="0">Schedule</a>
-            </button>
-                 @if (permission == 0)
-                 {
-                    <button class="home_button">
-                      <a asp-controller="Users" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission">Users List</a>
+            </a>
+            <a asp-controller="Lessons" asp-action="Schedule" asp-route-user="@user" asp-route-permission="@permission" asp-route-weekOffset="0" class="home_button">
+                <button >
+                Schedule
+                </button>
+            </a>
+             @if (permission == 0)
+             {
+                <a asp-controller="Users" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" class="home_button">
+                    <button >
+                        Users List
                     </button>
-                    <button class="home_button">
-                     <a asp-controller="Classes" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission">Classes</a>
+                </a>
+                <a asp-controller="Classes" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" class="home_button">
+                    <button >
+                     Classes
                     </button>
-                 }
-                 else if (permission == 2)
-                 {
-                    <button class="home_button">
-                      <a asp-controller="Tasks" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission">Tasks</a>
+                </a>
+             }
+             else if (permission == 2)
+             {
+                <a asp-controller="Tasks" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" class="home_button">
+                    <button >
+                      Tasks
                     </button>
-                    <button class="home_button">
-                     <a asp-controller="Classes" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission">Classes</a>
+                 </a>
+                <a asp-controller="Classes" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" class="home_button">
+                    <button >
+                     Classes
                     </button>
-                 }
+                </a>
+             }
          </div>
     </div>
 </div>

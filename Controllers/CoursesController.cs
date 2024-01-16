@@ -19,6 +19,7 @@ using NuGet.DependencyResolver;
 using Microsoft.Data.SqlClient;
 
 
+
 namespace Learning_Space.Controllers
 {
     public class CoursesController : Controller
@@ -94,7 +95,7 @@ namespace Learning_Space.Controllers
 
             foreach (var userClass in userClasses)
             {
-                classIds.Add((int)userClass.ClassId);
+                classIds.Add((int)(userClass.ClassId));
             }
 
             return classIds;
@@ -144,7 +145,7 @@ namespace Learning_Space.Controllers
 
 
         // GET: Courses/Create
-        public IActionResult Create()
+        public async Task<IActionResult> CreateAsync(int? classid)
         {
            
             var teacherUserIds = _context.Teachers.Select(t => t.UserId).Distinct().ToList();
@@ -160,7 +161,17 @@ namespace Learning_Space.Controllers
 
 
             ViewData["TeacherId"] = new SelectList(users, "TeacherId", "FirstName");
+            if(classid.HasValue)
+            {
+                var clas = await _context.Classes.Where(c => c.ClassId == classid.Value).ToListAsync();
+                var selectList = new SelectList(clas, "ClassId", "ClassName");
+                ViewData["ClassId"] = selectList;
+            }
+            else
+            {
+
             ViewData["ClassId"] = new SelectList(_context.Classes, "ClassId", "ClassName");
+            }
             return View();
         }
 
@@ -426,14 +437,52 @@ namespace Learning_Space.Controllers
                 await _context.SaveChangesAsync();
                 _context.Courses.Remove(course);
                 string baseFolderPath = Path.Combine(".", "TextFiles");
-                string courseFolderPath = Path.Combine(baseFolderPath, "Courses", $"{courseid}");
-                string courseChatFilePath = Path.Combine(baseFolderPath, "Chats", "Course", $"{courseid}" + ".txt");
-                Console.WriteLine(courseFolderPath);
+                //string courseFolderPath = Path.Combine(baseFolderPath, "Courses", $"{courseid}");
+                string courseChatFilePath = Path.Combine(baseFolderPath, "Chats", "Courses", $"{courseid}" + ".txt");
+            
                 MyFile.Delete(courseChatFilePath);
             }
+  _context.Courses.Remove(course);
             await _context.SaveChangesAsync();
             return Redirect($"/Courses/Index?user=0&permission=0");
         }
+
+
+        public IActionResult Notebook(int user, int courseid)
+        {
+            string notebookContent = string.Empty;
+
+            string courseUserNotebookFilePath = Path.Combine(baseFolderPath, "Notebooks", $"courseid_{courseid}__userid_{user}.txt");
+
+            // Check if the notebook file exists
+            if (MyFile.Exists(courseUserNotebookFilePath))
+            {
+                // Read the content from the notebook file
+                notebookContent = MyFile.ReadAllText(courseUserNotebookFilePath);
+
+            }
+
+            // Pass the notebook content to the view
+            return View("Notebook", notebookContent);
+        }
+
+        [HttpPost]
+        public IActionResult SaveNotebook(int user, int permission, int courseid, string notebookContent)
+        {
+
+            // Create the file path based on the provided user, permission, and courseId
+            string courseUserNotebookFilePath = Path.Combine(baseFolderPath, "Notebooks", $"courseid_{courseid}__userid_{user}.txt");
+
+            // Save the updated notebook content to the file
+            MyFile.WriteAllText(courseUserNotebookFilePath, notebookContent);
+            // Redirect back to the Notebook action to display the updated content
+            return Redirect($"/Courses/Details?user={user}&permission={permission}&courseid={courseid}");
+        }
+
+
+       
+
+      
 
         private bool CourseExists(int id)
         {
