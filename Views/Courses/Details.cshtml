@@ -54,7 +54,8 @@
         }
         else
         {
-            <
+            <a asp-action="Notebook" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId">notebook</a>
+
         }
         | <a asp-controller="Tasks" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId">Tasks</a> | 
     <a asp-controller="Users" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId">Student List</a> |

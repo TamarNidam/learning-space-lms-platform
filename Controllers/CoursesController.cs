@@ -97,7 +97,7 @@ namespace Learning_Space.Controllers
 
             foreach (var userClass in userClasses)
             {
-                classIds.Add((int)userClass.ClassId);
+                classIds.Add((int)(userClass.ClassId));
             }
 
             return classIds;
@@ -487,6 +487,43 @@ var documentsToDelete = await _context.Teachers.Where(t => t.CourseId == coursei
             await _context.SaveChangesAsync();
             return Redirect($"/Courses/Index?user=0&permission=0");
         }
+
+
+        public IActionResult Notebook(int user, int courseid)
+        {
+            string notebookContent = string.Empty;
+
+            string courseUserNotebookFilePath = Path.Combine(baseFolderPath, "Notebooks", $"courseid_{courseid}__userid_{user}.txt");
+
+            // Check if the notebook file exists
+            if (MyFile.Exists(courseUserNotebookFilePath))
+            {
+                // Read the content from the notebook file
+                notebookContent = MyFile.ReadAllText(courseUserNotebookFilePath);
+
+            }
+
+            // Pass the notebook content to the view
+            return View("Notebook", notebookContent);
+        }
+
+        [HttpPost]
+        public IActionResult SaveNotebook(int user, int permission, int courseid, string notebookContent)
+        {
+
+            // Create the file path based on the provided user, permission, and courseId
+            string courseUserNotebookFilePath = Path.Combine(baseFolderPath, "Notebooks", $"courseid_{courseid}__userid_{user}.txt");
+
+            // Save the updated notebook content to the file
+            MyFile.WriteAllText(courseUserNotebookFilePath, notebookContent);
+            // Redirect back to the Notebook action to display the updated content
+            return Redirect($"/Courses/Details?user={user}&permission={permission}&courseid={courseid}");
+        }
+
+
+       
+
+      
 
         private bool CourseExists(int id)
         {
