@@ -17,7 +17,7 @@
 <div class="general">
     @if (permission == 0 )
     {
-        if (classid.HasValue)
+        if (classid.HasValue&&classid.Value!=0)
         {
             <p>
                 <a asp-action="Create" asp-route-user="@user" asp-route-permission="@permission" asp-route-classid="@classid">&#xf055;</a>

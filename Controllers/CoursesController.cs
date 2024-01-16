@@ -433,12 +433,7 @@ namespace Learning_Space.Controllers
             var course = await _context.Courses.FindAsync(courseid);
             if (course != null)
             {
-                var documentsToDelete = await _context.Teachers.Where(t => t.CourseId == courseid).ToListAsync();
-                _context.Teachers.RemoveRange(documentsToDelete);
-                await _context.SaveChangesAsync();
-                var documentsToDelete1 = await _context.CourseInClasses.Where(t => t.CourseId == courseid).ToListAsync();
-                _context.CourseInClasses.RemoveRange(documentsToDelete1);
-                await _context.SaveChangesAsync();
+                
                 //var teacher = await _context.Teachers.FindAsync(courseid);
                 //if (teacher != null)
 
@@ -451,12 +446,12 @@ namespace Learning_Space.Controllers
                 //  _context.CourseInClasses.Remove(classs);  
                 //}
                 //await _context.SaveChangesAsync();
-                _context.Courses.Remove(course);
+              
 
                 string baseFolderPath = Path.Combine(".", "TextFiles");
-                string courseFolderPath = Path.Combine(baseFolderPath, "Courses", $"{courseid}");
-                string courseChatFilePath = Path.Combine(baseFolderPath, "Chats", "Course", $"{courseid}" + ".txt");
-                Console.WriteLine(courseFolderPath);
+                //string courseFolderPath = Path.Combine(baseFolderPath, "Courses", $"{courseid}");
+                string courseChatFilePath = Path.Combine(baseFolderPath, "Chats", "Courses", $"{courseid}" + ".txt");
+            
                 MyFile.Delete(courseChatFilePath);
 
                 //// delete the folder if it  exist
@@ -464,7 +459,7 @@ namespace Learning_Space.Controllers
                 //{
                 //    DDirectory.DeleteDirectory(courseChatFilePath);
 
-                
+
                 //    Console.WriteLine("Course folder created successfully!");
                 //}
                 //else
@@ -472,8 +467,23 @@ namespace Learning_Space.Controllers
                 //    Console.WriteLine("Course folder already exists!");
                 //}
 
-            }
+                // Remove the notebook files for each student
+                string notebookFolderPath = Path.Combine(baseFolderPath, "Notebooks");
+                DirectoryInfo notebookDirectory = new DirectoryInfo(notebookFolderPath);
 
+                var notebookFiles = notebookDirectory.GetFiles($"courseid_{courseid}_*");
+                foreach (FileInfo file in notebookFiles)
+                {
+                    file.Delete();
+                }
+var documentsToDelete = await _context.Teachers.Where(t => t.CourseId == courseid).ToListAsync();
+                _context.Teachers.RemoveRange(documentsToDelete);
+                await _context.SaveChangesAsync();
+                var documentsToDelete1 = await _context.CourseInClasses.Where(t => t.CourseId == courseid).ToListAsync();
+                _context.CourseInClasses.RemoveRange(documentsToDelete1);
+                await _context.SaveChangesAsync();
+            }
+  _context.Courses.Remove(course);
             await _context.SaveChangesAsync();
             return Redirect($"/Courses/Index?user=0&permission=0");
         }
