@@ -34,7 +34,7 @@
 <h1>Schedule</h1>
 
 <div class="schedule-navigation">
-    <a asp-action="Schedule" asp-route-weekOffset="@(weekOffset-1)">&lt; Previous Week</a>
+    <a asp-action="Schedule" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-weekOffset="@(weekOffset-1)">&lt; Previous Week</a>
     <span>
         @{
             var startDate = DateTime.Today.AddDays(weekOffset * 7);
@@ -42,7 +42,7 @@
         }
         @startDate.ToString("dd/MM/yyyy") - @endDate.ToString("dd/MM/yyyy")
     </span>
-    <a asp-action="Schedule" asp-route-weekOffset="@(weekOffset+1)">Next Week &gt;</a>
+    <a asp-action="Schedule" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-weekOffset="@(weekOffset+1)">Next Week &gt;</a>
 </div>
 
 <table class="schedule-table">
