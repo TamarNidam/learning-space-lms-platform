@@ -8,11 +8,15 @@ using Microsoft.EntityFrameworkCore;
 using Learning_Space.Models;
 using Task = Learning_Space.Models.Task;
 using Learning_Space.DTO;
+using MyFile = System.IO.File;
 
 namespace Learning_Space.Controllers
 {
     public class TasksController : Controller
     {
+        string filePath = Path.Combine(".", "TextFiles", "Tasks", "Tasks.txt");
+                
+                
         private readonly LearningSpaceContext _context;
 
         public TasksController(LearningSpaceContext context)
@@ -33,14 +37,16 @@ namespace Learning_Space.Controllers
     $"FROM [Tasks] t " +
     $"JOIN CourseInClass cc ON cc.CourseId = t.CourseId " +
     $"JOIN StudentInClass sc ON sc.ClassId = cc.ClassId " +
-    $"WHERE sc.UserId = '{user}'";
+    $"WHERE sc.UserId = '{user}'" +
+    $"AND t.TaskType = 'Task'";
                     tasks = await _context.Tasks.FromSqlRaw(sql).ToListAsync();
                 }
                 else
                 {
                     var sql = $"SELECT t.*" +
                         $"FROM [Tasks] t " +
-                        $"WHERE t.CourseId = {courseid}";
+                        $"WHERE t.CourseId = {courseid}" +
+                        $"AND t.TaskType = 'Task'";
                     tasks = await _context.Tasks.FromSqlRaw(sql).ToListAsync();
                 }
 
@@ -52,9 +58,11 @@ namespace Learning_Space.Controllers
                                 StartDate = u.StartDate,
                                 EndDate = u.EndDate,
                                 CourseId = u.CourseId,
-                                CourseName = u.Course.CourseName
-
-                            }).ToList();
+                                CourseName = u.Course.CourseName,
+                                Subject = GetSubject(u.TaskId),
+                                Context = "",
+                                Done = permission == 2 && _context.UserTasks.FirstOrDefault(t => t.UserId == user && t.TaskId == u.TaskId)?.Done == true ? 1 : 0
+                            }).OrderByDescending(u => u.EndDate).ToList();
                 return View(taskDTOs);
             }
             catch (Exception ex)
@@ -62,6 +70,23 @@ namespace Learning_Space.Controllers
                 return View(ex);
             }
 
+        }
+
+        private string GetSubject(int taskId)
+        {
+            string[] lines = MyFile.ReadAllLines(filePath);
+            
+            foreach (string line in lines)
+            {
+                string[] parts = line.Split(',');
+
+                if (parts.Length >= 3 && int.Parse(parts[0])  == taskId)
+                {
+                    return parts[1];
+                    
+                }
+            }
+            return null;
         }
 
         // GET: Tasks/Details/5
@@ -86,8 +111,7 @@ namespace Learning_Space.Controllers
         // GET: Tasks/Create
         public IActionResult Create()
         {
-            ViewData["CourseId"] = new SelectList(_context.Courses, "CourseId", "CourseName");
-            return View();
+           return View();
         }
 
         // POST: Tasks/Create

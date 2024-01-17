@@ -86,7 +86,12 @@
                         {
                             <strong>@lessonDTO.CourseName - @lessonDTO.LessonSubject</strong>
                             <br />
-                            <small>@lessonDTO.LessonType: <a href="@lessonDTO.ZoomUrl">@lessonDTO.ZoomUrl</a></small>
+                            <small>@lessonDTO.LessonType @if (lessonDTO.LessonType == "Zoom")
+                                {
+                                    <a href="@lessonDTO.ZoomUrl">: @lessonDTO.ZoomUrl</a>
+                                }</small>
+
+                            
                         }
                     }
                 </td>

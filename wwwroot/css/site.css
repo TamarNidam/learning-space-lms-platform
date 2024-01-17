@@ -252,3 +252,7 @@ tr:hover > td{
     margin:3px;
     text-align:center;
 }
+
+.gray-background {
+    background-color: lightgray;
+}
