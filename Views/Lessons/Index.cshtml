@@ -10,7 +10,6 @@
     int? courseid = Convert.ToInt32(Context.Request.Query["courseid"]);
 }
 
-<a asp-action="Schedule" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-weekOffset="0">טטטטט</a>
 
 
 <h1 class="title">Lessons</h1>
@@ -87,3 +86,6 @@
         </div>
     }
 }
+<div class="bottom-right">
+<a asp-action="Schedule" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-weekOffset="0">Schedule view</a>
+</div>

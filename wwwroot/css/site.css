@@ -256,3 +256,9 @@ tr:hover > td{
 .gray-background {
     background-color: lightgray;
 }
+
+.bottom-right {
+    position: fixed;
+    bottom: 100px;
+    /*right: 700px;*/
+}

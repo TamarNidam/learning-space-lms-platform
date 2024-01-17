@@ -96,7 +96,7 @@ namespace Learning_Space.Controllers
         }
 
         // GET: Tasks/Details/5
-        public async Task<IActionResult> Details(int? taskid)
+        public async Task<IActionResult> Details(int user, int permission, int? courseid, int? taskid)
         {
             if (taskid == null)
             {
@@ -104,14 +104,61 @@ namespace Learning_Space.Controllers
             }
 
             var task = await _context.Tasks
-                .Include(t => t.Course)
                 .FirstOrDefaultAsync(m => m.TaskId == taskid);
             if (task == null)
             {
                 return NotFound();
             }
+            int d = 0;
+            var userTask = _context.UserTasks.FirstOrDefault(t => t.UserId == user && t.TaskId == task.TaskId);
+            if (permission == 2 && userTask != null && userTask.Done)
+            {
+                d = 1;
+            }
 
-            return View(task);
+            var taskDTO = new TaskDTO
+            {
+                TaskId = task.TaskId,
+                TaskType = task.TaskType,
+                StartDate = (DateOnly)task.StartDate,
+                EndDate = task.EndDate,
+                CourseId = task.CourseId,
+                CourseName = GetName(task.CourseId),
+                Subject = GetSubject(task.TaskId),
+                Context = GetContext(task.TaskId),   
+                PerformanceContent=(d == 1) ? GetContext(task.TaskId, user) : null,
+                Done = d
+            };
+
+            return View(taskDTO);
+        }
+
+        private string GetContext(int taskId)
+        {
+            string filePath = Path.Combine(".", "TextFiles", "Tasks", "Tasks.txt");
+            string[] lines = MyFile.ReadAllLines(filePath);
+
+            foreach (string line in lines)
+            {
+                string[] parts = line.Split(',');
+
+                if (parts.Length >= 3 && int.Parse(parts[0]) == taskId)
+                {
+                    return parts[2];
+
+                }
+            }
+            return null;
+        }
+
+        private string GetContext(int taskId, int user)
+        {
+            string filePath = Path.Combine(".", "TextFiles", "Tasks", "UserTasks", $"taskid_{taskId}__userid_{user}.txt");
+            if (MyFile.Exists(filePath))
+            {
+                return MyFile.ReadAllText(filePath);
+            }
+                return null;
         }
 
         // GET: Tasks/Create
@@ -247,6 +294,46 @@ namespace Learning_Space.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
+        // POST: Task/Submit
+        [HttpPost]
+        public IActionResult Submit(int user,int courseid, int taskid, string answer)
+        {
+            string filePath = Path.Combine(".", "TextFiles", "Tasks", "UserTasks", $"taskid_{taskid}__userid_{user}.txt");
+            
+            MyFile.WriteAllText(filePath, answer);
+            
+            // Update the corresponding user task as done in the database
+            var userTask = _context.UserTasks.FirstOrDefault(u => u.TaskId == taskid && u.UserId == user);
+            if (userTask != null)
+            {
+                userTask.Done = true;
+                _context.SaveChanges();
+            }
+            return Redirect($"/Tasks/Details?user={user}&permission=2&courseid={courseid}&taskid={taskid}");
+        }
+
+        // POST: Task/Unsubmit
+        [HttpPost]
+        public IActionResult Unsubmit(int user, int courseid, int taskid)
+        {
+            string filePath = Path.Combine(".", "TextFiles", "Tasks", "UserTasks", $"taskid_{taskid}__userid_{user}.txt");
+
+            MyFile.Delete(filePath);
+
+            // Update the corresponding user task as done in the database
+            var userTask = _context.UserTasks.FirstOrDefault(u => u.TaskId == taskid && u.UserId == user);
+            if (userTask != null)
+            {
+                userTask.Done = false;
+                _context.SaveChanges();
+            }
+
+            // Redirect back to the task details page
+            return Redirect($"/Tasks/Details?user={user}&permission=2&courseid={courseid}&taskid={taskid}");
+        }
+
+
 
         private bool TaskExists(int id)
         {

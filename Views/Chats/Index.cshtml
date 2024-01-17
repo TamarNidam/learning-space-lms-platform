@@ -18,7 +18,6 @@
         gap: 10px;
         padding: 10px;
         /* Set the background image */
-        background-image: url('https://png.pngtree.com/png-vector/20230531/ourmid/pngtree-black-and-white-cartoon-girl-coloring-page-vector-png-image_6773030.png');
           background-size: cover; 
          background-position: center; 
        
@@ -121,7 +120,7 @@
 </div>
 <div class="chat-input">
     <form asp-action="SendMessage" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid">
-        <input size="80 em" type="text" name="Body" placeholder="Message" required />
+        <input size="50%" type="text" name="Body" placeholder="Message" required />
         <button type="submit">Send</button>
         
     </form>

@@ -21,11 +21,9 @@
 @foreach (var item in Model) 
 {
     <div class="task-item @(item.Done == 0 ? "gray-background" : "")">
-        >
-
-
+      
         <div class="item" onclick="location.href='@Url.Action("Details", new { user = @user, permission = @permission, courseid = (@courseid.HasValue && @courseid.Value != 0) ? @courseid : (int?)null, taskid = @item.TaskId})';">
-                >
+                
             @if (!courseid.HasValue || courseid.Value == 0)
             {
                 <span>Course: @Html.DisplayFor(modelItem => item.CourseName)</span>

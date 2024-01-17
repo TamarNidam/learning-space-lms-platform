@@ -1,50 +1,65 @@
-﻿@model Learning_Space.Models.Task
+﻿@model Learning_Space.DTO.TaskDTO
 
 @{
     ViewData["Title"] = "Details";
 }
-<link rel="stylesheet" type="text/css" href="./css/styles.css">
+@using Microsoft.AspNetCore.Http
+@{
+    int? user = Convert.ToInt32(Context.Request.Query["user"]);
+    int? permission = Convert.ToInt32(Context.Request.Query["permission"]);
+    int? courseid = Convert.ToInt32(Context.Request.Query["courseid"]);
+}
+<style>
+    
+    .submission-box {
+        float: right;
+        margin-left: 20px;
+        max-width: 300px;
+    }
+</style>
+
 <h1>Details</h1>
 
 <div>
     <h4 class="title">Task</h4>
+    
     <hr />
-    <dl class="details">
-        <div class="details-item">
-            <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TaskType)
-            </dt>
-            <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TaskType)
-            </dd>
-        </div>
-        <div class="details-item">
-            <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.StartDate)
-            </dt>
-            <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.StartDate)
-            </dd>
-        </div>
-        <div class="details-item">
-            <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EndDate)
-            </dt>
-            <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EndDate)
-            </dd>
-        </div>
-        <div class="details-item">
-            <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Course)
-            </dt>
-            <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Course.CourseName)
-            </dd>
-        </div>
-    </dl>
+    <p>Course: @Html.DisplayNameFor(model => model.CourseName)</p>
+    <h2>@Html.DisplayNameFor(model => model.Subject)</h2>
+    <span>@Html.DisplayFor(model => model.StartDate) - @Html.DisplayFor(model => model.EndDate)</span>
+    <br />
+    <br/>
+    <span>@Html.DisplayFor(model => model.Context) </span>
+
 </div>
-<div>
+
+@if (permission == 2)
+{
+    if (Model.Done==1)
+    {
+        <div class="submission-box">
+            <h4>Submission</h4>
+            <p>@Model.PerformanceContent</p>
+            <form asp-action="Unsubmit" asp-route-user="@user" asp-route-courseid="@courseid" asp-route-taskid="@Model.TaskId" method="post">
+                <button type="submit">Unsubmit</button>
+            </form>
+        </div>
+    }
+    else
+    {
+        <div class="submission-box">
+            <h4>Submission</h4>
+            <form asp-action="Submit" asp-route-user="@user" asp-route-courseid="@courseid" asp-route-taskid="@Model.TaskId" method="post">
+                <textarea name="Answer" rows="4" cols="50" required></textarea>
+                <br />
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    }
+}
+
+
+@* <div>
     <a asp-action="Edit" asp-route-id="@Model?.TaskId" class="options">Edit</a> |
     <a asp-action="Index" class="options">Back to List</a>
-</div>
+</div> *@

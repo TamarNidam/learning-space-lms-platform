@@ -23,5 +23,6 @@ namespace Learning_Space.DTO
 
         public int Done { get; set; } =0;
         public string? PerformanceContent { get; set; }
+
     }
 }
