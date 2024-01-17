@@ -10,10 +10,7 @@
     int? courseid = Convert.ToInt32(Context.Request.Query["courseid"]);
 }
 <div class="general">
-    @if(permission == 2|| permission == 0)
-    {
-        
-    }
+   
     <h1>Details</h1>
 
 <div>
@@ -49,11 +46,11 @@
     </dl>
 </div>
 <div>
-    @if(permission == 0 || permission == 1)
+    @if(permission == 0 )
     {
             <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId">&#xf044; Edit</a>
         }
-        else
+        else if(permission == 2)
         {
             <a asp-action="Notebook" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId">notebook</a>
 

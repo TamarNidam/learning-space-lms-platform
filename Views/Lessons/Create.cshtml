@@ -34,12 +34,12 @@
             </div>
             <div class="form-group">
                 <label asp-for="StartTime" class="control-label"></label>
-                <input id="startTimeInput"  min="08:00" max="22:00" step="3600" asp-for="StartTime" class="form-control" />
+                <input id="startTimeInput" type="time" min="08:00" max="22:00" step="3600" asp-for="StartTime" class="form-control" />
                 <span asp-validation-for="StartTime" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="EndTime" class="control-label"></label>
-                <input id="endTimeInput" @* type="time" *@ min="09:00" max="23:00" step="3600" asp-for="EndTime" class="form-control" />
+                <input id="endTimeInput"  type="time"  min="09:00" max="23:00" step="3600" asp-for="EndTime" class="form-control" />
                 <span asp-validation-for="EndTime" class="text-danger"></span>
             </div>
             <div class="form-group">

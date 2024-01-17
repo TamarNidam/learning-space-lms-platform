@@ -24,8 +24,8 @@
     <h4 class="title">Task</h4>
     
     <hr />
-    <p>Course: @Html.DisplayNameFor(model => model.CourseName)</p>
-    <h2>@Html.DisplayNameFor(model => model.Subject)</h2>
+    <p>Course: @Html.DisplayFor(model => model.CourseName)</p>
+    <h2>@Html.DisplayFor(model => model.Subject)</h2>
     <span>@Html.DisplayFor(model => model.StartDate) - @Html.DisplayFor(model => model.EndDate)</span>
     <br />
     <br/>
@@ -57,9 +57,10 @@
         </div>
     }
 }
+else
+{
+    <a asp-controller="UserTasks" asp-action="Index" asp-route-user="@user" asp-route-courseid="@courseid" asp-route-taskid="@Model.TaskId">Users task</a>
+}
 
 
-@* <div>
-    <a asp-action="Edit" asp-route-id="@Model?.TaskId" class="options">Edit</a> |
-    <a asp-action="Index" class="options">Back to List</a>
-</div> *@
+

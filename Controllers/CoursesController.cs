@@ -83,7 +83,8 @@ namespace Learning_Space.Controllers
 
                         courses.Add(vourses);
                     }
-                    
+                    courses.RemoveAt(0);
+
                 }
 
                 var courseDTOs = courses

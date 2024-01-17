@@ -36,13 +36,6 @@
     <div class="items_list">
         
         
-            <div>
-                @Html.DisplayNameFor(model => model.CourseName)
-            </div>
-            @* <th>
-                @Html.DisplayNameFor(model => model.CourseDescription)
-            </th> *@
-            <hr/>
                  
              @foreach (var item in Model) 
         {
@@ -56,13 +49,12 @@
                 @Html.DisplayFor(modelItem => item.CourseDescription)
             </td> *@
                 <div>
-                @if(permission == 0 || permission == 1)
+                @if(permission == 0)
                 {
                     <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@item.CourseId">&#x270E;</a>
-                            if(permission == 0)
-                            {
+                            
                             <a asp-action="Delete" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@item.CourseId">Delete</a>
-                            }
+                            
                 }
                 
                @*  <a asp-action="Details" asp-route-id="@item.CourseId"> *@
