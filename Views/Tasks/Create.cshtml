@@ -3,31 +3,20 @@
 @{
     ViewData["Title"] = "Create";
 }
-
+@using Microsoft.AspNetCore.Http
+@{
+    int? user = Convert.ToInt32(Context.Request.Query["user"]);
+    int? permission = Convert.ToInt32(Context.Request.Query["permission"]);
+    int? courseid = Convert.ToInt32(Context.Request.Query["courseid"]);
+}
 <h1>Create Task</h1>
 
 <h4>Task</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create" id="createTaskForm">
+        <form asp-action="Create" id="createTaskForm" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            
-            <div class="form-group">
-                <label asp-for="TaskType" class="control-label"></label>
-                <input asp-for="TaskType" class="form-control" />
-                <span asp-validation-for="TaskType" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="StartDate" class="control-label"></label>
-                <input asp-for="StartDate" class="form-control" id="startDate" />
-                <span asp-validation-for="StartDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EndDate" class="control-label"></label>
-                <input asp-for="EndDate" class="form-control" id="endDate" />
-                <span asp-validation-for="EndDate" class="text-danger"></span>
-            </div>
             <div class="form-group">
                 <label asp-for="Subject" class="control-label"></label>
                 <input asp-for="Subject" class="form-control" />
@@ -38,6 +27,17 @@
                 <input asp-for="Context" class="form-control" />
                 <span asp-validation-for="Context" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <label asp-for="StartDate" class="control-label"></label>
+                <input asp-for="StartDate" type="date" class="form-control" id="startDate" />
+                <span asp-validation-for="StartDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EndDate" class="control-label"></label>
+                <input asp-for="EndDate" type="date" class="form-control" id="endDate" />
+                <span asp-validation-for="EndDate" class="text-danger"></span>
+            </div>
+            
             <div class="form-group">
                 <input type="submit" value="Create" class="sign_up_button" />
             </div>

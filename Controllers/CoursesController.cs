@@ -33,7 +33,7 @@ namespace Learning_Space.Controllers
         }
 
         // GET: Courses
-        public async Task<IActionResult> Index(int user, int? classid)
+        public async Task<IActionResult> Index(int user,int permission, int? classid)
         {
             try
             {
@@ -54,7 +54,7 @@ namespace Learning_Space.Controllers
                         courses.RemoveAt(0);
                     }
                 }
-                else
+                else if(permission == 2)
                 {
                     // Get all the class IDs for the user
                     List<int> classIds = GetClassIdsForUser(user);
@@ -69,6 +69,21 @@ namespace Learning_Space.Controllers
 
                         courses.AddRange(classCourses);
                     }
+                }
+                else
+                {
+                    List<int?> courseids = await _context.Teachers
+                        .Where(t=> t.UserId == user)
+                        .Select(t => t.CourseId)
+                        .ToListAsync();
+                    foreach (int courseidl in courseids)
+                    {
+                        Course vourses =  _context.Courses.FirstOrDefault(c => c.CourseId == courseidl);
+                           
+
+                        courses.Add(vourses);
+                    }
+                    
                 }
 
                 var courseDTOs = courses

@@ -14,7 +14,7 @@ namespace Learning_Space.Controllers
 {
     public class TasksController : Controller
     {
-        string filePath = Path.Combine(".", "TextFiles", "Tasks", "Tasks.txt");
+      
                 
                 
         private readonly LearningSpaceContext _context;
@@ -55,10 +55,10 @@ namespace Learning_Space.Controllers
                             {
                                 TaskId = u.TaskId,
                                 TaskType = u.TaskType,
-                                StartDate = u.StartDate,
+                                StartDate = (DateOnly)u.StartDate,
                                 EndDate = u.EndDate,
                                 CourseId = u.CourseId,
-                                CourseName = u.Course.CourseName,
+                                CourseName = GetName(u.CourseId),
                                 Subject = GetSubject(u.TaskId),
                                 Context = "",
                                 Done = permission == 2 && _context.UserTasks.FirstOrDefault(t => t.UserId == user && t.TaskId == u.TaskId)?.Done == true ? 1 : 0
@@ -72,8 +72,14 @@ namespace Learning_Space.Controllers
 
         }
 
+        private string GetName(int? courseId)
+        {
+            return _context.Courses.FirstOrDefault(c => c.CourseId == courseId).CourseName;
+        }
+
         private string GetSubject(int taskId)
         {
+            string filePath = Path.Combine(".", "TextFiles", "Tasks", "Tasks.txt");
             string[] lines = MyFile.ReadAllLines(filePath);
             
             foreach (string line in lines)
@@ -119,15 +125,39 @@ namespace Learning_Space.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TaskId,TaskType,StartDate,EndDate,CourseId")] Task task)
+        public async Task<IActionResult> Create(int user, int permission, int courseid, [Bind("TaskId,TaskType,StartDate,EndDate,CourseId,CourseName,Subject,Context,Done,PerformanceContent")] TaskDTO task)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(task);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                string filePath = Path.Combine(".", "TextFiles", "Tasks", "Tasks.txt");
+                string taskString = $"{task.TaskId},{task.Subject},{task.Context}";
+
+                MyFile.AppendAllText(filePath, taskString + Environment.NewLine);
+
+                var maxId = await _context.Tasks.MaxAsync(u => (int?)u.TaskId) ?? 1;
+                var newId = maxId + 1;
+                var sql = $"INSERT INTO [Tasks] (TaskId,TaskType,StartDate,EndDate,CourseId) VALUES ({newId}, 'Task','{task.StartDate.ToString("yyyy-MM-dd")}', '{task.EndDate.ToString("yyyy-MM-dd")}', {courseid})";
+                await _context.Database.ExecuteSqlRawAsync(sql);
+
+                var maxIdUserTask = await _context.UserTasks.MaxAsync(u => (int?)u.UserTaskId) ?? 0;
+                var courseInClass =  _context.CourseInClasses.FirstOrDefault(c => c.CourseId == courseid);
+                var clas = courseInClass != null ? courseInClass.ClassId : null;
+                //var clas = await _context.CourseInClasses.FirstOrDefault(c => c.CourseId == courseid).ClassId;
+                var studentsInClass = _context.StudentInClasses
+      .Where(s => s.ClassId == clas)
+      .Select(s => s.UserId)
+      .ToList();
+                foreach (int UserId in studentsInClass)
+                {
+                    maxIdUserTask = maxIdUserTask + 1;
+                    sql = $"INSERT INTO [UserTask] (UserTaskId,UserId,TaskId,Mark,Remarks,Done) VALUES ({maxIdUserTask},{UserId},{newId},0,'',0)";
+                    await _context.Database.ExecuteSqlRawAsync(sql);
+
+                }
+
+                return Redirect($"/Tasks/Index?user={user}&permission={permission}&courseid={courseid}");
+
             }
-            ViewData["CourseId"] = new SelectList(_context.Courses, "CourseId", "CourseName", task.CourseId);
             return View(task);
         }
 

@@ -9,7 +9,7 @@ namespace Learning_Space.DTO
 
         public string TaskType { get; set; }
         [Required]
-        public DateOnly? StartDate { get; set; }
+        public DateOnly StartDate { get; set; }
         [Required]
         public DateOnly EndDate { get; set; }
 
