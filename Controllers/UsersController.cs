@@ -106,7 +106,7 @@ namespace Learning_Space.Controllers
             var maxStudentInClass = await _context.StudentInClasses.MaxAsync(u => (int?)u.StudentInClass1) ?? 0;
             var newStudentInClass = maxStudentInClass + 1;
             var sql = $"INSERT INTO StudentInClass (StudentInClass, UserId, ClassId) VALUES ({newStudentInClass}, {selectedStudentId}, {classId}) ";
-await _context.Database.ExecuteSqlRawAsync(sql);
+            await _context.Database.ExecuteSqlRawAsync(sql);
             return Redirect($"/Users/Index?user=0&permission=0&classid={classId}");
         }
 
