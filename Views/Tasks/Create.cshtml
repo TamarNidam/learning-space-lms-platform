@@ -1,22 +1,18 @@
-﻿@model Learning_Space.Models.Task
+﻿@model Learning_Space.DTO.TaskDTO
 
 @{
     ViewData["Title"] = "Create";
 }
-<link rel="stylesheet" type="text/css" href="./css/styles.css">
-<h1>Create</h1>
+
+<h1>Create Task</h1>
 
 <h4>Task</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" id="createTaskForm">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="TaskId" class="control-label"></label>
-                <input asp-for="TaskId" class="form-control" />
-                <span asp-validation-for="TaskId" class="text-danger"></span>
-            </div>
+            
             <div class="form-group">
                 <label asp-for="TaskType" class="control-label"></label>
                 <input asp-for="TaskType" class="form-control" />
@@ -24,17 +20,23 @@
             </div>
             <div class="form-group">
                 <label asp-for="StartDate" class="control-label"></label>
-                <input asp-for="StartDate" class="form-control" />
+                <input asp-for="StartDate" class="form-control" id="startDate" />
                 <span asp-validation-for="StartDate" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="EndDate" class="control-label"></label>
-                <input asp-for="EndDate" class="form-control" />
+                <input asp-for="EndDate" class="form-control" id="endDate" />
                 <span asp-validation-for="EndDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="CourseId" class="control-label"></label>
-                <select asp-for="CourseId" class ="form-control" asp-items="ViewBag.CourseId"></select>
+                <label asp-for="Subject" class="control-label"></label>
+                <input asp-for="Subject" class="form-control" />
+                <span asp-validation-for="Subject" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Context" class="control-label"></label>
+                <input asp-for="Context" class="form-control" />
+                <span asp-validation-for="Context" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="sign_up_button" />
@@ -43,10 +45,38 @@
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var startDateInput = document.getElementById("startDate");
+            var endDateInput = document.getElementById("endDate");
+
+            startDateInput.addEventListener("change", function () {
+                var startDate = new Date(startDateInput.value);
+                var today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                if (startDate < today) {
+                    startDateInput.value = today.toISOString().split("T")[0];
+                }
+
+                endDateInput.min = startDateInput.value;
+                if (endDateInput.value !== "" && new Date(endDateInput.value) < startDate) {
+                    endDateInput.value = startDateInput.value;
+                }
+            });
+
+            endDateInput.addEventListener("change", function () {
+                var startDate = new Date(startDateInput.value);
+                var endDate = new Date(endDateInput.value);
+
+                if (endDate < startDate) {
+                    endDateInput.value = startDateInput.value;
+                }
+            });
+        });
+    </script>
 }

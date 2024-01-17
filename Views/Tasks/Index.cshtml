@@ -9,67 +9,57 @@
     int? permission = Convert.ToInt32(Context.Request.Query["permission"]);
     int? courseid = Convert.ToInt32(Context.Request.Query["courseid"]);
 }
-<link rel="stylesheet" type="text/css" href="./css/styles.css">
 <h1 class="title">Tasks</h1>
 
-@if (permission == 0 || permission == 1)
+@if ( permission == 1)
 {
 <p>
-    <a asp-action="Create" class="options">Create New</a>
+        <a asp-action="Create" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid">Create New Task</a>
 </p>
 }
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.TaskType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StartDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EndDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CourseName)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.TaskType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EndDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CourseName)
-            </td>
-            <td>
-                    @if (courseid.HasValue && courseid.Value != 0)
-                    {
-                        <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-taskid="@item.TaskId">Edit</a>
-                        <a asp-action="Details" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-taskid="@item.TaskId">Details</a>
 
-                        <a asp-action="Delete" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-taskid="@item.TaskId">Delete</a>
+@foreach (var item in Model) 
+{
+    <div class="task-item @(item.Done == 0 ? "gray-background" : "")">
+        >
 
-                    }
-                    else
-                    {
-                        <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-taskid="@item.TaskId">Edit</a> 
-                    <a asp-action="Details" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-taskid="@item.TaskId">Details</a> 
 
-                    <a asp-action="Delete" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-taskid="@item.TaskId">Delete</a>
+        <div class="item" onclick="location.href='@Url.Action("Details", new { user = @user, permission = @permission, courseid = (@courseid.HasValue && @courseid.Value != 0) ? @courseid : (int?)null, taskid = @item.TaskId})';">
+                >
+            @if (!courseid.HasValue || courseid.Value == 0)
+            {
+                <span>Course: @Html.DisplayFor(modelItem => item.CourseName)</span>
+                <br />
+            }
+
+            <span>@Html.DisplayFor(modelItem => item.Subject)</span>
+            <br />
+
+            <span>@Html.DisplayFor(modelItem => item.StartDate) - @Html.DisplayFor(modelItem => item.EndDate)</span>
+            <br />
+  
+          </div>
+        
+       @*  @if (courseid.HasValue && courseid.Value != 0)
+        {
+            <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-taskid="@item.TaskId">Edit</a>
+            <a asp-action="Details" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-taskid="@item.TaskId">Details</a>
+            <a asp-action="Delete" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-taskid="@item.TaskId">Delete</a>
+        }
+        else
+        {
+            <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-taskid="@item.TaskId">Edit</a>
+            <a asp-action="Details" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-taskid="@item.TaskId">Details</a>
+
+            <a asp-action="Delete" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-taskid="@item.TaskId">Delete</a>
+
+        } *@
+       </div>
+       <hr/>
+       
+    
+ }               
+
+
+
             
-                    }
-                    </td>
-        </tr>
-}
-    </tbody>
-</table>
