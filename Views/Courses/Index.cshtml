@@ -13,53 +13,43 @@
 
 <h1 class="title">Courses</h1>
 <hr/>
-
-<div class="general">
-    @if (permission == 0 )
+<div class="create">
+    @if (permission == 0)
     {
-        if (classid.HasValue&&classid.Value!=0)
+        if (classid.HasValue && classid.Value != 0)
         {
             <p>
-                <a asp-action="Create" asp-route-user="@user" asp-route-permission="@permission" asp-route-classid="@classid">&#xf055;</a>
+                <a asp-action="Create" asp-route-user="@user" asp-route-permission="@permission" asp-route-classid="@classid" class="options">create new</a>
             </p>
         }
         else
         {
-         <p>
-            <a asp-action="Create" asp-route-user="@user" asp-route-permission="@permission">&#xf055;</a>
-        </p>   
+            <p>
+                <a asp-action="Create" asp-route-user="@user" asp-route-permission="@permission" class="options">create new</a>
+            </p>
         }
-         <div>
-                @Html.DisplayNameFor(model => model.CourseName)
-            </div>
     }
+</div>
+<div class="general">
+   
     <div class="items_list">
-        
-        
-                 
-             @foreach (var item in Model) 
+           
+         @foreach (var item in Model) 
         {
                 <div class="item" onclick="location.href='@Url.Action("Details", new { user = @user, permission = @permission, courseid = item.CourseId})';">
-                    <div>
+                    <div class="name">
                    
                      @Html.DisplayFor(modelItem => item.CourseName)
                      </div>
-                
-            @* <td>
-                @Html.DisplayFor(modelItem => item.CourseDescription)
-            </td> *@
-                <div>
+                           
                 @if(permission == 0)
-                {
-                    <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@item.CourseId">&#x270E;</a>
+                {<div>
+                    <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@item.CourseId" class="options">Edit;</a>
                             
-                            <a asp-action="Delete" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@item.CourseId">Delete</a>
-                            
+                            <a asp-action="Delete" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@item.CourseId" class="options">Delete</a>
+                    </div>
                 }
-                
-               @*  <a asp-action="Details" asp-route-id="@item.CourseId"> *@
-
-                </div>
+                      
             </div>
         }
     

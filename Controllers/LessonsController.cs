@@ -83,11 +83,9 @@ namespace Learning_Space.Controllers
                     lessons = await _context.Lessons
                         .Where(x => x.LessonDate >= startDate && x.LessonDate <= endDate)
                         .ToListAsync();
-
                 }
                 else
-                {
-                   
+                {                  
                     List<int> classIds = GetClassIdsForUser(user);
                     List<int> courseids = new List<int>();
                     foreach (int classId in classIds)
@@ -100,7 +98,6 @@ namespace Learning_Space.Controllers
                         courseids.AddRange((IEnumerable<int>)courses);
                     }
                    
-
                     foreach (int courseId in courseids)
                     {
                         // Get the courses associated with each class
@@ -202,25 +199,29 @@ namespace Learning_Space.Controllers
             {
                 DateOnly today = DateOnly.FromDateTime(DateTime.Today);
 
-
+                // Check if the lesson's date and start time have already passed
                 if (lesson.LessonDate < today || lesson.LessonDate == today && lesson.StartTime < TimeOnly.FromDateTime(DateTime.Now))
                 {
                     ViewBag.ErrorMessage = "A class can only be scheduled for a date that has not yet passed.";
                     return View(lesson);
                 }
+
                 var clas = _context.CourseInClasses.FirstOrDefault(c => c.CourseId == courseid).ClassId;
+
                 // Check if there are any lessons scheduled for the course within the specified time range
                 bool isCourseAvailable = await CheckCourseAvailability(clas, lesson.LessonDate, lesson.StartTime, lesson.EndTime);
 
                 // Check if the teacher has any lessons scheduled within the specified time range for the course
                 bool isTeacherAvailable = await CheckTeacherAvailability(courseid, lesson.LessonDate, lesson.StartTime, lesson.EndTime);
 
+                // If there is already a lesson scheduled for the course within the specified time range
                 if (!isCourseAvailable)
                 {
                     ViewBag.ErrorMessage = "There is already a lesson scheduled for the course within the specified time range.";
                     return View(lesson);
                 }
 
+                // If the teacher already has lessons scheduled within the specified time range for the course
                 if (!isTeacherAvailable)
                 {
                     ViewBag.ErrorMessage = "The teacher already has lessons scheduled within the specified time range for the course.";
@@ -230,9 +231,12 @@ namespace Learning_Space.Controllers
                 var maxId = await _context.Lessons.MaxAsync(u => (int?)u.LessonId) ?? 0;
                 var newId = maxId + 1;
 
-                var sql = $"INSERT INTO [Lessons] (LessonId,CourseId,LessonSubject,LessonDate,StartTime,EndTime,LessonType) VALUES ({newId}, {courseid},'{lesson.LessonSubject}', '{lesson.LessonDate.ToString("yyyy-MM-dd")}', '{lesson.StartTime}', '{lesson.EndTime}', '{lesson.LessonType}')";
+                // Insert the new lesson into the Lessons table
+                var sql = $"INSERT INTO [Lessons] (LessonId,CourseId,LessonSubject,LessonDate,StartTime,EndTime,LessonType) " +
+                    $"VALUES ({newId}, {courseid},'{lesson.LessonSubject}', '{lesson.LessonDate.ToString("yyyy-MM-dd")}', '{lesson.StartTime}', '{lesson.EndTime}', '{lesson.LessonType}')";
                 await _context.Database.ExecuteSqlRawAsync(sql);
 
+                // If the lesson type is Zoom, insert a new entry into the ZoomLessons table
                 if (lesson.LessonType == "Zoom")
                 {
                     var maxIdzoom = await _context.ZoomLessons.MaxAsync(u => (int?)u.ZoomLesson1) ?? 0;
@@ -246,6 +250,8 @@ namespace Learning_Space.Controllers
        .Where(s => s.ClassId == clas)
        .Select(s => s.UserId)
        .ToList();
+
+                // Insert attendance records for each student in the class for the new lesson
                 foreach (int UserId in studentsInClass)
                 {
                     maxId3 = maxId3 + 1;

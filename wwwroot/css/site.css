@@ -46,6 +46,7 @@ a {
 
 .table {
     background-color: rgb(211, 83, 83, 0.65);
+    border-radius: 30px;
 }
 .items_list {
     display: flex;
@@ -79,7 +80,7 @@ users_list{
     font-family: 'Nunito', sans-serif;
     margin: 5px;
     padding: 7px;
-    border: 1px solid black;
+    border: 1px solid #ced4da;
     border-radius: 10px;
     background-color: yellow;
 }
@@ -91,7 +92,7 @@ users_list{
 .week{
     display: flex;
     flex-wrap: wrap;
-    border-bottom: 0.5px, solid, black;
+    border-bottom: 0.5px, solid, white;
 
 }
 
@@ -102,7 +103,9 @@ users_list{
     background-color: rgb(211, 83, 83, 0.85);
     margin: 5px;
     padding: 7px;
-    border: 1px solid black;
+    border: 1px solid #ced4da;
+    color: white;
+    font-weight: bold;
     border-radius: 10px;
 }
 
@@ -110,7 +113,7 @@ users_list{
         border: 1px solid grey;
         background-color: #f5f5f5;
         cursor: pointer;
-    }*/
+    }
 tr:hover > td{
     border: 1px solid grey;
 
@@ -145,32 +148,61 @@ tr:hover > td{
     font-weight: bold
 }
 
-    .nav-item:hover {
-        background-color: rgb(211, 83, 83, 0.85);
-        border: 1px solid black;
-    }
+.nav-item:hover {
+    background-color: rgb(211, 83, 83, 0.85);
+    border: 1px solid #ced4da;
+}
 .form-group {
     background-color: rgb(211, 83, 83, 0.85);
-    border: 0.5px solid black;
-    color: black;
+    border: 0.5px solid #ced4da;
+    color: white;
+    font-weight: bold;
     border-radius: 7px;
     width: 500px;
     margin: 10px;
 }
 
 .home_button {
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
     background-color: rgb(211, 83, 83, 0.85);
-    border: 0.5px solid black;
+    border: 0.5px solid #ced4da;
     border-radius: 15%;
     display: flex;
     flex-wrap: wrap;
     text-align: center;
-    align-items:center;
+    align-items: center;
     font-size: 19px;
     margin: 10px;
+    justify-content: center;
 }
+    .home_button:focus,
+    .home_button:active {
+        box-shadow: none; 
+    }
+    .home_button button {
+        width: 100%;
+        height: 100%;
+        background-color: transparent;
+        border: none;
+        border-radius: inherit;
+        display: flex;
+        flex-wrap: wrap;
+        text-align: center;
+        align-items: center;
+        font-size: 19px;
+        margin: 0;
+        padding: 0;
+        outline: none;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+    }
+
+        .home_button button:focus,
+        .home_button button:active {
+            box-shadow: none; /* Remove the gray rectangle */
+        }
 .All_permission {
     display: flex;
     flex-direction: row;
@@ -184,21 +216,26 @@ tr:hover > td{
     padding:5px
 }
 .item {
-    width: 200px;
-    height: 200px;
+    width: 150px;
+    height: 150px;
     background-color: rgb(211, 83, 83, 0.85);
-    border: 0.5px solid black;
+    border: 0.5px solid #ced4da;
     border-radius: 15%;
     display: flex;
     flex-wrap: wrap;
     text-align: center;
-    font-size: 7px;
+    font-size: 15px;
     margin: 10px;
-    align-items:center;
+    align-items: center;
+    position: relative;
+    outline: none;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
 }
 .sign_up_button {
     background-color: rgb(211, 83, 83, 0.85);
-    border: 0.5px solid black;
+    border: 0.5px solid #ced4da;
     color: black;
     border-radius: 7px;
     margin-left: 10px;
@@ -213,24 +250,58 @@ tr:hover > td{
     align-content:center;
 }
 
-.icon{
-    color: rgb(207, 58, 193);
+.icon {
+    color: white;
+    font-size: 15px;
+    border: 0.5px, solid, #ced4da;
+    border-radius: 150px;
+    padding: 3px;
 }
 
+.create {
+    display: flex;
+    position: absolute;
+    top: 100px;
+    left: 480px;
+    justify-content: center;
+    align-items: start;
+    width: 240px;
+    height: 100px;
+    color: white;
+
+}
 .options {
     padding: 5px;
-    border: 0/5px, solid, rgb(211, 83, 83, 0.85);
+    margin: 3px;
+    margin-block: 3px;
+    border: 0.5px, solid, rgb(211, 83, 83, 0.85);
     border-radius: 200px;
-    background-color: white;
-    font-size: 5px;
+    background-color: rgb(211, 83, 83, 0.85);
+    font-size: 15px;
     text-decoration: none;
     color: inherit;
     cursor: pointer;
     transition: color 0.3s ease-in-out;
+    position: absolute; 
+    bottom: 0; 
+    right: 0; 
+    margin: 5px;
 }
 
+    .options a {
+        font-size: 20px; /* Increase the font size to make the options more visible */
+        color: white; /* Change the color to match the background of the item */
+        text-decoration: none;
+        cursor: pointer;
+        padding: 5px; /* Add some padding to the options */
+    }
+
+        .options a:hover {
+            background-color: rgba(0, 0, 0, 0.5); /* Add a hover effect to the options */
+        }
+
 .title {
-    font-size: 16px;
+    font-size: 30px;
     color: rgb(211, 83, 83, 0.85);
     font-weight: bold;
 }
@@ -261,4 +332,158 @@ tr:hover > td{
     position: fixed;
     bottom: 100px;
     /*right: 700px;*/
+}
+
+.divOption {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    flex-wrap: wrap;
+    width: 1000px;
+    margin-left: 200px;
+}
+
+.table_row {
+    width: 155px;
+}
+
+/*.course_options {
+    width: 50px;
+    height: 50px;
+    margin: 4px;
+    padding: 5px;
+    border: 0.5px, solid, rgb(211, 83, 83, 0.85);
+    border-radius: 200px;
+    background-color: rgb(211, 83, 83, 0.85);
+    font-size: 15px;
+}*/
+.course_options {
+    display: inline-block;
+    width: 150px;
+    height: 150px;
+    margin: 10px;
+    padding: 20px;
+    border: none;
+    border-radius: 30px;
+    background-color: #333;
+    color: #fff;
+    text-decoration: none;
+    font-size: 20px;
+    background-color: rgb(211, 83, 83, 0.85);
+    word-wrap: break-word;
+    max-width: 250px;
+}
+
+    .link-icon i {
+        color: #fff;
+        font-size: 33px;
+    }
+
+.name {
+    font-size: 16px;
+    position: absolute;
+    top: 50%; 
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.details_text {
+    border: solid, 0.5px, rgb(211, 83, 83, 0.85);
+    border-radius: 50px;
+}
+
+.frame {
+    border: 3px solid rgb(211, 83, 83, 0.85);
+    border-radius: 30px;
+    padding: 10px;
+    margin-bottom: 15px;
+    width: 1000px;
+}
+.black-emoji {
+    color: black;
+}
+
+a:hover {
+    text-decoration: underline;
+}divOp
+.dl-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+    .dl-row dt {
+        width: 120px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .dl-row dd {
+        flex: 1;
+        color: #777;
+    }
+.course_options:not(:last-child) {
+    margin-right: 0;
+}
+
+.course_options:before {
+    content: "";
+    margin-right: 10px;
+    color: #ccc;
+}
+
+.course_options:first-child:before {
+    content: "";
+}
+
+@media (max-width: 768px) {
+    .general {
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 20px;
+    }
+
+    h2 {
+        font-size: 16px;
+    }
+
+    h4 {
+        font-size: 14px;
+    }
+
+    .dl-row {
+        flex-direction: column;
+    }
+
+        .dl-row dt {
+            width: auto;
+            margin-bottom: 5px;
+        }
+
+    .course_options {
+        margin: 5px;
+        padding: 5px;
+        font-size: 14px;
+    }
+}
+
+h1.display-4::before {
+    content: " | ";
+    display: inline-block;
+    margin-right: 10px;
+    color: gray;
+    font-weight: bold;
+}
+
+h1.display-4 {
+    position: relative;
+    display: inline-block;
+    padding: 5px 10px;
+    background-color: #CCCCCC;
+    border-radius: 5px;
+    color: gray;
+    font-weight: bold;
 }

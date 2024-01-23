@@ -21,25 +21,29 @@ namespace Learning_Space.Controllers
             
             string filePath = Path.Combine(".", "TextFiles", "Chats", "Courses", $"{courseid}" + ".txt");
 
+            // Reads all lines from the specified file path
             string[] lines = MyFile.ReadAllLines(filePath);
 
+            // Retrieves the user information from the database
             var useri = await _context.Users.FirstOrDefaultAsync(m => m.UserId == user);
 
             foreach (string line in lines)
             {
+                // Splits each line into parts based on the comma separator
                 string[] parts = line.Split(',');
 
                 ChatMessageDTO message = new ChatMessageDTO
                 {
-                   
-
                     SenderFirstName = parts[0],
                     SenderLastName = parts[1],
+                    // Parses the sent date and time
                     SentDateTime = DateTime.Parse(parts[2]),
                     Body = parts[3],
+                    // Checks if the current user is the sender
                     ISender = (parts[0] == useri.FirstName && parts[1] == useri.LastName) ? 1 : 0
                 };
 
+                // Adds the message to the list of messages
                 messages.Add(message);
             }
 
