@@ -17,6 +17,7 @@ using MyTask = System.Threading.Tasks.Task;
 using System.Security.AccessControl;
 using NuGet.DependencyResolver;
 using Microsoft.Data.SqlClient;
+using Microsoft.Build.Framework;
 
 
 
@@ -33,7 +34,7 @@ namespace Learning_Space.Controllers
         }
 
         // GET: Courses
-        public async Task<IActionResult> Index(int user,int permission, int? classid)
+        public async Task<IActionResult> Index(int user, int permission, int? classid)
         {
             try
             {
@@ -54,7 +55,7 @@ namespace Learning_Space.Controllers
                         courses.RemoveAt(0);
                     }
                 }
-                else if(permission == 2)
+                else if (permission == 2)
                 {
                     // Get all the class IDs for the user
                     List<int> classIds = GetClassIdsForUser(user);
@@ -73,13 +74,13 @@ namespace Learning_Space.Controllers
                 else
                 {
                     List<int?> courseids = await _context.Teachers
-                        .Where(t=> t.UserId == user)
+                        .Where(t => t.UserId == user)
                         .Select(t => t.CourseId)
                         .ToListAsync();
                     foreach (int courseidl in courseids)
                     {
-                        Course vourses =  _context.Courses.FirstOrDefault(c => c.CourseId == courseidl);
-                           
+                        Course vourses = _context.Courses.FirstOrDefault(c => c.CourseId == courseidl);
+
 
                         courses.Add(vourses);
                     }
@@ -127,7 +128,7 @@ namespace Learning_Space.Controllers
                 {
                     return NotFound();
                 }
-                
+
 
                 var course = await _context.Courses
                     .FirstOrDefaultAsync(m => m.CourseId == courseid);
@@ -156,14 +157,14 @@ namespace Learning_Space.Controllers
             catch (Exception ex)
             {
                 return View("Error", ex);
-            }          
+            }
         }
 
 
         // GET: Courses/Create
         public async Task<IActionResult> CreateAsync(int? classid)
         {
-           
+
             var teacherUserIds = _context.Teachers.Select(t => t.UserId).Distinct().ToList();
             var users = _context.Users
                 .Where(u => teacherUserIds.Contains(u.UserId))
@@ -177,7 +178,7 @@ namespace Learning_Space.Controllers
 
 
             ViewData["TeacherId"] = new SelectList(users, "TeacherId", "FirstName");
-            if(classid.HasValue)
+            if (classid.HasValue)
             {
                 var clas = await _context.Classes.Where(c => c.ClassId == classid.Value).ToListAsync();
                 var selectList = new SelectList(clas, "ClassId", "ClassName");
@@ -186,7 +187,7 @@ namespace Learning_Space.Controllers
             else
             {
 
-            ViewData["ClassId"] = new SelectList(_context.Classes, "ClassId", "ClassName");
+                ViewData["ClassId"] = new SelectList(_context.Classes, "ClassId", "ClassName");
             }
             return View();
         }
@@ -249,7 +250,7 @@ namespace Learning_Space.Controllers
                     foreach (int UserId in studentsInClass)
                     {
                         // CreateNotebookFile(newCourseId, UserId);
-                        courseUserNotbookFilePath= Path.Combine(baseFolderPath, "Notebooks", $"courseid_{newCourseId}__userid_" +  UserId.ToString() + ".txt");
+                        courseUserNotbookFilePath = Path.Combine(baseFolderPath, "Notebooks", $"courseid_{newCourseId}__userid_" + UserId.ToString() + ".txt");
                         MyFile.Create(courseUserNotbookFilePath).Close();
                     }
 
@@ -271,14 +272,14 @@ namespace Learning_Space.Controllers
 
         private async MyTask CreateFolder(int newCourseId)
         {
-           
+
             string courseFolderPath = Path.Combine(baseFolderPath, "Courses", $"{newCourseId}");
-            
+
 
             // Create the folder if it doesn't exist
             if (!DDirectory.Exists(courseFolderPath))
             {
-                 
+
                 DDirectory.CreateDirectory(Path.Combine(courseFolderPath, "MoreStudy"));
                 DDirectory.CreateDirectory(Path.Combine(courseFolderPath, "Notebooks"));
                 DDirectory.CreateDirectory(Path.Combine(courseFolderPath, "Task"));
@@ -427,7 +428,7 @@ namespace Learning_Space.Controllers
                     CourseName = course.CourseName,
                     CourseDescription = course.CourseDescription,
                     TeacherId = teacher?.TeacherId,
-                   TeacherName = _context.Users.FirstOrDefault(u => u.UserId == teacher.UserId)?.FirstName,
+                    TeacherName = _context.Users.FirstOrDefault(u => u.UserId == teacher.UserId)?.FirstName,
                     ClassId = classs?.ClassId,
                     ClassName = _context.Classes.FirstOrDefault(c => c.ClassId == classs.ClassId)?.ClassName
                 };
@@ -438,6 +439,7 @@ namespace Learning_Space.Controllers
                 return View("Error", ex);
             }
         }
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int courseid)
@@ -445,24 +447,89 @@ namespace Learning_Space.Controllers
             var course = await _context.Courses.FindAsync(courseid);
             if (course != null)
             {
-                var documentsToDelete = await _context.Teachers.Where(t => t.CourseId == courseid).ToListAsync();
-                _context.Teachers.RemoveRange(documentsToDelete);
-                await _context.SaveChangesAsync();
-                var documentsToDelete1 = await _context.CourseInClasses.Where(t => t.CourseId == courseid).ToListAsync();
-                _context.CourseInClasses.RemoveRange(documentsToDelete1);
-                await _context.SaveChangesAsync();
-                _context.Courses.Remove(course);
-                string baseFolderPath = Path.Combine(".", "TextFiles");
-                //string courseFolderPath = Path.Combine(baseFolderPath, "Courses", $"{courseid}");
-                string courseChatFilePath = Path.Combine(baseFolderPath, "Chats", "Courses", $"{courseid}" + ".txt");
-            
-                MyFile.Delete(courseChatFilePath);
+                //remove course from the textfiles:
+                await RemoveFiles(courseid);
+
+                //remove course from the tables:
+                await RemoveFromTables(courseid);
+
+
             }
-  _context.Courses.Remove(course);
-            await _context.SaveChangesAsync();
             return Redirect($"/Courses/Index?user=0&permission=0");
         }
 
+        private async MyTask RemoveFiles(int courseid)
+        {
+
+            //remove course file from the chats
+            string baseFolderPath = Path.Combine(".", "TextFiles");
+            string courseChatFilePath = Path.Combine(baseFolderPath, "Chats", "Courses", $"{courseid}" + ".txt");
+            MyFile.Delete(courseChatFilePath);
+
+            //remove tasks course file from the tasks
+            courseChatFilePath = Path.Combine(baseFolderPath, "Tasks", "Courses", "Tasks" + ".txt");
+            string[] lines = MyFile.ReadAllLines(courseChatFilePath);
+            string[] filteredLines = FilterLines(lines, $"{courseid},");
+            MyFile.WriteAllLines(courseChatFilePath, filteredLines);
+
+            //remove users tasks course file from the userstasks
+            courseChatFilePath = Path.Combine(baseFolderPath, "Tasks", "UserTasks");
+            var sql = $"SELECT t.*" +
+                    $"FROM [Tasks] t " +
+                    $"WHERE t.CourseId = {courseid}" +
+                    $"AND t.TaskType = 'Task'";
+            var tasks = await _context.Tasks.FromSqlRaw(sql).ToListAsync();
+            foreach (var task in tasks)
+            {
+                DeleteFilesStartingWith(courseChatFilePath, $"taskid_{task.TaskId}_");
+            }
+
+            //remove users notebook course file from the notebooks
+            courseChatFilePath = Path.Combine(baseFolderPath, "Notebooks");
+            DeleteFilesStartingWith(courseChatFilePath, $"courseid_{courseid}_");
+
+        }
+
+        private async MyTask RemoveFromTables(int courseid)
+        {
+            //remove course from the teacher
+            var documentsToDelete = await _context.Teachers.Where(t => t.CourseId == courseid).ToListAsync();
+            _context.Teachers.RemoveRange(documentsToDelete);
+            await _context.SaveChangesAsync();
+            //remove course from the class
+            var documentsToDelete1 = await _context.CourseInClasses.Where(t => t.CourseId == courseid).ToListAsync();
+            _context.CourseInClasses.RemoveRange(documentsToDelete1);
+            await _context.SaveChangesAsync();
+            //remove course from the courses
+            var course = await _context.Courses.FindAsync(courseid);
+            _context.Courses.Remove(course);
+            await _context.SaveChangesAsync();
+        }
+
+        static void DeleteFilesStartingWith(string directoryPath, string searchPattern)
+        {
+            try
+            {
+                string[] files = DDirectory.GetFiles(directoryPath, searchPattern);
+
+                foreach (string file in files)
+                {
+                    MyFile.Delete(file);
+                    Console.WriteLine($"Deleted file: {file}");
+                }
+
+                Console.WriteLine("Deletion complete.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error occurred: {ex.Message}");
+            }
+        }
+
+        static string[] FilterLines(string[] lines, string keyword)
+        {
+            return Array.FindAll(lines, line => line.StartsWith(keyword));
+        }
 
         public IActionResult Notebook(int user, int courseid)
         {
@@ -496,9 +563,6 @@ namespace Learning_Space.Controllers
         }
 
 
-       
-
-      
 
         private bool CourseExists(int id)
         {

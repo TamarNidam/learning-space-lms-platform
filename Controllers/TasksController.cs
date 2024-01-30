@@ -176,11 +176,7 @@ namespace Learning_Space.Controllers
         {
             if (ModelState.IsValid)
             {
-                string filePath = Path.Combine(".", "TextFiles", "Tasks", "Tasks.txt");
-                string taskString = $"{task.TaskId},{task.Subject},{task.Context}";
-
-                MyFile.AppendAllText(filePath, taskString + Environment.NewLine);
-
+               
                 var maxId = await _context.Tasks.MaxAsync(u => (int?)u.TaskId) ?? 1;
                 var newId = maxId + 1;
                 var sql = $"INSERT INTO [Tasks] (TaskId,TaskType,StartDate,EndDate,CourseId) VALUES ({newId}, 'Task','{task.StartDate.ToString("yyyy-MM-dd")}', '{task.EndDate.ToString("yyyy-MM-dd")}', {courseid})";
@@ -201,7 +197,10 @@ namespace Learning_Space.Controllers
                     await _context.Database.ExecuteSqlRawAsync(sql);
 
                 }
+                string filePath = Path.Combine(".", "TextFiles", "Tasks", "Tasks.txt");
+                string taskString = $"{newId},{task.Subject},{task.Context}";
 
+                MyFile.AppendAllText(filePath, taskString + Environment.NewLine);
                 return Redirect($"/Tasks/Index?user={user}&permission={permission}&courseid={courseid}");
 
             }

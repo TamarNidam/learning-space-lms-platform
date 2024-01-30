@@ -3,6 +3,8 @@ using Learning_Space.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using System.Net.Mail;
+using System.Net;
 
 namespace Learning_Space.Controllers
 {
@@ -10,6 +12,8 @@ namespace Learning_Space.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly LearningSpaceContext _context;
+
+      
 
         public HomeController(LearningSpaceContext context, ILogger<HomeController> logger)
         {
@@ -19,7 +23,7 @@ namespace Learning_Space.Controllers
 
         public IActionResult Index()
         {
-            ViewBag.ActivateLayout = "EmptyLayout";
+            ViewBag.ActivateLayout = "EmptyLayout"; 
             return View();
         }
 
@@ -31,8 +35,10 @@ namespace Learning_Space.Controllers
 
         public IActionResult SignUp()
         {
-            ViewBag.ActivateLayout="EmptyLayout";
+            ViewBag.ActivateLayout="EmptyLayout"; 
             return View();
+           
+
         }
 
  
