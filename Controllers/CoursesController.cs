@@ -458,7 +458,7 @@ namespace Learning_Space.Controllers
             return Redirect($"/Courses/Index?user=0&permission=0");
         }
 
-        private async MyTask RemoveFiles(int courseid)
+        public async MyTask RemoveFiles(int courseid)
         {
 
             //remove course file from the chats
@@ -490,16 +490,56 @@ namespace Learning_Space.Controllers
 
         }
 
-        private async MyTask RemoveFromTables(int courseid)
+        public async MyTask RemoveFromTables(int courseid)
         {
-            //remove course from the teacher
+            //remove teacher's course from the teacher
             var documentsToDelete = await _context.Teachers.Where(t => t.CourseId == courseid).ToListAsync();
             _context.Teachers.RemoveRange(documentsToDelete);
             await _context.SaveChangesAsync();
-            //remove course from the class
+
+            //remove class's course from the course in class
             var documentsToDelete1 = await _context.CourseInClasses.Where(t => t.CourseId == courseid).ToListAsync();
             _context.CourseInClasses.RemoveRange(documentsToDelete1);
             await _context.SaveChangesAsync();
+
+            //remove task's course from tasks
+            var courseTasks = await _context.Tasks.Where(t => t.CourseId == courseid).ToListAsync();
+            _context.Tasks.RemoveRange(courseTasks);
+            await _context.SaveChangesAsync();
+
+            //remove lessons's course from lessons
+            var lessons = await _context.Lessons.Where(t => t.CourseId == courseid).ToListAsync();
+            if (lessons != null)
+            {
+                foreach (var les in lessons)
+                {
+                    //remove lesson ettend
+                    var lessonsAtend = await _context.LessonAttends.Where(l => l.LessonId == les.LessonId).ToListAsync();
+                    if (lessonsAtend != null)
+                    {
+                        _context.LessonAttends.RemoveRange(lessonsAtend);
+                    }
+                    await _context.SaveChangesAsync();
+                }
+                _context.Lessons.RemoveRange(lessons);
+            }
+            await _context.SaveChangesAsync();
+
+            //remove message's course from messages
+            var mes = await _context.Massages.Where(t => t.CourseId == courseid).ToListAsync();
+            _context.Massages.RemoveRange(mes);
+            await _context.SaveChangesAsync();
+
+            //remove alarms's course from alarms
+            var alarms = await _context.Alarms.Where(t => t.CourseId == courseid).ToListAsync();
+            _context.Alarms.RemoveRange(alarms);
+            await _context.SaveChangesAsync();
+
+            //remove study's course from more studies
+            var s = await _context.MoreStudies.Where(t => t.CourseId == courseid).ToListAsync();
+            _context.MoreStudies.RemoveRange(s);
+            await _context.SaveChangesAsync();
+
             //remove course from the courses
             var course = await _context.Courses.FindAsync(courseid);
             _context.Courses.Remove(course);

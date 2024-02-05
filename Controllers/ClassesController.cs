@@ -7,16 +7,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Learning_Space.Models;
 using Learning_Space.DTO;
+using Learning_Space.Controllers;
 
 namespace Learning_Space.Controllers
 {
     public class ClassesController : Controller
     {
         private readonly LearningSpaceContext _context;
+        private readonly CoursesController _coursesController;
 
-        public ClassesController(LearningSpaceContext context)
+        public ClassesController(LearningSpaceContext context, CoursesController coursesController)
         {
             _context = context;
+            _coursesController = coursesController;
         }
 
         // GET: Classes
@@ -49,7 +52,7 @@ namespace Learning_Space.Controllers
                 {
                     return NotFound();
                 }
-                
+
                 var classDTO = new ClassDTO
                 {
                     ClassId = @class.ClassId,
@@ -79,9 +82,9 @@ namespace Learning_Space.Controllers
         {
             if (ModelState.IsValid)
             {
-               var u = await _context.Classes
-                   .FromSqlRaw("SELECT TOP 1 * FROM Classes WHERE ClassName = {0}", @classDTO.ClassName)
-                   .FirstOrDefaultAsync();
+                var u = await _context.Classes
+                    .FromSqlRaw("SELECT TOP 1 * FROM Classes WHERE ClassName = {0}", @classDTO.ClassName)
+                    .FirstOrDefaultAsync();
                 if (u != null)
                 {
                     ViewBag.ErrorMessage = "An existing name";
@@ -101,7 +104,7 @@ namespace Learning_Space.Controllers
         // GET: Classes/Edit/5
         public async Task<IActionResult> Edit(int? classid)
         {
-                       if (classid == null)
+            if (classid == null)
             {
                 return NotFound();
             }
@@ -190,6 +193,7 @@ namespace Learning_Space.Controllers
 
         }
 
+
         // POST: Classes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -199,13 +203,27 @@ namespace Learning_Space.Controllers
 
             if (@class != null)
             {
+                var sql = $"SELECT Courses.* " +
+                           $"FROM Courses JOIN CourseInClass " +
+                           $"ON Courses.CourseId = CourseInClass.CourseId " +
+                           $"WHERE CourseInClass.ClassId = {classid}";
+                var courses = await _context.Courses.FromSqlRaw(sql).ToListAsync();
+
+
+                foreach (var course in courses)
+                {
+                    await _coursesController.RemoveFiles(course.CourseId);
+                    await _coursesController.RemoveFromTables(course.CourseId);
+                }
                 var classes = await _context.StudentInClasses.Where(c => c.ClassId == classid).ToListAsync();
                 _context.StudentInClasses.RemoveRange(classes);
                 await _context.SaveChangesAsync();
+
                 _context.Classes.Remove(@class);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
+
             return Redirect($"/Classes/Index?user=0&permission=0");
         }
 
