@@ -29,7 +29,7 @@ namespace Learning_Space.Controllers
         // GET: Alarms
         public async Task<IActionResult> Index()
         {
-            SendMail("tamtam2003n@gmail.com", "j", "workk");
+            //SendMail("tamtam2003n@gmail.com", "j", "workk");
             var learningSpaceContext = _context.Alarms.Include(a => a.Course);
             return View(await learningSpaceContext.ToListAsync());
         }
