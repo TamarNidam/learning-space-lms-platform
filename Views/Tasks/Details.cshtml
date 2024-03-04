@@ -47,6 +47,12 @@
     }
     else
     {
+        // Get the DateOnly representation of the current date
+        var currentDate = DateOnly.FromDateTime(DateTime.Now);
+
+        // Check if the EndDate of the task has not passed
+        if (Model.EndDate >= currentDate)
+        {
         <div class="submission-box">
             <h4>Submission</h4>
             <form asp-action="Submit" asp-route-user="@user" asp-route-courseid="@courseid" asp-route-taskid="@Model.TaskId" method="post">
@@ -55,6 +61,14 @@
                 <button type="submit">Submit</button>
             </form>
         </div>
+        }
+        else
+        {
+            <div class="submission-box" style="background-color: #ffcccc; padding: 10px;">
+                <h4 style="color: #ff0000;">Submission (Deadline Passed)</h4>
+                <p style="font-style: italic;">Cannot submit. Task deadline has passed.</p>
+            </div>
+        }
     }
 }
 else

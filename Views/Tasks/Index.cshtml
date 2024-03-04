@@ -9,6 +9,12 @@
     int? permission = Convert.ToInt32(Context.Request.Query["permission"]);
     int? courseid = Convert.ToInt32(Context.Request.Query["courseid"]);
 }
+<style>
+    .item-submitted {
+        background-color: rgb(83, 83, 211, 0.85);
+    }
+</style>
+
 <h1 class="title">Tasks</h1>
 
 @if ( permission == 1)
@@ -18,7 +24,68 @@
 </p>
 }
 
-@foreach (var item in Model) 
+@if (!Model.Any())
+{
+    <h4>No tasks available</h4>
+}
+else
+{
+    var currentDate = DateOnly.FromDateTime(DateTime.Now);
+    <h4>Open Tasks:</h4>
+    <div style="display: flex; flex-wrap: wrap;">
+        @foreach (var item in Model)
+        {            
+            if (item.EndDate >= currentDate)
+            {
+                <div class="item @(item.Done == 1 ? "item-submitted" : "")" onclick="location.href='@Url.Action("Details", new { user = @user, permission = @permission, courseid = (@courseid.HasValue && @courseid.Value != 0) ? @courseid : (int?)null, taskid = @item.TaskId})';">
+
+                    @if (!courseid.HasValue || courseid.Value == 0)
+                    {
+                        <span>Course: @Html.DisplayFor(modelItem => item.CourseName)</span>
+                        <br />
+                    }
+                    <span>@Html.DisplayFor(modelItem => item.Subject)</span>
+                    <br />
+                    <span>@Html.DisplayFor(modelItem => item.StartDate) - @Html.DisplayFor(modelItem => item.EndDate)</span>
+                    <br />
+                    @if (item.Done == 1)
+                    {
+                        <div class="item">
+                            <span>@* @item.SubmittedName *@</span>
+                        </div>
+                    }
+                </div>
+            }
+        }
+    </div>
+
+                            <hr/>
+
+    <h4>Tasks with Submission Deadline Passed:</h4>
+    <div style="display: flex; flex-wrap: wrap;">
+        @foreach (var item in Model)
+        {
+            if (item.EndDate < currentDate)
+            {
+                <div class="item" onclick="location.href='@Url.Action("Details", new { user = @user, permission = @permission, courseid = (@courseid.HasValue && @courseid.Value != 0) ? @courseid : (int?)null, taskid = @item.TaskId})';">
+
+                    @if (!courseid.HasValue || courseid.Value == 0)
+                    {
+                        <span>Course: @Html.DisplayFor(modelItem => item.CourseName)</span>
+                        <br />
+                    }
+                    <span>@Html.DisplayFor(modelItem => item.Subject)</span>
+                    <br />
+                    <span>@Html.DisplayFor(modelItem => item.StartDate) - @Html.DisplayFor(modelItem => item.EndDate)</span>
+                    <br />
+                </div>
+            }
+        }
+    </div>
+}
+
+
+@* @foreach (var item in Model) 
 {
     <div class="task-item @(item.Done == 0 ? "gray-background" : "")">
       
@@ -38,25 +105,11 @@
   
           </div>
         
-       @*  @if (courseid.HasValue && courseid.Value != 0)
-        {
-            <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-taskid="@item.TaskId">Edit</a>
-            <a asp-action="Details" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-taskid="@item.TaskId">Details</a>
-            <a asp-action="Delete" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-taskid="@item.TaskId">Delete</a>
-        }
-        else
-        {
-            <a asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-taskid="@item.TaskId">Edit</a>
-            <a asp-action="Details" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-taskid="@item.TaskId">Details</a>
-
-            <a asp-action="Delete" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-taskid="@item.TaskId">Delete</a>
-
-        } *@
        </div>
        <hr/>
        
     
- }               
+ }   *@             
 
 
 

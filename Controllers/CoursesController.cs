@@ -20,7 +20,6 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Build.Framework;
 
 
-
 namespace Learning_Space.Controllers
 {
     public class CoursesController : Controller
@@ -194,8 +193,6 @@ namespace Learning_Space.Controllers
 
 
         // POST: Courses/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("CourseId,CourseName,CourseDescription,TeacherId,ClassId")] CourseDTO courseDTO)
@@ -356,8 +353,6 @@ namespace Learning_Space.Controllers
         }
 
         // POST: Courses/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int user, int permission, int? courseid, [Bind("CourseId,CourseName,CourseDescription,TeacherId,ClassId")] CourseDTO courseDTO)
@@ -453,7 +448,6 @@ namespace Learning_Space.Controllers
                 //remove course from the tables:
                 await RemoveFromTables(courseid);
 
-
             }
             return Redirect($"/Courses/Index?user=0&permission=0");
         }
@@ -487,7 +481,6 @@ namespace Learning_Space.Controllers
             //remove users notebook course file from the notebooks
             courseChatFilePath = Path.Combine(baseFolderPath, "Notebooks");
             DeleteFilesStartingWith(courseChatFilePath, $"courseid_{courseid}_");
-
         }
 
         public async MyTask RemoveFromTables(int courseid)

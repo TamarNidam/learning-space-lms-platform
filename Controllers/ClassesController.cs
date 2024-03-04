@@ -74,8 +74,6 @@ namespace Learning_Space.Controllers
         }
 
         // POST: Classes/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ClassId,ClassName")] ClassDTO @classDTO)
@@ -125,8 +123,7 @@ namespace Learning_Space.Controllers
         }
 
         // POST: Classes/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int user, int permission, int classid, [Bind("ClassId,ClassName")] ClassDTO @classDTO)
@@ -222,7 +219,6 @@ namespace Learning_Space.Controllers
                 _context.Classes.Remove(@class);
                 await _context.SaveChangesAsync();
             }
-
 
             return Redirect($"/Classes/Index?user=0&permission=0");
         }
