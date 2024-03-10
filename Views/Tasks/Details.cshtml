@@ -73,7 +73,8 @@
 }
 else
 {
-    <a asp-controller="UserTasks" asp-action="Index" asp-route-user="@user" asp-route-courseid="@courseid" asp-route-taskid="@Model.TaskId">Users task</a>
+    <br/>
+    <a asp-controller="UserTasks" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-taskid="@Model.TaskId">Users task</a>
 }
 
 

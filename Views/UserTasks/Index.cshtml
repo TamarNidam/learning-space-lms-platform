@@ -1,58 +1,60 @@
-﻿@model IEnumerable<Learning_Space.Models.UserTask>
+﻿@model IEnumerable<Learning_Space.DTO.UserTaskDTO>
 
+    @using Microsoft.AspNetCore.Http
+@{
+    int user = Convert.ToInt32(Context.Request.Query["user"]);
+    int permission = Convert.ToInt32(Context.Request.Query["permission"]);
+    int? courseid = Convert.ToInt32(Context.Request.Query["courseid"]);
+    int? taskid = Convert.ToInt32(Context.Request.Query["taskid"]);
+}
 @{
     ViewData["Title"] = "Index";
+    string subject = Model.FirstOrDefault()?.TaskSubject;
 }
 
-<h1>Index</h1>
+<h1>@subject;</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.UserName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Done)
+            </th>
+            
             <th>
                 @Html.DisplayNameFor(model => model.Mark)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Remarks)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Done)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Task)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.User)
-            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Mark)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Remarks)
-            </td>
+            <tr onclick="location.href='@Url.Action("Edit", new { user = @user, permission = @permission,courseid=@courseid, taskid = @item.TaskId, usertaskid=item.UserTaskId })';">
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Done)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Task.TaskId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.User.FirstName)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.UserTaskId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.UserTaskId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.UserTaskId">Delete</a>
-            </td>
+                </td>
+                <td>
+                    @if (item.Mark > 0)
+                    {
+                        @Html.DisplayFor(modelItem => item.Mark)
+                    }
+                </td>
+                <td>
+                    @if (item.Mark > 0)
+                    {
+                        @Html.DisplayFor(modelItem => item.Remarks)
+                    }
+                   
+                </td>
         </tr>
 }
     </tbody>
