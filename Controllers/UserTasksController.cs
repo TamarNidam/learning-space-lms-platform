@@ -72,19 +72,28 @@ namespace Learning_Space.Controllers
         // GET: UserTasks/Edit/5
         public async Task<IActionResult> Edit(int? usertaskid)
         {
-            if (id == null)
+            if (usertaskid == null)
             {
                 return NotFound();
             }
 
-            var userTask = await _context.UserTasks.FindAsync(id);
-            if (userTask == null)
+            var u = await _context.UserTasks.FindAsync(usertaskid);
+            if (u == null)
             {
                 return NotFound();
             }
-            ViewData["TaskId"] = new SelectList(_context.Tasks, "TaskId", "TaskId", userTask.TaskId);
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "FirstName", userTask.UserId);
-            return View(userTask);
+            var DTo = new UserTaskDTO
+            {
+                UserTaskId = u.UserTaskId,
+                UserId = u.UserId,
+                UserName = u.User.FirstName + " " + u.User.LastName,
+                TaskId = u.TaskId,
+                Mark = u.Mark,
+                Remarks = u.Remarks,
+                Done = u.Done
+            };
+
+            return View(DTo);
         }
 
         // POST: UserTasks/Edit/5
