@@ -114,6 +114,8 @@ namespace Learning_Space.Controllers
             if (permission == 2 && userTask != null && userTask.Done)
             {
                 d = 1;
+                ViewBag.Mark = userTask.Mark;
+                ViewBag.Remarks = userTask.Remarks;
             }
 
             var taskDTO = new TaskDTO
@@ -130,6 +132,7 @@ namespace Learning_Space.Controllers
                 Done = d
             };
 
+           
             return View(taskDTO);
         }
 

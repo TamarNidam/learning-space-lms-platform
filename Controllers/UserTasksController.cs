@@ -49,6 +49,87 @@ namespace Learning_Space.Controllers
             }
         }
 
+
+
+       
+        // GET: UserTasks/Edit/5
+        public async Task<IActionResult> Edit(int? usertaskid)
+        {
+            if (usertaskid == null)
+            {
+                return NotFound();
+            }
+
+            var u = await _context.UserTasks.FindAsync(usertaskid);
+            var u2 = await _context.Users.FindAsync(u.UserId);
+            if (u == null && u2 == null)
+            {
+                return NotFound();
+            }
+            string subject = GetSubject((int)u.TaskId);
+            var DTo = new UserTaskDTO
+            {
+                UserTaskId = u.UserTaskId,
+                UserId = u.UserId,
+                UserName = u2.FirstName + " " + u2.LastName,
+                TaskSubject = subject,
+                TaskId = u.TaskId,
+                Mark = u.Mark,
+                Remarks = u.Remarks,
+                Done = u.Done
+            };
+
+            ViewBag.Context = GetContext((int)u.TaskId,(int)u.UserId);            
+                         
+            return View(DTo);
+        }
+
+        // POST: UserTasks/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int user, int permission, int courseid, int usertaskid, [Bind("UserTaskId,UserId,TaskId,Mark,Remarks,Done")] UserTaskDTO userTask)
+        {
+            if (usertaskid != userTask.UserTaskId)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var sql = $"UPDATE [UserTask] SET Mark = '{userTask.Mark}',Remarks = '{userTask.Remarks}' WHERE UserTaskId = {usertaskid}";
+                    await _context.Database.ExecuteSqlRawAsync(sql);
+                    //_context.Update(userTask);
+                    //await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!UserTaskExists(userTask.UserTaskId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return Redirect($"/Tasks/Details?user={user}&permission={permission}&courseid={courseid}&taskid={userTask.TaskId}");
+            }
+
+            return View(userTask);
+        }
+
+        private string GetContext(int taskId, int user)
+        {
+            string filePath = Path.Combine(".", "TextFiles", "Tasks", "UserTasks", $"taskid_{taskId}__userid_{user}.txt");
+            if (MyFile.Exists(filePath))
+            {
+                return MyFile.ReadAllText(filePath);
+            }
+            return null;
+        }
+
         private string GetSubject(int taskId)
         {
             string filePath = Path.Combine(".", "TextFiles", "Tasks", "Tasks.txt");
@@ -68,72 +149,6 @@ namespace Learning_Space.Controllers
         }
 
 
-       
-        // GET: UserTasks/Edit/5
-        public async Task<IActionResult> Edit(int? usertaskid)
-        {
-            if (usertaskid == null)
-            {
-                return NotFound();
-            }
-
-            var u = await _context.UserTasks.FindAsync(usertaskid);
-            if (u == null)
-            {
-                return NotFound();
-            }
-            var DTo = new UserTaskDTO
-            {
-                UserTaskId = u.UserTaskId,
-                UserId = u.UserId,
-                UserName = u.User.FirstName + " " + u.User.LastName,
-                TaskId = u.TaskId,
-                Mark = u.Mark,
-                Remarks = u.Remarks,
-                Done = u.Done
-            };
-
-            return View(DTo);
-        }
-
-        // POST: UserTasks/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("UserTaskId,UserId,TaskId,Mark,Remarks,Done")] UserTask userTask)
-        {
-            if (id != userTask.UserTaskId)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(userTask);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!UserTaskExists(userTask.UserTaskId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["TaskId"] = new SelectList(_context.Tasks, "TaskId", "TaskId", userTask.TaskId);
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "FirstName", userTask.UserId);
-            return View(userTask);
-        }
-
-      
         private bool UserTaskExists(int id)
         {
             return _context.UserTasks.Any(e => e.UserTaskId == id);

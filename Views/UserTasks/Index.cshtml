@@ -35,27 +35,54 @@
     </thead>
     <tbody>
 @foreach (var item in Model) {
-            <tr onclick="location.href='@Url.Action("Edit", new { user = @user, permission = @permission,courseid=@courseid, taskid = @item.TaskId, usertaskid=item.UserTaskId })';">
-                <td>
-                    @Html.DisplayFor(modelItem => item.UserName)
-                </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Done)
-                </td>
-                <td>
-                    @if (item.Mark > 0)
-                    {
-                        @Html.DisplayFor(modelItem => item.Mark)
-                    }
-                </td>
-                <td>
-                    @if (item.Mark > 0)
-                    {
-                        @Html.DisplayFor(modelItem => item.Remarks)
-                    }
+            if (item.Done)
+            {
+                <tr onclick="location.href='@Url.Action("Edit", new { user = @user, permission = @permission,courseid=@courseid, taskid = @item.TaskId, usertaskid=item.UserTaskId })';">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UserName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Done)
+                    </td>
+                    <td>
+                        @if (item.Mark > 0)
+                        {
+                            @Html.DisplayFor(modelItem => item.Mark)
+                        }
+                    </td>
+                    <td>
+                        @if (item.Mark > 0)
+                        {
+                            @Html.DisplayFor(modelItem => item.Remarks)
+                        }
                    
                 </td>
-        </tr>
-}
+                </tr>
+            }
+            else
+            {
+                <tr>
+                 <td>
+                        @Html.DisplayFor(modelItem => item.UserName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Done)
+                    </td>
+                    <td>
+                        @if (item.Mark > 0)
+                        {
+                            @Html.DisplayFor(modelItem => item.Mark)
+                        }
+                    </td>
+                    <td>
+                        @if (item.Mark > 0)
+                        {
+                            @Html.DisplayFor(modelItem => item.Remarks)
+                        }
+                   
+                </td>
+                </tr>
+            }
+        }
     </tbody>
 </table>

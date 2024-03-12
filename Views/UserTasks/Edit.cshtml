@@ -1,34 +1,46 @@
-﻿@model Learning_Space.Models.UserTask
+﻿@model Learning_Space.DTO.UserTaskDTO
 
 @{
     ViewData["Title"] = "Edit";
+}
+
+@using Microsoft.AspNetCore.Http
+@{
+    int? user = Convert.ToInt32(Context.Request.Query["user"]);
+    int? permission = Convert.ToInt32(Context.Request.Query["permission"]);
+    int? courseid = Convert.ToInt32(Context.Request.Query["courseid"]);
+    int taskid = Convert.ToInt32(Context.Request.Query["taskid"]);
 }
 
 <h4>UserTask</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+
+        <h6>Task: @Html.DisplayFor(model => model.TaskSubject)</h6>
+        <h6>Sumbittion of @Html.DisplayFor(model => model.UserName) :</h6>
+        <p> @ViewBag.Context </p>
+
+        <form asp-action="Edit" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-taskid="@taskid">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="UserTaskId" />
             
+            
+
             <div class="form-group">
                 <label asp-for="Mark" class="control-label"></label>
-                <input asp-for="Mark" class="form-control" />
+                <input asp-for="Mark" class="form-control" type="number" min="0" max="100" step="0.01" pattern="^[0-9]+(\.[0-9]+)?$">
                 <span asp-validation-for="Mark" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Remarks" class="control-label"></label>
                 <input asp-for="Remarks" class="form-control" />
                 <span asp-validation-for="Remarks" class="text-danger"></span>
             </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Done" /> @Html.DisplayNameFor(model => model.Done)
-                </label>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="sign_up_button" />
+        
+            <div >
+                <input  type="submit" value="Save Changes" class="sign_up_button" />
             </div>
         </form>
     </div>
