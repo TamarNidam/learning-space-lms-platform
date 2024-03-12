@@ -171,8 +171,6 @@ namespace Learning_Space.Controllers
         }
 
         // POST: Tasks/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(int user, int permission, int courseid, [Bind("TaskId,TaskType,StartDate,EndDate,CourseId,CourseName,Subject,Context,Done,PerformanceContent")] TaskDTO task)
@@ -228,8 +226,7 @@ namespace Learning_Space.Controllers
         }
 
         // POST: Tasks/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("TaskId,TaskType,StartDate,EndDate,CourseId")] Task task)
