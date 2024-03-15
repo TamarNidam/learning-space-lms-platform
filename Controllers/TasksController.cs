@@ -183,6 +183,12 @@ namespace Learning_Space.Controllers
                 var sql = $"INSERT INTO [Tasks] (TaskId,TaskType,StartDate,EndDate,CourseId) VALUES ({newId}, 'Task','{task.StartDate.ToString("yyyy-MM-dd")}', '{task.EndDate.ToString("yyyy-MM-dd")}', {courseid})";
                 await _context.Database.ExecuteSqlRawAsync(sql);
 
+                //Insert a new alarm entry into the Alarm table
+                var maxIdAlarm = await _context.Alarms.MaxAsync(u => (int?)u.AlarmId) ?? 0;
+                var newIdAlarm = maxIdAlarm + 1;
+                sql = $"INSERT INTO [Alarms] (AlarmId,CourseId,AlarmType,TypeId) VALUES ({newIdAlarm},{courseid}, 'Message', {(newId*10)+7})";
+                await _context.Database.ExecuteSqlRawAsync(sql);
+
                 var maxIdUserTask = await _context.UserTasks.MaxAsync(u => (int?)u.UserTaskId) ?? 0;
                 var courseInClass =  _context.CourseInClasses.FirstOrDefault(c => c.CourseId == courseid);
                 var clas = courseInClass != null ? courseInClass.ClassId : null;
@@ -296,7 +302,7 @@ namespace Learning_Space.Controllers
 
         // POST: Task/Submit
         [HttpPost]
-        public IActionResult Submit(int user,int courseid, int taskid, string answer)
+        public async Task<IActionResult> SubmitAsync(int user,int courseid, int taskid, string answer)
         {
             string filePath = Path.Combine(".", "TextFiles", "Tasks", "UserTasks", $"taskid_{taskid}__userid_{user}.txt");
             
@@ -309,6 +315,13 @@ namespace Learning_Space.Controllers
                 userTask.Done = true;
                 _context.SaveChanges();
             }
+
+            //Insert a new alarm entry into the Alarm table
+            var maxIdAlarm = await _context.Alarms.MaxAsync(u => (int?)u.AlarmId) ?? 0;
+            var newIdAlarm = maxIdAlarm + 1;
+            var sql = $"INSERT INTO [Alarms] (AlarmId,CourseId,AlarmType,TypeId) VALUES ({newIdAlarm},{courseid}, 'Message', {(userTask.UserTaskId*10)+3})";
+            await _context.Database.ExecuteSqlRawAsync(sql);
+
             return Redirect($"/Tasks/Details?user={user}&permission=2&courseid={courseid}&taskid={taskid}");
         }
 

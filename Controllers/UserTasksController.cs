@@ -102,6 +102,12 @@ namespace Learning_Space.Controllers
                     await _context.Database.ExecuteSqlRawAsync(sql);
                     //_context.Update(userTask);
                     //await _context.SaveChangesAsync();
+
+                    //Insert a new alarm entry into the Alarm table
+                    var maxIdAlarm = await _context.Alarms.MaxAsync(u => (int?)u.AlarmId) ?? 0;
+                    var newIdAlarm = maxIdAlarm + 1;
+                    sql = $"INSERT INTO [Alarms] (AlarmId,CourseId,AlarmType,TypeId) VALUES ({newIdAlarm},{courseid}, 'Message', {(usertaskid*10)+4})";
+                    await _context.Database.ExecuteSqlRawAsync(sql);
                 }
                 catch (DbUpdateConcurrencyException)
                 {

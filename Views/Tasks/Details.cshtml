@@ -45,10 +45,13 @@
             </form>
             <p></p>
             <p></p>
+            @if (ViewBag.Mark>0)
+            {
             <div style="background-color: #ffcccc; padding: 10px; text-align:center;">
             <p>Your mark:<span style="color: rgb(211, 83, 83, 0.85); font-weight: bold;">@ViewBag.Mark</span></p>
             <p style="color: rgb(211, 83, 83, 0.85); font-style: italic;">@ViewBag.Remarks</p>
-        </div>
+                </div>
+            }
         </div>
     }
     else

@@ -189,8 +189,6 @@ namespace Learning_Space.Controllers
         }
 
         // POST: Lessons/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(int user, int permission, int courseid, [Bind("LessonId,CourseId,LessonSubject,LessonDate,StartTime,EndTime,LessonType,ZoomUrl")] LessonDTO lesson)
@@ -234,6 +232,12 @@ namespace Learning_Space.Controllers
                 // Insert the new lesson into the Lessons table
                 var sql = $"INSERT INTO [Lessons] (LessonId,CourseId,LessonSubject,LessonDate,StartTime,EndTime,LessonType) " +
                     $"VALUES ({newId}, {courseid},'{lesson.LessonSubject}', '{lesson.LessonDate.ToString("yyyy-MM-dd")}', '{lesson.StartTime}', '{lesson.EndTime}', '{lesson.LessonType}')";
+                await _context.Database.ExecuteSqlRawAsync(sql);
+
+                //Insert a new alarm entry into the Alarm table
+                var maxId1 = await _context.Alarms.MaxAsync(u => (int?)u.AlarmId) ?? 0;
+                var newId1 = maxId1 + 1;
+                sql = $"INSERT INTO [Alarm] (AlarmId, CourseId, AlarmType, TypeId) VALUES ({newId1},{courseid}, 'Message',{(newId*10)+1} )";
                 await _context.Database.ExecuteSqlRawAsync(sql);
 
                 // If the lesson type is Zoom, insert a new entry into the ZoomLessons table

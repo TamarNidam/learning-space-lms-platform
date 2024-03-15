@@ -186,6 +186,12 @@ namespace Learning_Space.Controllers
                     var sql = $"INSERT INTO [Users] (UserId,FirstName,LastName,Email,Phone,Password) VALUES ({newUserId}, '{userDTO.FirstName}', '{userDTO.LastName}', '{userDTO.Email}', '{userDTO.Phone}','{userDTO.Password}')";
                     await _context.Database.ExecuteSqlRawAsync(sql);
 
+                    //Insert a new alarm entry into the Alarm table
+                    var maxIdAlarm = await _context.Alarms.MaxAsync(u => (int?)u.AlarmId) ?? 0;
+                    var newIdAlarm = maxIdAlarm + 1;
+                    sql = $"INSERT INTO [Alarms] (AlarmId,CourseId,AlarmType,TypeId) VALUES ({newIdAlarm},0, 'Message', {(newUserId*10)+8})";
+                    await _context.Database.ExecuteSqlRawAsync(sql);
+
                     if (userDTO.Role == "Teacher")
                     {
                         var maxTeacherId = await _context.Teachers.MaxAsync(u => (int?)u.TeacherId) ?? 0;

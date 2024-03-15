@@ -218,6 +218,12 @@ namespace Learning_Space.Controllers
                         $"VALUES ({newCourseId}, '{courseDTO.CourseName}', '{courseDTO.CourseDescription}')";
                     await _context.Database.ExecuteSqlRawAsync(sql);
 
+                    //Insert a new alarm entry into the Alarm table
+                    var maxIdAlarm = await _context.Alarms.MaxAsync(u => (int?)u.AlarmId) ?? 0;
+                    var newIdAlarm = maxIdAlarm + 1;
+                    sql = $"INSERT INTO [Alarms] (AlarmId,CourseId,AlarmType,TypeId) VALUES ({newIdAlarm},{maxCourseId}, 'Message', 6)";
+                    await _context.Database.ExecuteSqlRawAsync(sql);
+
                     //Create teacher for course
                     var maxTeacherId = await _context.Teachers.MaxAsync(u => (int?)u.TeacherId) ?? 0;
                     var newTeacherId = maxTeacherId + 1;

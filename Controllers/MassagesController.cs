@@ -85,9 +85,10 @@ namespace Learning_Space.Controllers
                 var sql = $"INSERT INTO [Massages] (MessageId,CourseId,MassageSubject,MassageDateTime,Content) VALUES ({newId}, {courseid},'{massage.MassageSubject}', GETDATE(), '{massage.Content}')";
                 await _context.Database.ExecuteSqlRawAsync(sql);
 
+                //Insert a new alarm entry into the Alarm table
                 var maxIdAlarm = await _context.Alarms.MaxAsync(u => (int?)u.AlarmId) ?? 0;
                 var newIdAlarm = maxIdAlarm + 1;
-                sql = $"INSERT INTO [Alarms] (AlarmId,CourseId,AlarmType,TypeId) VALUES ({newIdAlarm},{courseid}, 'Message', {newId})";
+                sql = $"INSERT INTO [Alarms] (AlarmId,CourseId,AlarmType,TypeId) VALUES ({newIdAlarm},{courseid}, 'Message', {(newId*10)+2})";
                 await _context.Database.ExecuteSqlRawAsync(sql);
 
                 return Redirect($"/Massages/Index?user={user}&permission={permission}&courseid={courseid}");

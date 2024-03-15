@@ -1,31 +1,21 @@
-﻿@model IEnumerable<Learning_Space.Models.Alarm>
+﻿@model IEnumerable<Learning_Space.DTO.AlarmDTO>
 
 @{
     ViewData["Title"] = "Index";
 }
-<link rel="stylesheet" type="text/css" href="./css/styles.css">
-<h1 class="title">Alarm</h1>
 
-<p>
-    <a asp-action="Create" class="options">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.AlarmType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TypeId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Course)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
+@using Microsoft.AspNetCore.Http
+@{
+    int? user = Convert.ToInt32(Context.Request.Query["user"]);
+    int? permission = Convert.ToInt32(Context.Request.Query["permission"]);
+    int? courseid = Convert.ToInt32(Context.Request.Query["courseid"]);
+}
+
+<h1 class="title">Alarms</h1>
+
+
+@foreach (var item in Model)
+{
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.AlarmType)
@@ -33,15 +23,5 @@
             <td>
                 @Html.DisplayFor(modelItem => item.TypeId)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Course.CourseName)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.AlarmId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.AlarmId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.AlarmId">Delete</a>
-            </td>
         </tr>
 }
-    </tbody>
-</table>
