@@ -16,12 +16,58 @@
 
 @foreach (var item in Model)
 {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.AlarmType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TypeId)
-            </td>
-        </tr>
+        if(item.AlarmType == "8")
+    {
+        <div class="frame" onclick="location.href='@Url.Action("Index", "Home", new { user = @user, permission = @permission })';">
+            <h6>WELCOM TO LEARNING SPACE 😊</h6>
+        </div>
+    }
+    else if(item.AlarmType == "6")
+    {
+        <div class="frame" onclick="location.href='@Url.Action("Details", "Courses", new { user = @user, permission = @permission, courseid = item.CourseId})';">
+            <h6>Introduction to a new course!
+                Successfully!
+            </h6>
+            <h7> course name: @item.CorseName</h7>            
+        </div>
+    }
+    else if(item.AlarmType == "4")
+    {
+       <div class="frame" onclick="location.href='@Url.Action("Details","Tasks", new { user = @user, permission = @permission, courseid = item.CourseId, taskid=item.TaskId})';">
+        <h7>A grade has been entered for you for the assignment in the course @item.CorseName</h7>
+        </div>
+    }
+    else if (item.AlarmType == "3")
+    {
+        <div class="frame" onclick="location.href='@Url.Action("Edit","UserTasks", new { user = @user, permission = @permission, courseid = item.CourseId, taskid=item.TaskId, usertaskid=item.TypeId})';">
+        <h7>Your student submitted an assignment in the course @item.CorseName</h7>
+        </div>
+    }
+    else if (item.AlarmType == "1")
+    {
+        <div class="frame" onclick="location.href='@Url.Action("Details","Lessons", new { user = @user, permission = @permission, courseid = item.CourseId, lessonid=item.TypeId})';">
+        <h7>A new lesson has been added in the @item.CorseName course </h7>
+        </div>
+    }
+    else if (item.AlarmType == "2")
+    {
+        <div class="frame" onclick="location.href='@Url.Action("Details","Massages", new { user = @user, permission = @permission, courseid = item.CourseId, messageid=item.TypeId})';">
+            <h7>A new message has been added in the @item.CorseName course </h7>
+        </div>
+    }
+    else if (item.AlarmType == "5")
+    {
+        <div class="frame" onclick="location.href='@Url.Action("Details","MoreStudies", new { user = @user, permission = @permission, courseid = item.CourseId, moreid=item.TypeId})';">
+            <h7>A new Study Material has been added in the @item.CorseName course </h7>
+        </div>
+    }
+    else if (item.AlarmType == "7")
+    {
+        <div class="frame" onclick="location.href='@Url.Action("Details","Tasks", new { user = @user, permission = @permission, courseid = item.CourseId, taskid=item.TypeId})';">
+            <h7>A new task has been added in the @item.CorseName course </h7>
+        </div>
+    }
+
+        
+
 }

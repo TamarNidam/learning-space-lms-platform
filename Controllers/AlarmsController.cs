@@ -89,7 +89,7 @@ namespace Learning_Space.Controllers
                                AlarmType = GetTypeAsync(u.TypeId % 10),
                                TypeId = (int)u.TypeId / 10,
                                TaskId = GetTaskId((GetTypeAsync(u.TypeId % 10)), (u.TypeId / 10))
-                           }).ToList();
+                           }).OrderByDescending(a => a.AlarmId).ToList();
 
             return View(alarmDTOs);
         }
