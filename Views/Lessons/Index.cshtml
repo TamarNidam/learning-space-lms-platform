@@ -13,7 +13,7 @@
 
 
 <h1 class="title">Lessons</h1>
-@if (permission == 0)
+@if (permission == 1)
 {
     <div class="create">
         <a asp-action="Create" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" class="options">&#x002B; Create New</a>

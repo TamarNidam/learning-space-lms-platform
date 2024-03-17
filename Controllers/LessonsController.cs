@@ -235,10 +235,10 @@ namespace Learning_Space.Controllers
                 await _context.Database.ExecuteSqlRawAsync(sql);
 
                 //Insert a new alarm entry into the Alarm table
-                var maxId1 = await _context.Alarms.MaxAsync(u => (int?)u.AlarmId) ?? 0;
-                var newId1 = maxId1 + 1;
-                sql = $"INSERT INTO [Alarm] (AlarmId, CourseId, AlarmType, TypeId) VALUES ({newId1},{courseid}, 'Message',{(newId * 10) + 1} )";
-                await _context.Database.ExecuteSqlRawAsync(sql);
+                //var maxId1 = await _context.Alarms.MaxAsync(u => (int?)u.AlarmId) ?? 0;
+                //var newId1 = maxId1 + 1;
+                //sql = $"INSERT INTO [Alarm] (AlarmId, CourseId, AlarmType, TypeId) VALUES ({newId1},{courseid}, 'Message',{(newId * 10) + 1} )";
+                //await _context.Database.ExecuteSqlRawAsync(sql);
 
                 var classw = await _context.CourseInClasses.Where(c => c.CourseId == courseid).Select(c => c.ClassId).FirstOrDefaultAsync();
                 sql = $"SELECT Users.* " +
