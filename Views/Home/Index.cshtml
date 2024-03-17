@@ -33,11 +33,7 @@
                    Courses
                 </button>
             </a>
-            <a asp-controller="Lessons" asp-action="Schedule" asp-route-user="@user" asp-route-permission="@permission" asp-route-weekOffset="0" class="home_button">
-                <button >
-                Schedule
-                </button>
-            </a>
+            
              @if (permission == 0)
              {
                 <a asp-controller="Users" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" class="home_button">
@@ -50,6 +46,12 @@
                      Classes
                     </button>
                 </a>
+                <a asp-controller="Lessons" asp-action="Schedule" asp-route-user="@user" asp-route-permission="@permission" asp-route-weekOffset="0" class="home_button">
+                <button >
+                Schedule
+                </button>
+            </a>
+
              }
              else if (permission == 2)
              {
@@ -64,6 +66,7 @@
                         Alarams
                     </button>
                 </a>
+
 
             }
             else if (permission ==1)

@@ -52,7 +52,9 @@
                            <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="Classes" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission">Classes</a>
                             </li>
-
+<li class="nav-item">
+                                <a asp-controller="Lessons" asp-action="Schedule" asp-route-user="@user" asp-route-permission="@permission" asp-route-weekOffset="0">Schedule view</a>
+                            </li>
                         }
                         @if (permission == 2)
                         {
@@ -62,6 +64,7 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Alarms" asp-action="index" asp-route-user="@user" asp-route-permission="@permission">Alarams</a>
                             </li>
+                           
                         }
                         @if (permission == 1)
                         {

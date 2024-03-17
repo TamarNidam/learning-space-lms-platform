@@ -83,7 +83,7 @@ namespace Learning_Space.Controllers
             }
 
             DateOnly today = DateOnly.FromDateTime(DateTime.Today);
-            var tasks = await _context.UserTasks.Where(t => t.UserId == user && !t.Done && t.Task.EndDate < today).CountAsync();
+            var tasks = await _context.UserTasks.Where(t => t.UserId == user && !t.Done && t.Task.EndDate > today).CountAsync();
             var taskDTO = new AlarmDTO
             {
                 AlarmId = (await _context.Alarms.MaxAsync(u => (int?)u.AlarmId) ?? 0)+1,

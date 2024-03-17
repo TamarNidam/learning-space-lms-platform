@@ -52,16 +52,16 @@
     <a asp-controller="MoreStudies" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId" class="course_options">
         <span class="link-icon"><i class="black-emoji">&#x1F4D6;</i></span> More Studies
     </a> 
-    <a asp-controller="Calendar" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId" class="course_options">
+@*     <a asp-controller="Calendar" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId" class="course_options">
         <span class="link-icon"><i class="black-emoji">&#x1F4C5;</i></span> Calendar
-    </a> 
+    </a> *@ 
     
     <a asp-controller="Lessons" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId" class="course_options">
         <span class="link-icon"><i class="black-emoji">&#x1F393;</i></span> Lessons
     </a> 
-    <a asp-controller="LessonAttends" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId" class="course_options">
+    @* <a asp-controller="LessonAttends" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId" class="course_options">
         <span class="link-icon"><i class="black-emoji">&#x1F3EB;</i></span> Lesson Attends
-    </a> 
+    </a>  *@
     <a asp-controller="Massages" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@Model?.CourseId" class="course_options">
         <span class="link-icon"><i class="black-emoji">&#x1F4E9;</i></span> Messages
     </a>

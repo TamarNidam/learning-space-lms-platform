@@ -1,0 +1,8 @@
+// Select the element with the id "unique-id-2"
+const element = document.getElementById('unique-id-2');
+
+// Check if the element exists
+if (element) {
+    // Change the background color of the element
+    element.style.backgroundColor = 'lightblue';
+}
