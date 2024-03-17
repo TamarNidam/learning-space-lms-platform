@@ -201,15 +201,31 @@ namespace Learning_Space.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var name = await _context.Courses
-                  .FromSqlRaw("SELECT TOP 1 * FROM Courses WHERE CourseName = {0}", courseDTO.CourseName)
-                  .FirstOrDefaultAsync();
-                    if (name != null)
+                    //  var name = await _context.Courses
+                    //.FromSqlRaw("SELECT TOP 1 * FROM Courses WHERE CourseName = {0}", courseDTO.CourseName)
+                    //.FirstOrDefaultAsync();
+                    //  if (name != null)
+                    //  {
+                    //      ViewBag.ErrorMessage = "Course name exist";
+
+                    //      return View(courseDTO);
+                    //  }
+                    //  Console.WriteLine($"TeacherId: {courseDTO.TeacherId}");
+
+
+
+
+
+                    var existingCourse = await _context.Courses.FirstOrDefaultAsync(c => c.CourseName == courseDTO.CourseName);
+                    if (existingCourse != null)
                     {
-                        ViewBag.ErrorMessage = "Course name exist";
+                        ViewBag.ErrorMessage = "Course name already exists";
+                        ViewBag.TeacherId = new SelectList(_context.Users, "UserId", "FirstName", courseDTO.TeacherId);
+                        ViewBag.ClassId = new SelectList(_context.Classes, "ClassId", "ClassName", courseDTO.ClassId);
                         return View(courseDTO);
                     }
-                    Console.WriteLine($"TeacherId: {courseDTO.TeacherId}");
+
+
 
                     //Create course
                     var maxCourseId = await _context.Courses.MaxAsync(u => (int?)u.CourseId) ?? 0;
@@ -221,7 +237,7 @@ namespace Learning_Space.Controllers
                     //Insert a new alarm entry into the Alarm table
                     var maxIdAlarm = await _context.Alarms.MaxAsync(u => (int?)u.AlarmId) ?? 0;
                     var newIdAlarm = maxIdAlarm + 1;
-                    sql = $"INSERT INTO [Alarms] (AlarmId,CourseId,AlarmType,TypeId) VALUES ({newIdAlarm},{maxCourseId}, 'Message', 6)";
+                    sql = $"INSERT INTO [Alarms] (AlarmId,CourseId,AlarmType,TypeId) VALUES ({newIdAlarm},{newCourseId}, 'Message', 6)";
                     await _context.Database.ExecuteSqlRawAsync(sql);
 
                     //send email alarm
@@ -270,6 +286,8 @@ namespace Learning_Space.Controllers
 
                     return Redirect($"/Courses/Index?user=0&permission=0");
                 }
+                ViewBag.TeacherId = new SelectList(_context.Users, "UserId", "FirstName", courseDTO.TeacherId);
+                ViewBag.ClassId = new SelectList(_context.Classes, "ClassId", "ClassName", courseDTO.ClassId);
                 return View(courseDTO);
             }
             catch (SqlException ex)

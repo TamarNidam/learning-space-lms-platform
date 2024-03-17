@@ -16,7 +16,25 @@
 
 @foreach (var item in Model)
 {
-        if(item.AlarmType == "8")
+    if (item.AlarmType == "9")
+    {
+        if (permission == 2)
+        {
+        if(item.TypeId>0)
+        {
+            <div class="frame_wrong" onclick="location.href='@Url.Action("Index", "Tasks", new { user = @user, permission = @permission })';">
+                <h6>You have @item.TypeId assignments left to submit</h6>
+            </div>
+        }
+        else
+        {
+            <div class="frame_good">
+                <h6>You have no assignments to submit! 😊</h6>
+            </div>
+        }
+        }
+    }
+    if(item.AlarmType == "8")
     {
         <div class="frame" onclick="location.href='@Url.Action("Index", "Home", new { user = @user, permission = @permission })';">
             <h6>WELCOM TO LEARNING SPACE 😊</h6>

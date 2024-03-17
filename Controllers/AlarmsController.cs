@@ -82,6 +82,17 @@ namespace Learning_Space.Controllers
                 alarms.AddRange(new List<Alarm> { userAlarm });
             }
 
+            DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+            var tasks = await _context.UserTasks.Where(t => t.UserId == user && !t.Done && t.Task.EndDate < today).CountAsync();
+            var taskDTO = new AlarmDTO
+            {
+                AlarmId = (await _context.Alarms.MaxAsync(u => (int?)u.AlarmId) ?? 0)+1,
+                CourseId = 0,
+                CorseName = "",
+                AlarmType = "9",
+                TypeId = tasks,
+                TaskId = 0
+            };
             var alarmDTOs = alarms
                            .Select(u => new AlarmDTO
                            {
@@ -92,6 +103,8 @@ namespace Learning_Space.Controllers
                                TypeId = (int)u.TypeId / 10,
                                TaskId = GetTaskId((GetTypeAsync((int)u.TypeId % 10)), (u.TypeId / 10))
                            }).OrderByDescending(a => a.AlarmId).ToList();
+
+            alarmDTOs.Insert(0, taskDTO);
 
 
             return View(alarmDTOs);
@@ -110,11 +123,7 @@ namespace Learning_Space.Controllers
             else if (v == 5) { result = "5"; }
             else if (v == 6) { result = "6"; }
             else if (v == 7) { result = "7"; }
-            else if (v == 8) 
-            { 
-                result = "8";
-            }
-
+            else if (v == 8) { result = "8"; }
 
             return result;
         }

@@ -25,9 +25,9 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item-home">
+                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission">
-                                <img src="../media/home.png" alt="Home" />
+                               @*  <img src="../media/home.png" alt="Home" /> *@Home
                             </a>
                         </li>
                         <li class="nav-item">
@@ -37,9 +37,9 @@
                             <a class ="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="SignUp">Sign Up</a>
                         </li>
                         
-                        <li class="nav-item">
+                       @*  <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Calendar" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission">Calender</a>
-                        </li>
+                        </li> *@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Courses" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission">Courses List</a>
                         </li>

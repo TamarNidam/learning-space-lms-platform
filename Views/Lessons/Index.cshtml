@@ -15,9 +15,9 @@
 <h1 class="title">Lessons</h1>
 @if (permission == 0)
 {
-    <p>
-        <a asp-action="Create" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid">&#x002B; Create New</a>
-    </p>
+    <div class="create">
+        <a asp-action="Create" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" class="options">&#x002B; Create New</a>
+    </div>
 }
 @{
     DateOnly today = DateOnly.FromDateTime(DateTime.Today);
@@ -86,11 +86,11 @@
         </div>
     }
 }
-<div class="bottom-right">
+<div class="bottom-right" id="bottom1">
 <a asp-action="Schedule" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid" asp-route-weekOffset="0">Schedule view</a>
 </div>
 
-<div class="bottom-right">
+<div class="bottom-right" id="bottom2">
     <a asp-controller="Courses" asp-action="Details" asp-route-user="@user" asp-route-permission="@permission" asp-route-courseid="@courseid">back to course</a>
 </div>
 

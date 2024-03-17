@@ -291,7 +291,7 @@ tr:hover > td{
     cursor: pointer;
     transition: color 0.3s ease-in-out;
     position: absolute; 
-    bottom: 0; 
+    bottom: 30px; 
     right: 0; 
     margin: 5px;
 }
@@ -336,14 +336,33 @@ tr:hover > td{
     background-color: lightgray;
 }
 
-.bottom-right {
+/*.bottom-right {
     position: fixed;
     bottom: 100px;
     padding: 5px;
     border: 0.5px, solid, black;
     border-radius: 7px;
-    margin: 3px;
+    margin: 3px;*/
     /*right: 700px;*/
+/*}*/
+
+.bottom-right {
+    position: fixed;
+    bottom: 100px;
+    padding: 5px;
+    border: 1px solid black;
+    border-radius: 7px;
+    margin: 3px;
+    display: inline-block;
+    background-color: rgb(211, 83, 83, 0.85);
+}
+
+#bottom1{
+    right: 20px;
+}
+
+#bottom2{
+    right: 150px;
 }
 
 .divOption {
@@ -411,6 +430,22 @@ tr:hover > td{
     padding: 10px;
     margin-bottom: 15px;
     width: 1000px;
+}
+.frame_wrong {
+    border: 3px solid rgb(211, 83, 83, 0.85);
+    border-radius: 30px;
+    padding: 10px;
+    margin-bottom: 15px;
+    width: 1000px;
+    background-color: rgb(207, 28, 28, 0.57);
+}
+.frame_good {
+    border: 3px solid rgb(211, 83, 83, 0.85);
+    border-radius: 30px;
+    padding: 10px;
+    margin-bottom: 15px;
+    width: 1000px;
+    background-color: rgb(3, 208, 15, 0.50);
 }
 .black-emoji {
     color: black;

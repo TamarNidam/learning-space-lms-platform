@@ -170,6 +170,7 @@ namespace Learning_Space.Controllers
                     if (u != null)
                     {
                         ViewBag.ErrorMessage = "User Email exist";
+                        ViewBag.RoleList = new SelectList(_context.Users, "Role", "Role", userDTO.Role);
                         return View(userDTO);
                     }
                     u = await _context.Users
@@ -178,6 +179,8 @@ namespace Learning_Space.Controllers
                     if (u != null)
                     {
                         ViewBag.ErrorMessage = "You need to change the password";
+                        ViewBag.RoleList = new SelectList(_context.Users, "Role", "Role", userDTO.Role);
+
                         return View(userDTO);
                     }
 
