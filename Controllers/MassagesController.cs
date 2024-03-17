@@ -91,6 +91,7 @@ namespace Learning_Space.Controllers
                 sql = $"INSERT INTO [Alarms] (AlarmId,CourseId,AlarmType,TypeId) VALUES ({newIdAlarm},{courseid}, 'Message', {(newId*10)+2})";
                 await _context.Database.ExecuteSqlRawAsync(sql);
 
+                var c = await _context.Courses.Where(c => c.CourseId == courseid).Select(c => c.CourseName).FirstOrDefaultAsync();
                 var classw = await _context.CourseInClasses.Where(c => c.CourseId == courseid).Select(c => c.ClassId).FirstOrDefaultAsync();
                 sql = $"SELECT Users.* " +
                  $"FROM Users JOIN StudentInClass " +
@@ -99,7 +100,7 @@ namespace Learning_Space.Controllers
                 var users = await _context.Users.FromSqlRaw(sql).ToListAsync();
                 foreach (var usere in users)
                 {
-                    bool emailSent = AlarmsController.SendContactFormEmail($"{usere.FirstName}", $"{usere.Email}", 2, $"{courseid}", "");
+                    bool emailSent = AlarmsController.SendContactFormEmail($"{usere.FirstName}", $"{usere.Email}", 2, $"{c}", "");
                 }
 
                 return Redirect($"/Massages/Index?user={user}&permission={permission}&courseid={courseid}");
