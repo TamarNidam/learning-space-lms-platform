@@ -191,6 +191,8 @@ namespace Learning_Space.Controllers
                     var newIdAlarm = maxIdAlarm + 1;
                     sql = $"INSERT INTO [Alarms] (AlarmId,CourseId,AlarmType,TypeId) VALUES ({newIdAlarm},0, 'Message', {(newUserId*10)+8})";
                     await _context.Database.ExecuteSqlRawAsync(sql);
+                    
+                    bool emailSent = AlarmsController.SendContactFormEmail($"{userDTO.FirstName}", $"{userDTO.Email}", 8,"","");
 
                     if (userDTO.Role == "Teacher")
                     {

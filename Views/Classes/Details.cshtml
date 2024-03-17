@@ -10,27 +10,30 @@
     int? classid = Convert.ToInt32(Context.Request.Query["classid"]);
 }
 <div class="general">
-<h1>Details</h1>
 
 <div>
-    <h4>Class</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ClassName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ClassName)
-        </dd>
-    </dl>
+        <h2>@Html.DisplayFor(model => model.ClassName)</h2>
+        <br />
+
+
     <p> @Model.Students Stusents.</p>
-</div>
-<div>
-        <a asp-controller="Courses" asp-action="Index" asp-route-user="0" asp-route-permission="0" asp-route-classid="@Model?.ClassId" class="options">courses list</a>
-        <a asp-controller="Users" asp-action="Index" asp-route-user="0" asp-route-permission="0" asp-route-classid="@Model?.ClassId" class="options">students list</a>
-</div>
+        <hr />
+        <br />
+        <div class="classes">
+        <div class="home_button">
+            <a asp-controller="Courses" asp-action="Index" asp-route-user="0" asp-route-permission="0" asp-route-classid="@Model?.ClassId">courses list</a>
+        </div><div class="home_button">
+            <a asp-controller="Users" asp-action="Index" asp-route-user="0" asp-route-permission="0" asp-route-classid="@Model?.ClassId">students list</a>
+        </div><div class="home_button">
+            <a asp-action="Edit" asp-route-user="0" asp-route-permission="0" asp-route-classid="@Model?.ClassId">Edit</a>
+            </div>
+        </div>
+    </div>
+
+
 <div>   
-        <a asp-action="Edit" asp-route-user="0" asp-route-permission="0" asp-route-classid="@Model?.ClassId" class="options">Edit</a>
+        
+
         <a asp-action="Index" asp-route-user="0" asp-route-permission="0" class="options">Back to List</a>
 </div>
 </div>

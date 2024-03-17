@@ -60,7 +60,15 @@ users_list{
 
 }
 
-
+.classes {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+   
+}
+.classes home_button{
+    height:60px;
+}
 .calendar {
     width: 1000px;
     height: 1000px;

@@ -106,8 +106,11 @@ namespace Learning_Space.Controllers
                     //Insert a new alarm entry into the Alarm table
                     var maxIdAlarm = await _context.Alarms.MaxAsync(u => (int?)u.AlarmId) ?? 0;
                     var newIdAlarm = maxIdAlarm + 1;
-                    sql = $"INSERT INTO [Alarms] (AlarmId,CourseId,AlarmType,TypeId) VALUES ({newIdAlarm},{courseid}, 'Message', {(usertaskid*10)+4})";
+                    sql = $"INSERT INTO [Alarms] (AlarmId,CourseId,AlarmType,TypeId) VALUES ({newIdAlarm},{courseid}, 'Message', {(usertaskid * 10) + 4})";
                     await _context.Database.ExecuteSqlRawAsync(sql);
+
+                    var usere = await _context.Users.Where(u => u.UserId == user).FirstOrDefaultAsync();
+                    bool emailSent = AlarmsController.SendContactFormEmail($"{usere.FirstName}", $"{usere.Email}", 4, $"{courseid}", "");
                 }
                 catch (DbUpdateConcurrencyException)
                 {

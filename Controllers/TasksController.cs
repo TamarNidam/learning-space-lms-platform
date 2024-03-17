@@ -189,6 +189,17 @@ namespace Learning_Space.Controllers
                 sql = $"INSERT INTO [Alarms] (AlarmId,CourseId,AlarmType,TypeId) VALUES ({newIdAlarm},{courseid}, 'Message', {(newId*10)+7})";
                 await _context.Database.ExecuteSqlRawAsync(sql);
 
+                var classw = await _context.CourseInClasses.Where(c => c.CourseId == courseid).Select(c => c.ClassId).FirstOrDefaultAsync();
+                sql = $"SELECT Users.* " +
+     $"FROM Users JOIN StudentInClass " +
+     $" ON Users.UserId = StudentInClass.UserId " +
+     $"WHERE StudentInClass.ClassId = {classw}";
+                var users = await _context.Users.FromSqlRaw(sql).ToListAsync();
+                foreach (var usere in users)
+                {
+                    bool emailSent = AlarmsController.SendContactFormEmail($"{usere.FirstName}", $"{usere.Email}", 7, $"{courseid}", "");
+                }
+
                 var maxIdUserTask = await _context.UserTasks.MaxAsync(u => (int?)u.UserTaskId) ?? 0;
                 var courseInClass =  _context.CourseInClasses.FirstOrDefault(c => c.CourseId == courseid);
                 var clas = courseInClass != null ? courseInClass.ClassId : null;
@@ -321,6 +332,11 @@ namespace Learning_Space.Controllers
             var newIdAlarm = maxIdAlarm + 1;
             var sql = $"INSERT INTO [Alarms] (AlarmId,CourseId,AlarmType,TypeId) VALUES ({newIdAlarm},{courseid}, 'Message', {(userTask.UserTaskId*10)+3})";
             await _context.Database.ExecuteSqlRawAsync(sql);
+
+            var teacher = await _context.Teachers.Where(c => c.CourseId == courseid).Select(c=> c.UserId).FirstOrDefaultAsync();
+            var usere = await _context.Users.Where(u => u.UserId == teacher).FirstOrDefaultAsync();
+            var st = await _context.Users.Where(u => u.UserId == user).FirstOrDefaultAsync();
+                bool emailSent = AlarmsController.SendContactFormEmail($"{usere.FirstName}", $"{usere.Email}", 3, $"{courseid}", $"{st.FirstName} {st.LastName}");
 
             return Redirect($"/Tasks/Details?user={user}&permission=2&courseid={courseid}&taskid={taskid}");
         }

@@ -36,9 +36,7 @@
                         <li class="nav-item">
                             <a class ="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="SignUp">Sign Up</a>
                         </li>
-                                                <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Alarms" asp-action="index" asp-route-user="@user" asp-route-permission="@permission">Alarams</a>
-                        </li>
+                        
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Calendar" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission">Calender</a>
                         </li>
@@ -61,8 +59,15 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Tasks" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission">Tasks</a>
                             </li>
-                           
-
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Alarms" asp-action="index" asp-route-user="@user" asp-route-permission="@permission">Alarams</a>
+                            </li>
+                        }
+                        @if (permission == 1)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Alarms" asp-action="index" asp-route-user="@user" asp-route-permission="@permission">Alarams</a>
+                            </li>
                         }
 
                     </ul>
@@ -75,12 +80,6 @@
             @RenderBody()
         </main>
     </div>
-@* 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2023 - Learning_Space - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer> *@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

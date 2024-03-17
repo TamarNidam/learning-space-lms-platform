@@ -72,7 +72,7 @@ namespace Learning_Space.Controllers
             List<Lesson> lessons = new List<Lesson>();
             if (courseid.HasValue)
             {
-                lessons =await _context.Lessons
+                lessons = await _context.Lessons
                     .Where(x => x.CourseId == courseid && x.LessonDate >= startDate && x.LessonDate <= endDate)
                     .ToListAsync();
             }
@@ -85,7 +85,7 @@ namespace Learning_Space.Controllers
                         .ToListAsync();
                 }
                 else
-                {                  
+                {
                     List<int> classIds = GetClassIdsForUser(user);
                     List<int> courseids = new List<int>();
                     foreach (int classId in classIds)
@@ -97,7 +97,7 @@ namespace Learning_Space.Controllers
                         var courses = await _context.Courses.FromSqlRaw(sql).ToListAsync();
                         courseids.AddRange((IEnumerable<int>)courses);
                     }
-                   
+
                     foreach (int courseId in courseids)
                     {
                         // Get the courses associated with each class
@@ -141,7 +141,7 @@ namespace Learning_Space.Controllers
         {
             List<int> classIds = new List<int>();
 
-            
+
             var userClasses = _context.StudentInClasses.Where(uc => uc.UserId == user);
 
             foreach (var userClass in userClasses)
@@ -237,8 +237,19 @@ namespace Learning_Space.Controllers
                 //Insert a new alarm entry into the Alarm table
                 var maxId1 = await _context.Alarms.MaxAsync(u => (int?)u.AlarmId) ?? 0;
                 var newId1 = maxId1 + 1;
-                sql = $"INSERT INTO [Alarm] (AlarmId, CourseId, AlarmType, TypeId) VALUES ({newId1},{courseid}, 'Message',{(newId*10)+1} )";
+                sql = $"INSERT INTO [Alarm] (AlarmId, CourseId, AlarmType, TypeId) VALUES ({newId1},{courseid}, 'Message',{(newId * 10) + 1} )";
                 await _context.Database.ExecuteSqlRawAsync(sql);
+
+                var classw = await _context.CourseInClasses.Where(c => c.CourseId == courseid).Select(c => c.ClassId).FirstOrDefaultAsync();
+                sql = $"SELECT Users.* " +
+     $"FROM Users JOIN StudentInClass " +
+     $" ON Users.UserId = StudentInClass.UserId " +
+     $"WHERE StudentInClass.ClassId = {classw}";
+                var users = await _context.Users.FromSqlRaw(sql).ToListAsync();
+                foreach (var usere in users)
+                {
+                    bool emailSent = AlarmsController.SendContactFormEmail($"{usere.FirstName}", $"{usere.Email}", 1, $"{courseid}", "");
+                }
 
                 // If the lesson type is Zoom, insert a new entry into the ZoomLessons table
                 if (lesson.LessonType == "Zoom")
@@ -377,8 +388,8 @@ namespace Learning_Space.Controllers
                 {
                     ViewBag.ErrorMessage = "The teacher already has lessons scheduled within the specified time range for the course.";
                 }
-                    try
-                    {
+                try
+                {
                     var lessonDTO = new Lesson
                     {
                         LessonId = lesson.LessonId,

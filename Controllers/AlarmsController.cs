@@ -16,6 +16,9 @@ using Microsoft.Build.Framework;
 using NuGet.Packaging;
 using System.Security.Claims;
 using SystemTask = System.Threading.Tasks.Task;
+using System.Text;
+using NuGet.Protocol.Plugins;
+using System.Data.SqlTypes;
 
 
 
@@ -34,7 +37,6 @@ namespace Learning_Space.Controllers
         // GET: Alarms
         public async Task<IActionResult> Index(int user, int permission)
         {
-            //SendMail("tamtam2003n@gmail.com", "j", "workk");
 
             List<int?> courseIds = null;
             List<Alarm> alarms = null;
@@ -69,12 +71,12 @@ namespace Learning_Space.Controllers
                         .ToListAsync();
 
                 alarms = await _context.Alarms
-               .Where(alarm => courseIds.Contains(alarm.CourseId) && alarm.TypeId % 10 != 4)
+               .Where(alarm => courseIds.Contains(alarm.CourseId) && alarm.TypeId % 10 != 4 && alarm.TypeId % 10 != 8)
                .ToListAsync();
             }
 
             var userAlarm = await _context.Alarms
-                .Where(alarm => alarm.TypeId % 10 == 8 && (alarm.TypeId / 10) == user).FirstOrDefaultAsync();
+                .Where(alarm =>  (alarm.TypeId / 10) == user && (alarm.TypeId % 10) == 8).FirstOrDefaultAsync();
             if (userAlarm != null)
             {
                 alarms.AddRange(new List<Alarm> { userAlarm });
@@ -86,16 +88,17 @@ namespace Learning_Space.Controllers
                                AlarmId = u.AlarmId,
                                CourseId = (int)u.CourseId,
                                CorseName = u.CourseId == 0 ? string.Empty : GetCourseName(u.CourseId),
-                               AlarmType = GetTypeAsync(u.TypeId % 10),
+                               AlarmType = GetTypeAsync((int)u.TypeId % 10),
                                TypeId = (int)u.TypeId / 10,
-                               TaskId = GetTaskId((GetTypeAsync(u.TypeId % 10)), (u.TypeId / 10))
+                               TaskId = GetTaskId((GetTypeAsync((int)u.TypeId % 10)), (u.TypeId / 10))
                            }).OrderByDescending(a => a.AlarmId).ToList();
+
 
             return View(alarmDTOs);
         }
 
 
-        private string GetTypeAsync(int? v)
+        private string GetTypeAsync(int v)
 
         {
             string result = "";
@@ -107,7 +110,10 @@ namespace Learning_Space.Controllers
             else if (v == 5) { result = "5"; }
             else if (v == 6) { result = "6"; }
             else if (v == 7) { result = "7"; }
-            else if (v == 8) { result = "8"; }
+            else if (v == 8) 
+            { 
+                result = "8";
+            }
 
 
             return result;
@@ -131,91 +137,44 @@ namespace Learning_Space.Controllers
             return name ?? "";
         }
 
-
-        //[HttpPost("send")]
-        //public bool sentMail(string email, string subject, string body)
-        //{
-        //    try
-        //    {
-        //        var mail= 
-        //        SmtpClient smtpClient = new SmtpClient("smtp.office365.com", 587);
-        //        smtpClient.EnableSsl = true;
-        //        smtpClient.UseDefaultCredentials = false;
-        //        smtpClient.Credentials = new System.Net.NetworkCredential("tamar.nidam1@gmail.com", "tamtam2003n");
-
-        //        MailMessage mailMessage = new MailMessage();
-        //        mailMessage.From = new MailAddress("tamar.nidam1@gmail.com");
-        //        mailMessage.To.Add(email);
-        //        mailMessage.Subject = subject;
-        //        mailMessage.Body = body;
-
-        //        smtpClient.Send(mailMessage);
-        //        return true;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine(ex.Message);
-        //        return false;
-        //    }
-        //}
-
-        //public IActionResult SendEmail()
-        //{
-        //    string emailTo = "tamtam2003n@gmail.com";
-        //    string subject = "Hello";
-        //    string body = "This is the email body.";
-
-        //    try
-        //    {
-        //        MailMessage mail = new MailMessage();
-        //        SmtpClient smtpClient = new SmtpClient("smtp.gmail.com", 587); // Replace with your SMTP server address and port
-
-        //        mail.From = new MailAddress("tamar.nidam1@gmail.com"); // Replace with your email address
-        //        mail.To.Add(emailTo);
-        //        mail.Subject = subject;
-        //        mail.Body = body;
-
-        //        smtpClient.Credentials = new NetworkCredential("tamar.nidam1@gmail.com", "tamtam2003n"); // Replace with your email address and password
-        //        smtpClient.EnableSsl = true; // Enable SSL encryption, if required by your email provider
-
-        //        smtpClient.Send(mail);
-
-        //        return RedirectToAction("Index", "Home"); // Redirect to a success page
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Handle exception or redirect to an error page
-        //        return RedirectToAction("Error", "Home");
-        //    }
-        //}
-
-        [HttpPost("send")]
-        public async Task<bool> SendMail(string email, string subject, string body)
-        {
-            var mail = "tamar.nidam1@gmail.com";
-            var ps = "tamtam2003n";
-
-            using (var client = new SmtpClient("smtp-mail.outlook.com", 587))
+            public static bool SendContactFormEmail(string name, string email, int type, string? courseName, string? studentName)
             {
-                client.EnableSsl = true;
-                client.Credentials = new NetworkCredential(mail, ps);
+                using (var smtpClient = new SmtpClient("smtp.gmail.com", 587))
+                {
+                    smtpClient.UseDefaultCredentials = false;
+                    smtpClient.Credentials = new NetworkCredential("learning.space80@gmail.com", "bxnd akzo bzra qfaa");
+                    smtpClient.EnableSsl = true;
 
-                var mailMessage = new MailMessage(
-                    from: mail,
-                    to: email,
-                    subject: subject,
-                    body: body
-                );
-
-                await client.SendMailAsync(mailMessage);
+                    var mailMessage = new MailMessage();
+                    mailMessage.From = new MailAddress("learning.space80@gmail.com");
+                    mailMessage.To.Add(email);
+                    mailMessage.Subject = "New Alarm";
+                string allString =$"Hi {name},\n";
+                if(type == 1)
+                {
+                    allString = allString+$"You have a new lesson in {courseName}.";
+                }
+                else if(type == 2) { allString = allString + $"You have a new message in {courseName}."; }
+                else if (type == 3) { allString = allString + $"Your student: {studentName}."; }
+                else if (type== 4) { allString += $"You have a new mark in the {courseName} course."; }
+                else if (type == 5) { allString += $"You have new study metirial in the {courseName} course."; }
+                else if (type == 6) { allString += $"You have new course: {courseName} in your schduel."; }
+                else if (type == 7) { allString += $"You have new task in the {courseName} course."; }
+                else if (type == 8) { allString += $"Wellcome to Lerning Space😊"; }
+                if (type >= 1 && type <=8)
+                { 
+                mailMessage.Body = allString;
+                    smtpClient.Send(mailMessage);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
 
-            return true;
-        }
+            }
 
-        private bool AlarmExists(int id)
-        {
-            return _context.Alarms.Any(e => e.AlarmId == id);
-        }
+            
     }
 }

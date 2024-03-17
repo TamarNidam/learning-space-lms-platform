@@ -224,6 +224,17 @@ namespace Learning_Space.Controllers
                     sql = $"INSERT INTO [Alarms] (AlarmId,CourseId,AlarmType,TypeId) VALUES ({newIdAlarm},{maxCourseId}, 'Message', 6)";
                     await _context.Database.ExecuteSqlRawAsync(sql);
 
+                    //send email alarm
+                    sql = $"SELECT Users.* " +
+                     $"FROM Users JOIN StudentInClass " +
+                     $" ON Users.UserId = StudentInClass.UserId " +
+                     $"WHERE StudentInClass.ClassId = {courseDTO.CourseId}";
+                    var users = await _context.Users.FromSqlRaw(sql).ToListAsync();
+                    foreach (var usere in users)
+                    {
+                        bool emailSent = AlarmsController.SendContactFormEmail($"{usere.FirstName}", $"{usere.Email}", 6, $"{courseDTO.CourseName}", "");
+                    }
+
                     //Create teacher for course
                     var maxTeacherId = await _context.Teachers.MaxAsync(u => (int?)u.TeacherId) ?? 0;
                     var newTeacherId = maxTeacherId + 1;

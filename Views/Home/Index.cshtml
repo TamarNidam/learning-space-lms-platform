@@ -22,12 +22,7 @@
                     Sign Up  
                 </button>
             </a>
-            <a asp-controller="Alarms" asp-action="index" asp-route-user="@user" asp-route-permission="@permission" class="home_button">
-               
-                <button >
-                   Alarams
-                </button>
-            </a>
+           
             <a asp-controller="Calendar" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" class="home_button">
                 <button >
                    Calender
@@ -50,11 +45,11 @@
                         Users List
                     </button>
                 </a>
-                @* <a asp-controller="Classes" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" class="home_button">
+                <a asp-controller="Classes" asp-action="Index" asp-route-user="@user" asp-route-permission="@permission" class="home_button">
                     <button >
                      Classes
                     </button>
-                </a> *@
+                </a>
              }
              else if (permission == 2)
              {
@@ -63,8 +58,23 @@
                       Tasks
                     </button>
                  </a>
-               
-             }
-         </div>
+                <a asp-controller="Alarms" asp-action="index" asp-route-user="@user" asp-route-permission="@permission" class="home_button">
+
+                    <button>
+                        Alarams
+                    </button>
+                </a>
+
+            }
+            else if (permission ==1)
+            {
+                <a asp-controller="Alarms" asp-action="index" asp-route-user="@user" asp-route-permission="@permission" class="home_button">
+
+                    <button>
+                        Alarams
+                    </button>
+                </a>
+            }
+        </div>
     </div>
 </div>
