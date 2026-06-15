@@ -38,8 +38,3 @@ The system dictates permissions strictly based on three distinct hierarchical ro
 * **Architecture:** Monolithic MVC, RBAC Security Model
 * **Frontend:** Server-Rendered Views (Razor)
 
-## 🚀 Getting Started
-
-### Prerequisites
-* .NET SDK installed.
-* Supported IDE (Visual Studio / Rider).
